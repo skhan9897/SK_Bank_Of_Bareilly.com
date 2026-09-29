@@ -15,8 +15,8 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# STAGE 2: Deploy WAR to Apache Tomcat 9
-FROM tomcat:9.0-jre17-openjdk-slim
+# STAGE 2: Deploy WAR to Apache Tomcat 9 (Using official Docker Hub image)
+FROM tomcat:9.0-jdk17-temurin
 WORKDIR /usr/local/tomcat
 
 # Remove default Tomcat webapps
