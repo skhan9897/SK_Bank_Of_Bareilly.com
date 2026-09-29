@@ -31,26 +31,24 @@ INSERT INTO system_settings (setting_key, setting_value, description) VALUES
 ('session_timeout_minutes', '30', 'Customer Internet Banking Session Timeout in Minutes'),
 ('failed_login_lock_attempts', '5', 'Account Lockout Threshold on Repeated Invalid Passwords');
 
--- 5. DEMO USERS (Passwords hashed using BCrypt: Admin@123 for admin, Employee@123 for employee, Customer@123 for customer)
--- BCrypt Hash: $2a$10$e8T7O2jXf2R9q8S.H1wZ..DqTq2wM0A5X2L5P6K7Q8R9S0T1U2V3W
-
--- Admin User
+-- 5. DEMO USERS (Passwords hashed using BCrypt)
+-- Admin User (Username: admin, Password: Admin@123)
 INSERT INTO users (username, password_hash, role, status) VALUES
-('admin', '$2a$10$e8T7O2jXf2R9q8S.H1wZ..DqTq2wM0A5X2L5P6K7Q8R9S0T1U2V3W', 'ADMIN', 'ACTIVE');
+('admin', '$2a$10$282JYUVCbBPv28NiHy7RKOzL16828tRAt0az7f37QzXjAi7ExZumi', 'ADMIN', 'ACTIVE');
 
 INSERT INTO admins (user_id, full_name, email, phone, department) VALUES
 (1, 'System Administrator', 'admin@skbankofbareilly.example', '9876500000', 'IT & Administration');
 
--- Employee User
+-- Employee User (Username: emp_bareilly, Password: Admin@123)
 INSERT INTO users (username, password_hash, role, status) VALUES
-('emp_bareilly', '$2a$10$e8T7O2jXf2R9q8S.H1wZ..DqTq2wM0A5X2L5P6K7Q8R9S0T1U2V3W', 'EMPLOYEE', 'ACTIVE');
+('emp_bareilly', '$2a$10$282JYUVCbBPv28NiHy7RKOzL16828tRAt0az7f37QzXjAi7ExZumi', 'EMPLOYEE', 'ACTIVE');
 
 INSERT INTO employees (user_id, branch_id, employee_code, full_name, designation, email, phone, hire_date, salary, status) VALUES
 (2, 1, 'SKEMP1001', 'Amit Sharma', 'Branch Operations Manager', 'amit.sharma@skbankofbareilly.example', '9876511111', '2020-01-15', 65000.00, 'ACTIVE');
 
--- Customer User (Rajesh Kumar)
+-- Customer User (Username: rajesh123, Password: Customer@123)
 INSERT INTO users (username, password_hash, role, status) VALUES
-('rajesh123', '$2a$10$e8T7O2jXf2R9q8S.H1wZ..DqTq2wM0A5X2L5P6K7Q8R9S0T1U2V3W', 'CUSTOMER', 'ACTIVE');
+('rajesh123', '$2a$10$DNMCSEv0EqnnCptsfwhekOH544rmT24vERWFBgD5aRmSEo.Y5tZMG', 'CUSTOMER', 'ACTIVE');
 
 INSERT INTO customers (customer_id, user_id, branch_id, first_name, last_name, dob, gender, mobile, email, aadhaar, pan, address, city, state, pincode, occupation, kyc_status) VALUES
 ('SKC10001', 3, 1, 'Rajesh', 'Kumar', '1990-05-15', 'Male', '9876543210', 'rajesh.kumar@example.com', '123456789012', 'ABCDE1234F', '78 Civil Lines, Station Road', 'Bareilly', 'Uttar Pradesh', '243001', 'Business', 'VERIFIED');
@@ -71,7 +69,7 @@ INSERT INTO transactions (transaction_reference, account_id, type, direction, am
 
 -- Cards
 INSERT INTO cards (card_number, customer_id, account_id, card_holder_name, card_type, expiry_date, cvv_hash, pin_hash, daily_limit, status) VALUES
-('4532890123456789', 'SKC10001', 1, 'RAJESH KUMAR', 'DEBIT', '12/28', '$2a$10$e8T7O2jXf2R9q8S.H1wZ..DqTq2wM0A5X2L5P6K7Q8R9S0T1U2V3W', '$2a$10$e8T7O2jXf2R9q8S.H1wZ..DqTq2wM0A5X2L5P6K7Q8R9S0T1U2V3W', 50000.00, 'ACTIVE');
+('4532890123456789', 'SKC10001', 1, 'RAJESH KUMAR', 'DEBIT', '12/28', '$2a$10$DNMCSEv0EqnnCptsfwhekOH544rmT24vERWFBgD5aRmSEo.Y5tZMG', '$2a$10$DNMCSEv0EqnnCptsfwhekOH544rmT24vERWFBgD5aRmSEo.Y5tZMG', 50000.00, 'ACTIVE');
 
 -- Fixed Deposit
 INSERT INTO fixed_deposits (fd_number, customer_id, account_id, principal_amount, interest_rate, tenure_months, start_date, maturity_date, interest_amount, maturity_amount, status) VALUES
