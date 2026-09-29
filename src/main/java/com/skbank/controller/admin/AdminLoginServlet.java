@@ -34,11 +34,25 @@ public class AdminLoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String username = request.getParameter("SKBOB9897");
-        String password = request.getParameter("Admin9897");
+        // Read form parameters from JSP form inputs ("username" and "password")
+        String username = request.getParameter("username");
+        if (username == null || username.trim().isEmpty()) {
+            username = request.getParameter("SKBOB9897");
+        }
+
+        String password = request.getParameter("password");
+        if (password == null || password.trim().isEmpty()) {
+            password = request.getParameter("Admin9897");
+        }
+
+        if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+            request.setAttribute("errorMessage", "Please enter both Admin Username and Password.");
+            request.getRequestDispatcher("/admin/login.jsp").forward(request, response);
+            return;
+        }
 
         try {
-            User user = authService.authenticate(username, password);
+            User user = authService.authenticate(username.trim(), password);
             if (user != null && "ADMIN".equalsIgnoreCase(user.getRole())) {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("loggedInUser", user);
@@ -49,6 +63,9 @@ public class AdminLoginServlet extends HttpServlet {
                 request.setAttribute("errorMessage", "Invalid Admin credentials or unauthorized role.");
                 request.getRequestDispatcher("/admin/login.jsp").forward(request, response);
             }
+        } catch (IllegalStateException e) {
+            request.setAttribute("errorMessage", e.getMessage());
+            request.getRequestDispatcher("/admin/login.jsp").forward(request, response);
         } catch (Exception e) {
             request.setAttribute("errorMessage", "Login Error: " + e.getMessage());
             request.getRequestDispatcher("/admin/login.jsp").forward(request, response);

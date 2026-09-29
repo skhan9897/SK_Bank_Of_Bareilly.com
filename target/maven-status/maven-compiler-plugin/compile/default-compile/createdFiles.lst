@@ -24,6 +24,7 @@ com\skbank\dao\OtpDAO.class
 com\skbank\dao\FDDAO.class
 com\skbank\service\LoanService.class
 com\skbank\dao\AuditLogDAO.class
+com\skbank\util\AddSecondaryAdmin.class
 com\skbank\controller\admin\AdminCustomerServlet.class
 com\skbank\controller\HomeServlet.class
 com\skbank\model\Beneficiary.class
@@ -86,6 +87,7 @@ com\skbank\dao\SystemSettingsDAO.class
 com\skbank\controller\LoginServlet.class
 com\skbank\service\CardService.class
 com\skbank\controller\admin\AdminFDServlet.class
+com\skbank\util\TestRegistration.class
 com\skbank\util\TransparentLogoMaker.class
 com\skbank\service\BillPaymentService.class
 com\skbank\dao\BillPaymentDAO.class

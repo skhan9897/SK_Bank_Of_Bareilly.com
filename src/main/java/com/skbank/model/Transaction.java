@@ -6,8 +6,12 @@ public class Transaction {
     private String transactionId;
     private int accountId;
     private String type; // DEPOSIT, WITHDRAWAL, TRANSFER, NEFT, RTGS, IMPS, UPI, BILL_PAYMENT, CARD_PAYMENT, LOAN_EMI, FD_INVESTMENT, INTEREST_CREDIT
+    private String direction; // CREDIT, DEBIT
     private double amount;
+    private double balanceBefore;
     private double balanceAfter;
+    private String senderAccount;
+    private String receiverAccount;
     private String referenceNumber;
     private String description;
     private String status; // SUCCESS, PENDING, FAILED, REVERSED
@@ -28,11 +32,23 @@ public class Transaction {
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
 
+    public String getDirection() { return direction; }
+    public void setDirection(String direction) { this.direction = direction; }
+
     public double getAmount() { return amount; }
     public void setAmount(double amount) { this.amount = amount; }
 
+    public double getBalanceBefore() { return balanceBefore; }
+    public void setBalanceBefore(double balanceBefore) { this.balanceBefore = balanceBefore; }
+
     public double getBalanceAfter() { return balanceAfter; }
     public void setBalanceAfter(double balanceAfter) { this.balanceAfter = balanceAfter; }
+
+    public String getSenderAccount() { return senderAccount; }
+    public void setSenderAccount(String senderAccount) { this.senderAccount = senderAccount; }
+
+    public String getReceiverAccount() { return receiverAccount; }
+    public void setReceiverAccount(String receiverAccount) { this.receiverAccount = receiverAccount; }
 
     public String getReferenceNumber() { return referenceNumber; }
     public void setReferenceNumber(String referenceNumber) { this.referenceNumber = referenceNumber; }

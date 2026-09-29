@@ -23,6 +23,7 @@ C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\mai
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\HomeServlet.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\ContactServlet.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\model\Beneficiary.java
+C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\util\AddSecondaryAdmin.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\service\NotificationService.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\dao\AdminDAO.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\FDServlet.java
@@ -52,6 +53,7 @@ C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\mai
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\model\Complaint.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\util\DbVerifier.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\TransferServlet.java
+C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\util\TestRegistration.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\LogoutServlet.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\service\AccountService.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\admin\AdminLoanServlet.java

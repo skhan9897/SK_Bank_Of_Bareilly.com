@@ -1,7 +1,6 @@
 package com.skbank.service;
 
 import com.skbank.config.DatabaseConfig;
-import com.skbank.model.Account;
 import com.skbank.model.Transaction;
 import com.skbank.util.TransactionIdGenerator;
 
@@ -79,31 +78,36 @@ public class TransferService {
             psCredit.executeUpdate();
 
             // 4. Create Transaction Records
-            String txnId = TransactionIdGenerator.generateTransactionId();
-            String refNo = TransactionIdGenerator.generateReferenceNumber();
+            String txnRef = TransactionIdGenerator.generateTransactionId();
 
             // Sender Debit Record
-            String insertTxnSql = "INSERT INTO transactions (transaction_id, account_id, type, amount, balance_after, reference_number, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'SUCCESS')";
+            String insertTxnSql = "INSERT INTO transactions (transaction_reference, account_id, type, direction, amount, balance_before, balance_after, sender_account, receiver_account, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'SUCCESS')";
             PreparedStatement psTxnDebit = conn.prepareStatement(insertTxnSql);
-            psTxnDebit.setString(1, txnId);
+            psTxnDebit.setString(1, txnRef);
             psTxnDebit.setInt(2, senderAccId);
-            psTxnDebit.setString(3, "TRANSFER");
-            psTxnDebit.setDouble(4, amount);
-            psTxnDebit.setDouble(5, newSenderBalance);
-            psTxnDebit.setString(6, refNo);
-            psTxnDebit.setString(7, "Transfer via " + transferType + " to " + receiverAccNo + ". " + (remarks != null ? remarks : ""));
+            psTxnDebit.setString(3, transferType != null ? transferType : "TRANSFER");
+            psTxnDebit.setString(4, "DEBIT");
+            psTxnDebit.setDouble(5, amount);
+            psTxnDebit.setDouble(6, senderBalance);
+            psTxnDebit.setDouble(7, newSenderBalance);
+            psTxnDebit.setString(8, senderAccNo);
+            psTxnDebit.setString(9, receiverAccNo);
+            psTxnDebit.setString(10, "Transfer via " + transferType + " to " + receiverAccNo + ". " + (remarks != null ? remarks : ""));
             psTxnDebit.executeUpdate();
 
             // Receiver Credit Record
-            String creditTxnId = TransactionIdGenerator.generateTransactionId();
+            String creditTxnRef = TransactionIdGenerator.generateTransactionId();
             PreparedStatement psTxnCredit = conn.prepareStatement(insertTxnSql);
-            psTxnCredit.setString(1, creditTxnId);
+            psTxnCredit.setString(1, creditTxnRef);
             psTxnCredit.setInt(2, receiverAccId);
-            psTxnCredit.setString(3, "TRANSFER");
-            psTxnCredit.setDouble(4, amount);
-            psTxnCredit.setDouble(5, newReceiverBalance);
-            psTxnCredit.setString(6, refNo);
-            psTxnCredit.setString(7, "Received via " + transferType + " from " + senderAccNo + ". " + (remarks != null ? remarks : ""));
+            psTxnCredit.setString(3, transferType != null ? transferType : "TRANSFER");
+            psTxnCredit.setString(4, "CREDIT");
+            psTxnCredit.setDouble(5, amount);
+            psTxnCredit.setDouble(6, receiverBalance);
+            psTxnCredit.setDouble(7, newReceiverBalance);
+            psTxnCredit.setString(8, senderAccNo);
+            psTxnCredit.setString(9, receiverAccNo);
+            psTxnCredit.setString(10, "Received via " + transferType + " from " + senderAccNo + ". " + (remarks != null ? remarks : ""));
             psTxnCredit.executeUpdate();
 
             // Commit Transaction
@@ -111,12 +115,14 @@ public class TransferService {
 
             // Build result DTO
             Transaction resultTxn = new Transaction();
-            resultTxn.setTransactionId(txnId);
+            resultTxn.setTransactionId(txnRef);
             resultTxn.setAccountId(senderAccId);
-            resultTxn.setType("TRANSFER");
+            resultTxn.setType(transferType);
+            resultTxn.setDirection("DEBIT");
             resultTxn.setAmount(amount);
+            resultTxn.setBalanceBefore(senderBalance);
             resultTxn.setBalanceAfter(newSenderBalance);
-            resultTxn.setReferenceNumber(refNo);
+            resultTxn.setReferenceNumber(txnRef);
             resultTxn.setDescription("Transfer via " + transferType + " to " + receiverAccNo);
             resultTxn.setStatus("SUCCESS");
             resultTxn.setAccountNumber(senderAccNo);

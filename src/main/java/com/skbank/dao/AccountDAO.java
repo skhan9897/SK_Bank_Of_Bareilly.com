@@ -12,7 +12,7 @@ public class AccountDAO {
 
     public List<Account> findByCustomerId(String customerId) throws SQLException {
         List<Account> list = new ArrayList<>();
-        String sql = "SELECT a.*, at.type_name, b.ifsc, b.branch_name " +
+        String sql = "SELECT a.*, at.type_name, b.ifsc_code AS ifsc, b.branch_name " +
                      "FROM accounts a " +
                      "JOIN account_types at ON a.type_id = at.type_id " +
                      "JOIN branches b ON a.branch_id = b.branch_id " +
@@ -30,7 +30,7 @@ public class AccountDAO {
     }
 
     public Account findByAccountNumber(String accountNumber) throws SQLException {
-        String sql = "SELECT a.*, at.type_name, b.ifsc, b.branch_name, CONCAT(c.first_name, ' ', c.last_name) AS customer_name " +
+        String sql = "SELECT a.*, at.type_name, b.ifsc_code AS ifsc, b.branch_name, CONCAT(c.first_name, ' ', c.last_name) AS customer_name " +
                      "FROM accounts a " +
                      "JOIN account_types at ON a.type_id = at.type_id " +
                      "JOIN branches b ON a.branch_id = b.branch_id " +
@@ -49,7 +49,7 @@ public class AccountDAO {
     }
 
     public Account findByAccountId(int accountId) throws SQLException {
-        String sql = "SELECT a.*, at.type_name, b.ifsc, b.branch_name, CONCAT(c.first_name, ' ', c.last_name) AS customer_name " +
+        String sql = "SELECT a.*, at.type_name, b.ifsc_code AS ifsc, b.branch_name, CONCAT(c.first_name, ' ', c.last_name) AS customer_name " +
                      "FROM accounts a " +
                      "JOIN account_types at ON a.type_id = at.type_id " +
                      "JOIN branches b ON a.branch_id = b.branch_id " +
@@ -132,7 +132,7 @@ public class AccountDAO {
 
     public List<Account> findAll() throws SQLException {
         List<Account> list = new ArrayList<>();
-        String sql = "SELECT a.*, at.type_name, b.ifsc, b.branch_name, CONCAT(c.first_name, ' ', c.last_name) AS customer_name " +
+        String sql = "SELECT a.*, at.type_name, b.ifsc_code AS ifsc, b.branch_name, CONCAT(c.first_name, ' ', c.last_name) AS customer_name " +
                      "FROM accounts a " +
                      "JOIN account_types at ON a.type_id = at.type_id " +
                      "JOIN branches b ON a.branch_id = b.branch_id " +
@@ -158,7 +158,7 @@ public class AccountDAO {
                 AccountType type = new AccountType();
                 type.setTypeId(rs.getInt("type_id"));
                 type.setTypeName(rs.getString("type_name"));
-                type.setMinBalance(rs.getDouble("min_balance"));
+                type.setMinBalance(rs.getDouble("minimum_balance"));
                 type.setInterestRate(rs.getDouble("interest_rate"));
                 type.setDescription(rs.getString("description"));
                 list.add(type);
