@@ -1,0 +1,11 @@
+# Docker ignore rules for SK Bank of Bareilly
+.git
+.gitignore
+.idea/
+.artifacts/
+target/
+*.iml
+*.log
+nbproject/
+nb-configuration.xml
+app/

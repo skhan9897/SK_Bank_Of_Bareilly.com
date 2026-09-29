@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- SK Bank Branding Colors -->
+    <color name="deep_navy">#071F49</color>
+    <color name="royal_blue">#0B4EA2</color>
+    <color name="bank_gold">#D4A72C</color>
+    <color name="light_gold">#F4D477</color>
+    <color name="background_light">#F5F8FC</color>
+    <color name="text_dark">#14213D</color>
+    <color name="white">#FFFFFF</color>
+    <color name="success">#198754</color>
+    <color name="danger">#DC3545</color>
+</resources>
