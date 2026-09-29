@@ -15,8 +15,9 @@
         </jsp:include>
 
         <div class="main-content">
-            <div class="mb-4 pb-2 border-bottom">
-                <h3 class="fw-bold text-navy mb-0"><i class="fas fa-credit-card text-warning me-2"></i> Debit & Credit Cards</h3>
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                <h3 class="fw-bold text-navy mb-0"><i class="fas fa-credit-card text-warning me-2"></i> Debit & Credit Cards Portal</h3>
+                <button class="btn btn-gold" data-bs-toggle="modal" data-bs-target="#requestCardModal"><i class="fas fa-plus me-1"></i> Issue / Request New Card</button>
             </div>
 
             <jsp:include page="/WEB-INF/views/common/alerts.jsp" />
@@ -80,6 +81,37 @@
                         </div>
                     </div>
                 </c:forEach>
+            </div>
+        </div>
+    </div>
+
+    <!-- REQUEST NEW CARD MODAL -->
+    <div class="modal fade" id="requestCardModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="card-navy-header"><i class="fas fa-credit-card text-warning me-2"></i> Request New Debit / Credit Card</div>
+                <form action="${pageContext.request.contextPath}/cards" method="post" class="p-4">
+                    <input type="hidden" name="action" value="requestNewCard">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Card Type *</label>
+                        <select name="cardType" class="form-select" required>
+                            <option value="DEBIT">Platinum Debit Card (₹50,000 Daily Limit)</option>
+                            <option value="CREDIT">Gold Credit Card (₹1,00,000 Credit Limit)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Name to Print on Card *</label>
+                        <input type="text" name="holderName" class="form-control" value="${sessionScope.customerProfile.fullName}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Delivery Address</label>
+                        <input type="text" class="form-control" value="${sessionScope.customerProfile.address}" readonly>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-gold">Issue Card Now</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

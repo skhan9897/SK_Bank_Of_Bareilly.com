@@ -19,13 +19,18 @@ public class TransferService {
             throw new IllegalArgumentException("Sender and receiver accounts cannot be the same.");
         }
 
+        // Rule 1: Single Transaction Max Limit = ₹25,000
+        if (amount > 25000.00) {
+            throw new IllegalArgumentException("Single transaction limit exceeded! Maximum allowed limit per transfer is ₹25,000. You can split your payment into multiple transactions of up to ₹25,000 each.");
+        }
+
         Connection conn = null;
         try {
             conn = DatabaseConfig.getConnection();
             conn.setAutoCommit(false); // Begin Database Transaction
 
             // 1. Lock and validate Sender Account
-            String senderSql = "SELECT * FROM accounts WHERE account_number = ? FOR UPDATE";
+            String senderSql = "SELECT a.*, at.type_name FROM accounts a JOIN account_types at ON a.type_id = at.type_id WHERE a.account_number = ? FOR UPDATE";
             PreparedStatement psSender = conn.prepareStatement(senderSql);
             psSender.setString(1, senderAccNo);
             ResultSet rsSender = psSender.executeQuery();
@@ -36,12 +41,22 @@ public class TransferService {
             int senderAccId = rsSender.getInt("account_id");
             double senderBalance = rsSender.getDouble("balance");
             String senderStatus = rsSender.getString("status");
+            String accountTypeName = rsSender.getString("type_name");
 
             if (!"ACTIVE".equalsIgnoreCase(senderStatus)) {
                 throw new IllegalStateException("Sender account is not active.");
             }
             if (senderBalance < amount) {
                 throw new IllegalStateException("Insufficient balance in account. Available balance: ₹" + senderBalance);
+            }
+
+            // Rule 2: Per Day Transfer Limit Check Based on Account Type
+            // SAVINGS Account has ₹1,00,000 Daily Limit; CURRENT, SALARY, BUSINESS Accounts have NO Daily Limit.
+            if ("SAVINGS".equalsIgnoreCase(accountTypeName) || "SENIOR".equalsIgnoreCase(accountTypeName)) {
+                double sentToday = getTodaySentAmount(conn, senderAccId);
+                if ((sentToday + amount) > 100000.00) {
+                    throw new IllegalStateException("today limit complate no limit your account transfer");
+                }
             }
 
             // 2. Lock and validate Receiver Account
@@ -148,5 +163,18 @@ public class TransferService {
                 }
             }
         }
+    }
+
+    private double getTodaySentAmount(Connection conn, int accountId) throws SQLException {
+        String sql = "SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE account_id = ? AND direction = 'DEBIT' AND status = 'SUCCESS' AND DATE(transaction_date) = CURDATE()";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, accountId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble(1);
+                }
+            }
+        }
+        return 0.0;
     }
 }

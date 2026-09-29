@@ -1,7 +1,9 @@
 package com.skbank.controller;
 
+import com.skbank.model.Account;
 import com.skbank.model.Card;
 import com.skbank.model.Customer;
+import com.skbank.service.AccountService;
 import com.skbank.service.CardService;
 
 import javax.servlet.ServletException;
@@ -18,6 +20,7 @@ import java.util.List;
 public class CardServlet extends HttpServlet {
 
     private final CardService cardService = new CardService();
+    private final AccountService accountService = new AccountService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -52,17 +55,24 @@ public class CardServlet extends HttpServlet {
         }
 
         String action = request.getParameter("action");
-        String cardIdStr = request.getParameter("cardId");
 
         try {
-            int cardId = Integer.parseInt(cardIdStr);
+            if ("requestNewCard".equalsIgnoreCase(action)) {
+                List<Account> accounts = accountService.getCustomerAccounts(customer.getCustomerId());
+                int accId = !accounts.isEmpty() ? accounts.get(0).getAccountId() : 1;
+                String holderName = request.getParameter("holderName");
 
-            if ("toggleBlock".equalsIgnoreCase(action)) {
+                cardService.createDebitCardForCustomer(customer.getCustomerId(), accId, holderName != null ? holderName : customer.getFullName());
+                request.setAttribute("successMessage", "New Card Issued Successfully!");
+
+            } else if ("toggleBlock".equalsIgnoreCase(action)) {
+                int cardId = Integer.parseInt(request.getParameter("cardId"));
                 String currentStatus = request.getParameter("currentStatus");
                 cardService.toggleCardBlock(cardId, currentStatus);
                 request.setAttribute("successMessage", "Card status updated successfully.");
 
             } else if ("changePin".equalsIgnoreCase(action)) {
+                int cardId = Integer.parseInt(request.getParameter("cardId"));
                 String newPin = request.getParameter("newPin");
                 cardService.changeCardPin(cardId, newPin);
                 request.setAttribute("successMessage", "Card PIN changed successfully.");

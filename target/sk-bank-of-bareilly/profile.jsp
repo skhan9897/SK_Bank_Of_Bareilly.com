@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <jsp:include page="/WEB-INF/views/common/header.jsp">
-    <jsp:param name="title" value="My Profile - SK Bank of Bareilly" />
+    <jsp:param name="title" value="My Profile & Password Reset - SK Bank" />
 </jsp:include>
 <body>
 
@@ -16,80 +16,79 @@
 
         <div class="main-content">
             <div class="mb-4 pb-2 border-bottom">
-                <h3 class="fw-bold text-navy mb-0"><i class="fas fa-user-cog text-warning me-2"></i> Profile & Security Settings</h3>
+                <h3 class="fw-bold text-navy mb-0"><i class="fas fa-user-shield text-warning me-2"></i> Profile & Security Settings</h3>
             </div>
 
             <jsp:include page="/WEB-INF/views/common/alerts.jsp" />
 
             <div class="row g-4">
-                <!-- PROFILE UPDATE -->
-                <div class="col-lg-7">
-                    <div class="card-custom p-4 bg-white shadow-sm">
-                        <h5 class="fw-bold text-navy mb-3"><i class="fas fa-id-card text-warning me-2"></i> Update Personal Profile</h5>
-                        <form action="${pageContext.request.contextPath}/profile" method="post">
-                            <input type="hidden" name="action" value="updateProfile">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">First Name</label>
-                                    <input type="text" name="firstName" class="form-control" value="${sessionScope.customerProfile.firstName}" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Last Name</label>
-                                    <input type="text" name="lastName" class="form-control" value="${sessionScope.customerProfile.lastName}" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Mobile Number</label>
-                                    <input type="text" name="mobile" class="form-control" value="${sessionScope.customerProfile.mobile}" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Email Address</label>
-                                    <input type="email" name="email" class="form-control" value="${sessionScope.customerProfile.email}" required>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label fw-bold">Residential Address</label>
-                                    <textarea name="address" class="form-control" rows="2" required>${sessionScope.customerProfile.address}</textarea>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">City</label>
-                                    <input type="text" name="city" class="form-control" value="${sessionScope.customerProfile.city}" required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">State</label>
-                                    <input type="text" name="state" class="form-control" value="${sessionScope.customerProfile.state}" required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">Pincode</label>
-                                    <input type="text" name="pincode" class="form-control" value="${sessionScope.customerProfile.pincode}" required>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label fw-bold">Occupation</label>
-                                    <input type="text" name="occupation" class="form-control" value="${sessionScope.customerProfile.occupation}" required>
-                                </div>
+                <!-- READ-ONLY CUSTOMER PROFILE INFO -->
+                <div class="col-lg-6">
+                    <div class="card-custom p-4 bg-white shadow-sm h-100">
+                        <h5 class="fw-bold text-navy border-bottom pb-2 mb-3"><i class="fas fa-id-card text-warning me-2"></i> Account Holder Information</h5>
+                        <div class="mb-3">
+                            <span class="text-muted small d-block">Customer ID / Username</span>
+                            <strong class="badge badge-navy fs-6">${sessionScope.customerProfile.customerId} / ${sessionScope.loggedInUser.username}</strong>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <span class="text-muted small d-block">Full Name</span>
+                                <strong class="text-navy">${sessionScope.customerProfile.fullName}</strong>
                             </div>
-                            <button type="submit" class="btn btn-gold mt-4 py-2 px-4 fw-bold"><i class="fas fa-save me-1"></i> Save Changes</button>
-                        </form>
+                            <div class="col-6">
+                                <span class="text-muted small d-block">KYC Status</span>
+                                <span class="badge bg-success">${sessionScope.customerProfile.kycStatus}</span>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <span class="text-muted small d-block">Registered Mobile</span>
+                                <strong>${sessionScope.customerProfile.mobile}</strong>
+                            </div>
+                            <div class="col-6">
+                                <span class="text-muted small d-block">Registered Email</span>
+                                <strong>${sessionScope.customerProfile.email}</strong>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <span class="text-muted small d-block">PAN Number</span>
+                                <strong>${sessionScope.customerProfile.pan}</strong>
+                            </div>
+                            <div class="col-6">
+                                <span class="text-muted small d-block">Aadhaar Number</span>
+                                <strong>${sessionScope.customerProfile.aadhaar}</strong>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-muted small d-block">Registered Address</span>
+                            <strong>${sessionScope.customerProfile.address}, ${sessionScope.customerProfile.city}, ${sessionScope.customerProfile.state} - ${sessionScope.customerProfile.pincode}</strong>
+                        </div>
+                        <div class="alert alert-info mt-3 py-2 small mb-0">
+                            <i class="fas fa-info-circle me-1"></i> Personal details are verified and locked. Contact branch for official updates.
+                        </div>
                     </div>
                 </div>
 
-                <!-- CHANGE PASSWORD -->
-                <div class="col-lg-5">
-                    <div class="card-custom p-4 bg-white shadow-sm">
-                        <h5 class="fw-bold text-navy mb-3"><i class="fas fa-lock text-warning me-2"></i> Change Password</h5>
+                <!-- PASSWORD RESET ONLY FORM -->
+                <div class="col-lg-6">
+                    <div class="card-custom p-4 bg-white shadow-sm h-100">
+                        <h5 class="fw-bold text-navy border-bottom pb-2 mb-3"><i class="fas fa-key text-warning me-2"></i> Reset Internet Banking Password</h5>
                         <form action="${pageContext.request.contextPath}/profile" method="post">
                             <input type="hidden" name="action" value="changePassword">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Current Password *</label>
-                                <input type="password" name="currentPassword" class="form-control" required>
+                                <input type="password" name="currentPassword" class="form-control form-control-lg fs-6" placeholder="Enter current password" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">New Password *</label>
-                                <input type="password" name="newPassword" class="form-control" required minlength="8">
+                                <input type="password" name="newPassword" class="form-control form-control-lg fs-6" placeholder="Min. 8 chars, letters, numbers" required minlength="8">
                             </div>
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 <label class="form-label fw-bold">Confirm New Password *</label>
-                                <input type="password" name="confirmPassword" class="form-control" required minlength="8">
+                                <input type="password" name="confirmPassword" class="form-control form-control-lg fs-6" placeholder="Re-enter new password" required minlength="8">
                             </div>
-                            <button type="submit" class="btn btn-navy w-100 py-2 fw-bold"><i class="fas fa-key me-1"></i> Update Password</button>
+                            <button type="submit" class="btn btn-navy w-100 py-3 fw-bold fs-6 shadow-sm"><i class="fas fa-lock me-2"></i> CONFIRM & UPDATE PASSWORD</button>
                         </form>
                     </div>
                 </div>

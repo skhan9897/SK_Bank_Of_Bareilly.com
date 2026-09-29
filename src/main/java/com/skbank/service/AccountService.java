@@ -1,9 +1,11 @@
 package com.skbank.service;
 
 import com.skbank.dao.AccountDAO;
+import com.skbank.dao.CustomerDAO;
 import com.skbank.dao.TransactionDAO;
 import com.skbank.model.Account;
 import com.skbank.model.AccountType;
+import com.skbank.model.Customer;
 import com.skbank.model.Transaction;
 import com.skbank.util.AccountNumberGenerator;
 import com.skbank.util.TransactionIdGenerator;
@@ -15,6 +17,8 @@ public class AccountService {
 
     private final AccountDAO accountDAO = new AccountDAO();
     private final TransactionDAO transactionDAO = new TransactionDAO();
+    private final CardService cardService = new CardService();
+    private final CustomerDAO customerDAO = new CustomerDAO();
 
     public boolean createDefaultSavingsAccount(String customerId) throws SQLException {
         Account account = new Account();
@@ -40,6 +44,11 @@ public class AccountService {
                 txn.setDescription("Initial Welcome Deposit Bonus");
                 txn.setStatus("SUCCESS");
                 transactionDAO.createTransaction(txn);
+
+                // Auto issue Virtual Debit Card for Customer
+                Customer c = customerDAO.findByCustomerId(customerId);
+                String holderName = (c != null) ? c.getFullName() : "VALUED CUSTOMER";
+                cardService.createDebitCardForCustomer(customerId, createdAccount.getAccountId(), holderName);
             }
         }
         return created;
@@ -75,19 +84,26 @@ public class AccountService {
         account.setStatus("ACTIVE");
 
         boolean created = accountDAO.createAccount(account);
-        if (created && initialDeposit > 0) {
+        if (created) {
             Account createdAcc = accountDAO.findByAccountNumber(account.getAccountNumber());
             if (createdAcc != null) {
-                Transaction txn = new Transaction();
-                txn.setTransactionId(TransactionIdGenerator.generateTransactionId());
-                txn.setAccountId(createdAcc.getAccountId());
-                txn.setType("DEPOSIT");
-                txn.setAmount(initialDeposit);
-                txn.setBalanceAfter(initialDeposit);
-                txn.setReferenceNumber(TransactionIdGenerator.generateReferenceNumber());
-                txn.setDescription("Account Opening Deposit");
-                txn.setStatus("SUCCESS");
-                transactionDAO.createTransaction(txn);
+                if (initialDeposit > 0) {
+                    Transaction txn = new Transaction();
+                    txn.setTransactionId(TransactionIdGenerator.generateTransactionId());
+                    txn.setAccountId(createdAcc.getAccountId());
+                    txn.setType("DEPOSIT");
+                    txn.setAmount(initialDeposit);
+                    txn.setBalanceAfter(initialDeposit);
+                    txn.setReferenceNumber(TransactionIdGenerator.generateReferenceNumber());
+                    txn.setDescription("Account Opening Deposit");
+                    txn.setStatus("SUCCESS");
+                    transactionDAO.createTransaction(txn);
+                }
+
+                // Auto issue Virtual Debit Card
+                Customer c = customerDAO.findByCustomerId(customerId);
+                String holderName = (c != null) ? c.getFullName() : "VALUED CUSTOMER";
+                cardService.createDebitCardForCustomer(customerId, createdAcc.getAccountId(), holderName);
             }
         }
         return created;

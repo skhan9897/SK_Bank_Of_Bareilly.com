@@ -2,7 +2,6 @@ package com.skbank.controller;
 
 import com.skbank.model.Account;
 import com.skbank.model.Customer;
-import com.skbank.model.User;
 import com.skbank.service.AccountService;
 
 import javax.servlet.ServletException;
@@ -56,18 +55,27 @@ public class AccountServlet extends HttpServlet {
             return;
         }
 
-        String typeIdStr = request.getParameter("typeId");
-        String depositStr = request.getParameter("initialDeposit");
+        String action = request.getParameter("action");
 
         try {
-            int typeId = Integer.parseInt(typeIdStr);
-            double initialDeposit = (depositStr != null && !depositStr.isEmpty()) ? Double.parseDouble(depositStr) : 1000.0;
+            if ("requestChequeBook".equalsIgnoreCase(action)) {
+                String accNo = request.getParameter("accountNumber");
+                String leaves = request.getParameter("leaves");
+                request.setAttribute("successMessage", "Cheque Book Request (" + leaves + " leaves) submitted successfully for Account " + accNo + ". Dispatch in 3 working days.");
 
-            boolean created = accountService.createNewAccount(customer.getCustomerId(), typeId, initialDeposit);
-            if (created) {
-                request.setAttribute("successMessage", "New Bank Account created successfully!");
             } else {
-                request.setAttribute("errorMessage", "Failed to create new account.");
+                String typeIdStr = request.getParameter("typeId");
+                String depositStr = request.getParameter("initialDeposit");
+
+                int typeId = Integer.parseInt(typeIdStr);
+                double initialDeposit = (depositStr != null && !depositStr.isEmpty()) ? Double.parseDouble(depositStr) : 1000.0;
+
+                boolean created = accountService.createNewAccount(customer.getCustomerId(), typeId, initialDeposit);
+                if (created) {
+                    request.setAttribute("successMessage", "New Bank Account created successfully!");
+                } else {
+                    request.setAttribute("errorMessage", "Failed to create new account.");
+                }
             }
         } catch (Exception e) {
             request.setAttribute("errorMessage", "Error: " + e.getMessage());

@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <jsp:include page="/WEB-INF/views/common/header.jsp">
-    <jsp:param name="title" value="Customer Management - Admin SK Bank" />
+    <jsp:param name="title" value="Customer Directory & Control - Admin SK Bank" />
 </jsp:include>
 <body>
 
@@ -16,10 +16,10 @@
 
         <div class="main-content">
             <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                <h3 class="fw-bold text-navy mb-0"><i class="fas fa-users text-warning me-2"></i> Customer Directory</h3>
+                <h3 class="fw-bold text-navy mb-0"><i class="fas fa-users text-warning me-2"></i> Customer Directory & Account Control</h3>
                 <form action="${pageContext.request.contextPath}/admin/customers" method="get" class="d-flex gap-2">
                     <input type="text" name="search" class="form-control" placeholder="Search by ID, Name, Mobile..." value="${searchQuery}">
-                    <button type="submit" class="btn btn-gold"><i class="fas fa-search"></i></button>
+                    <button type="submit" class="btn btn-gold"><i class="fas fa-search"></i> Search</button>
                 </form>
             </div>
 
@@ -34,16 +34,24 @@
                                 <th>Full Name</th>
                                 <th>Mobile & Email</th>
                                 <th>PAN & Aadhaar</th>
-                                <th>KYC</th>
+                                <th>KYC Status</th>
                                 <th>Registered Date</th>
-                                <th>Action</th>
+                                <th>Control Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <c:forEach var="c" items="${customers}">
                                 <tr>
-                                    <td class="fw-bold text-navy">${c.customerId}</td>
-                                    <td class="fw-bold">${c.fullName}</td>
+                                    <td class="fw-bold text-navy">
+                                        <a href="${pageContext.request.contextPath}/admin/customers?id=${c.customerId}" class="text-navy text-decoration-none fw-bold">
+                                            <i class="fas fa-user-circle me-1"></i> ${c.customerId}
+                                        </a>
+                                    </td>
+                                    <td class="fw-bold">
+                                        <a href="${pageContext.request.contextPath}/admin/customers?id=${c.customerId}" class="text-dark text-decoration-none">
+                                            ${c.fullName}
+                                        </a>
+                                    </td>
                                     <td class="small">
                                         <div><i class="fas fa-phone text-warning me-1"></i> ${c.mobile}</div>
                                         <div class="text-muted"><i class="fas fa-envelope text-warning me-1"></i> ${c.email}</div>
@@ -55,16 +63,9 @@
                                     <td><span class="badge ${c.kycStatus == 'VERIFIED' ? 'bg-success' : 'bg-warning'}">${c.kycStatus}</span></td>
                                     <td class="small text-muted">${c.createdAt}</td>
                                     <td>
-                                        <form action="${pageContext.request.contextPath}/admin/customers" method="post" class="d-inline">
-                                            <input type="hidden" name="userId" value="${c.userId}">
-                                            <input type="hidden" name="action" value="block">
-                                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Block this customer?')">Block</button>
-                                        </form>
-                                        <form action="${pageContext.request.contextPath}/admin/customers" method="post" class="d-inline">
-                                            <input type="hidden" name="userId" value="${c.userId}">
-                                            <input type="hidden" name="action" value="unblock">
-                                            <button type="submit" class="btn btn-outline-success btn-sm">Unblock</button>
-                                        </form>
+                                        <a href="${pageContext.request.contextPath}/admin/customers?id=${c.customerId}" class="btn btn-gold btn-sm fw-bold">
+                                            <i class="fas fa-user-cog me-1"></i> Manage Account
+                                        </a>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -74,6 +75,8 @@
             </div>
         </div>
     </div>
+
+    <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 
 </body>
 </html>

@@ -70,6 +70,7 @@ com\skbank\util\AccountNumberGenerator.class
 com\skbank\controller\admin\AdminTransactionServlet.class
 com\skbank\dao\UserDAO.class
 com\skbank\dao\LoanPaymentDAO.class
+com\skbank\util\TestTransferLimits.class
 com\skbank\service\ComplaintService.class
 com\skbank\service\KycService.class
 com\skbank\dao\EmployeeDAO.class

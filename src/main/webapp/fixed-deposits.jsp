@@ -4,41 +4,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <jsp:include page="/WEB-INF/views/common/header.jsp">
-    <jsp:param name="title" value="Fixed Deposits - SK Bank of Bareilly" />
+    <jsp:param name="title" value="Fixed Deposits & Advice Certificate - SK Bank" />
 </jsp:include>
+<style>
+    @media print {
+        body * { visibility: hidden; }
+        .printable-fd-card, .printable-fd-card * { visibility: visible; }
+        .printable-fd-card { position: absolute; left: 0; top: 0; width: 100%; border: none !important; }
+        .no-print { display: none !important; }
+    }
+</style>
 <body>
 
-    <jsp:include page="/WEB-INF/views/common/navbar.jsp" />
+    <div class="no-print">
+        <jsp:include page="/WEB-INF/views/common/navbar.jsp" />
+    </div>
 
     <div class="dashboard-container">
-        <jsp:include page="/WEB-INF/views/common/sidebar.jsp">
-            <jsp:param name="active" value="fixed-deposits" />
-        </jsp:include>
+        <div class="no-print">
+            <jsp:include page="/WEB-INF/views/common/sidebar.jsp">
+                <jsp:param name="active" value="fixed-deposits" />
+            </jsp:include>
+        </div>
 
         <div class="main-content">
-            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                <h3 class="fw-bold text-navy mb-0"><i class="fas fa-piggy-bank text-warning me-2"></i> Fixed Deposits (FD)</h3>
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom no-print">
+                <h3 class="fw-bold text-navy mb-0"><i class="fas fa-piggy-bank text-warning me-2"></i> Fixed Deposits (FD) Portal</h3>
                 <button class="btn btn-gold" data-bs-toggle="modal" data-bs-target="#openFdModal"><i class="fas fa-plus me-1"></i> Book New Fixed Deposit</button>
             </div>
 
-            <jsp:include page="/WEB-INF/views/common/alerts.jsp" />
+            <div class="no-print">
+                <jsp:include page="/WEB-INF/views/common/alerts.jsp" />
+            </div>
 
             <div class="row g-4">
                 <c:forEach var="fd" items="${fixedDeposits}">
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card-custom p-4 bg-white h-100 shadow-sm border-warning">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="badge badge-gold">Receipt: ${fd.receiptNumber}</span>
+                    <div class="col-md-6">
+                        <div class="card-custom p-4 bg-white shadow-sm border-warning printable-fd-card">
+                            <div class="d-flex justify-content-between align-items-center pb-2 border-bottom mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="${pageContext.request.contextPath}/images/sk-bank-logo-transparent.png" alt="Logo" style="height: 40px;">
+                                    <div>
+                                        <h6 class="fw-bold text-navy mb-0">SK Bank Fixed Deposit Receipt</h6>
+                                        <small class="text-muted">FD Ref: ${fd.receiptNumber}</small>
+                                    </div>
+                                </div>
                                 <span class="badge bg-success">${fd.status}</span>
                             </div>
-                            <h4 class="fw-bold text-navy my-2">₹ <fmt:formatNumber value="${fd.depositAmount}" pattern="#,##0.00"/></h4>
-                            <div class="small text-muted mb-1">Interest Rate: <strong class="text-dark">${fd.interestRate}% p.a.</strong></div>
-                            <div class="small text-muted mb-1">Tenure: <strong>${fd.tenureMonths} Months</strong></div>
-                            <div class="small text-muted mb-1">Maturity Date: <strong>${fd.maturityDate}</strong></div>
-                            <hr class="my-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="small text-muted">Maturity Value:</span>
-                                <span class="fw-bold text-success fs-6">₹ <fmt:formatNumber value="${fd.maturityAmount}" pattern="#,##0.00"/></span>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <span class="text-muted small d-block">Principal Amount</span>
+                                    <h4 class="fw-bold text-navy mb-0">₹ <fmt:formatNumber value="${fd.depositAmount}" pattern="#,##0.00"/></h4>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <span class="text-muted small d-block">Maturity Value</span>
+                                    <h4 class="fw-bold text-success mb-0">₹ <fmt:formatNumber value="${fd.maturityAmount}" pattern="#,##0.00"/></h4>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-light rounded small mb-3">
+                                <div class="row g-2">
+                                    <div class="col-6">Interest Rate: <strong>${fd.interestRate}% p.a.</strong></div>
+                                    <div class="col-6 text-end">Tenure: <strong>${fd.tenureMonths} Months</strong></div>
+                                    <div class="col-12">Maturity Date: <strong>${fd.maturityDate}</strong></div>
+                                </div>
+                            </div>
+
+                            <div class="no-print d-flex justify-content-end">
+                                <button onclick="window.print()" class="btn btn-gold btn-sm fw-bold"><i class="fas fa-print me-1"></i> PRINT / SAVE PDF CERTIFICATE</button>
                             </div>
                         </div>
                     </div>
@@ -94,7 +128,9 @@
         </div>
     </div>
 
-    <jsp:include page="/WEB-INF/views/common/footer.jsp" />
+    <div class="no-print">
+        <jsp:include page="/WEB-INF/views/common/footer.jsp" />
+    </div>
 
 </body>
 </html>

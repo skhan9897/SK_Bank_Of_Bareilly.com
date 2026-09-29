@@ -1,8 +1,6 @@
 package com.skbank.controller;
 
-import com.skbank.dao.BeneficiaryDAO;
 import com.skbank.model.Account;
-import com.skbank.model.Beneficiary;
 import com.skbank.model.Customer;
 import com.skbank.model.Transaction;
 import com.skbank.service.AccountService;
@@ -21,9 +19,8 @@ import java.util.List;
 @WebServlet("/transfer")
 public class TransferServlet extends HttpServlet {
 
-    private final AccountService accountService = new AccountService();
-    private final BeneficiaryDAO beneficiaryDAO = new BeneficiaryDAO();
     private final TransferService transferService = new TransferService();
+    private final AccountService accountService = new AccountService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -38,14 +35,10 @@ public class TransferServlet extends HttpServlet {
 
         try {
             List<Account> accounts = accountService.getCustomerAccounts(customer.getCustomerId());
-            List<Beneficiary> beneficiaries = beneficiaryDAO.findByCustomerId(customer.getCustomerId());
-
             request.setAttribute("accounts", accounts);
-            request.setAttribute("beneficiaries", beneficiaries);
             request.getRequestDispatcher("/transfer.jsp").forward(request, response);
-
         } catch (Exception e) {
-            request.setAttribute("errorMessage", "Error loading transfer page: " + e.getMessage());
+            request.setAttribute("errorMessage", "Error loading accounts: " + e.getMessage());
             request.getRequestDispatcher("/transfer.jsp").forward(request, response);
         }
     }
@@ -61,26 +54,27 @@ public class TransferServlet extends HttpServlet {
             return;
         }
 
-        String fromAccount = request.getParameter("fromAccount");
-        String toAccount = request.getParameter("toAccount");
+        String senderAccNo = request.getParameter("senderAccount");
+        String receiverAccNo = request.getParameter("receiverAccount");
         String amountStr = request.getParameter("amount");
         String transferType = request.getParameter("transferType");
         String remarks = request.getParameter("remarks");
 
         try {
             double amount = Double.parseDouble(amountStr);
-            Transaction txn = transferService.processTransfer(fromAccount, toAccount, amount, transferType, remarks);
+            Transaction txn = transferService.processTransfer(senderAccNo, receiverAccNo, amount, transferType, remarks);
 
-            request.setAttribute("successMessage", "Transfer Successful! Transaction ID: " + txn.getTransactionId());
-            request.setAttribute("transactionResult", txn);
-            request.getRequestDispatcher("/transfer.jsp").forward(request, response);
+            request.setAttribute("successMessage", "Transfer of ₹" + amount + " successful!");
+            request.setAttribute("completedTxn", txn);
+            request.setAttribute("receiverAccNo", receiverAccNo);
+            request.setAttribute("transferType", transferType != null ? transferType : "IMPS");
 
         } catch (IllegalArgumentException | IllegalStateException e) {
             request.setAttribute("errorMessage", e.getMessage());
-            doGet(request, response);
         } catch (Exception e) {
-            request.setAttribute("errorMessage", "Transfer Failed: " + e.getMessage());
-            doGet(request, response);
+            request.setAttribute("errorMessage", "Transaction failed: " + e.getMessage());
         }
+
+        doGet(request, response);
     }
 }

@@ -1,8 +1,12 @@
 package com.skbank.controller;
 
+import com.skbank.model.Account;
+import com.skbank.model.Card;
 import com.skbank.model.Customer;
 import com.skbank.model.User;
+import com.skbank.service.AccountService;
 import com.skbank.service.AuthenticationService;
+import com.skbank.service.CardService;
 import com.skbank.util.ValidationUtil;
 
 import javax.servlet.ServletException;
@@ -13,11 +17,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.util.List;
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
 
     private final AuthenticationService authService = new AuthenticationService();
+    private final AccountService accountService = new AccountService();
+    private final CardService cardService = new CardService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -100,8 +107,20 @@ public class RegisterServlet extends HttpServlet {
 
             Customer registered = authService.registerCustomer(user, customer);
 
-            request.setAttribute("successMessage", "Registration Successful! Your Customer ID is: " + registered.getCustomerId() + ". A default Savings Account with ₹10,000 balance has been opened.");
-            request.getRequestDispatcher("/login.jsp").forward(request, response);
+            // Fetch created default account & virtual debit card
+            List<Account> accounts = accountService.getCustomerAccounts(registered.getCustomerId());
+            Account defaultAccount = !accounts.isEmpty() ? accounts.get(0) : null;
+
+            List<Card> cards = cardService.getCustomerCards(registered.getCustomerId());
+            Card defaultCard = !cards.isEmpty() ? cards.get(0) : null;
+
+            request.setAttribute("successMessage", "Account Opening Successful! Your Digital Passbook & Virtual Debit Card are generated below.");
+            request.setAttribute("registeredCustomer", registered);
+            request.setAttribute("registeredAccount", defaultAccount);
+            request.setAttribute("registeredCard", defaultCard);
+            request.setAttribute("registeredUsername", username.trim());
+
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
 
         } catch (IllegalArgumentException e) {
             request.setAttribute("errorMessage", e.getMessage());

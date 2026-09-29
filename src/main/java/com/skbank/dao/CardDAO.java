@@ -41,7 +41,7 @@ public class CardDAO {
     }
 
     public boolean createCard(Card card) throws SQLException {
-        String sql = "INSERT INTO cards (customer_id, account_id, card_number, card_holder_name, card_type, expiry_date, cvv_hash, pin_hash, daily_limit, credit_limit, available_limit, outstanding, status) " +
+        String sql = "INSERT INTO cards (customer_id, account_id, card_number, card_holder_name, card_type, expiry_date, cvv_hash, pin_hash, daily_limit, credit_limit, available_limit, outstanding_amount, status) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -96,7 +96,7 @@ public class CardDAO {
         c.setDailyLimit(rs.getDouble("daily_limit"));
         c.setCreditLimit(rs.getDouble("credit_limit"));
         c.setAvailableLimit(rs.getDouble("available_limit"));
-        c.setOutstanding(rs.getDouble("outstanding"));
+        c.setOutstanding(rs.getDouble("outstanding_amount"));
         c.setStatus(rs.getString("status"));
         c.setCreatedAt(rs.getTimestamp("created_at"));
 
