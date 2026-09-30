@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" import="java.time.Year" %>
 <footer class="bank-footer">
     <div class="container">
         <div class="row g-4">
@@ -42,7 +42,7 @@
         <hr class="border-secondary my-4">
         <div class="row align-items-center small text-white-50">
             <div class="col-md-6 text-center text-md-start">
-                © <%= java.time.Year.now().getValue() %> SK Bank of Bareilly. All Rights Reserved.
+                © <%= Year.now().getValue() %> SK Bank of Bareilly. All Rights Reserved.
             </div>
             <div class="col-md-6 text-center text-md-end">
                 <a href="#" class="me-3">Privacy Policy</a>

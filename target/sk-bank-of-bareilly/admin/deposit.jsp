@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" import="java.time.LocalDateTime" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
@@ -50,7 +50,7 @@
                             </div>
                             <div class="text-end">
                                 <span class="badge bg-success fs-6 mb-1"><i class="fas fa-check-circle me-1"></i> CASH DEPOSITED</span>
-                                <div class="small text-muted">Date: <strong><%= java.time.LocalDateTime.now() %></strong></div>
+                                <div class="small text-muted">Date: <strong><%= LocalDateTime.now() %></strong></div>
                             </div>
                         </div>
 

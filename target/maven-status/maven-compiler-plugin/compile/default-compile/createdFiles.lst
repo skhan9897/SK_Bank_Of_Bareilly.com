@@ -77,6 +77,7 @@ com\skbank\util\TransactionIdGenerator.class
 com\skbank\util\ValidationUtil.class
 com\skbank\model\FixedDeposit.class
 com\skbank\dao\BeneficiaryDAO.class
+com\skbank\util\TestRegisterServlet.class
 com\skbank\dao\LoanTypeDAO.class
 com\skbank\controller\ProfileServlet.class
 com\skbank\controller\CardServlet.class

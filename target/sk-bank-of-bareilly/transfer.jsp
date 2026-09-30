@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" import="java.time.LocalDateTime" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
@@ -51,7 +51,7 @@
                             </div>
                             <div class="text-end">
                                 <span class="badge bg-success fs-6 mb-1"><i class="fas fa-check-circle me-1"></i> PAYMENT SUCCESS</span>
-                                <div class="small text-muted">Date: <strong><%= java.time.LocalDateTime.now() %></strong></div>
+                                <div class="small text-muted">Date: <strong><%= LocalDateTime.now() %></strong></div>
                             </div>
                         </div>
 
@@ -129,7 +129,7 @@
                                     <div class="row g-3 mb-3">
                                         <div class="col-md-6">
                                             <label class="form-label fw-bold">Amount to Transfer (₹) *</label>
-                                            <input type="number" name="amount" class="form-control form-control-lg fs-6" min="1" step="0.01" placeholder="0.00" required>
+                                            <input type="number" name="amount" class="form-control form-control-lg fs-6" min="1" max="25000" step="0.01" placeholder="Max ₹25,000 per txn" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label fw-bold">Remarks / Purpose</label>
