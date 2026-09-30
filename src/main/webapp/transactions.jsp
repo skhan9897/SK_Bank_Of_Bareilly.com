@@ -1,6 +1,7 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" import="java.time.LocalDate" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<jsp:useBean id="nowDate" class="java.util.Date" />
 <!DOCTYPE html>
 <html lang="en">
 <jsp:include page="/WEB-INF/views/common/header.jsp">
@@ -52,7 +53,7 @@
                     </div>
                     <div class="text-end small">
                         <div>Customer: <strong>${sessionScope.customerProfile.fullName}</strong> (${sessionScope.customerProfile.customerId})</div>
-                        <div>Date: <strong><%= LocalDate.now() %></strong></div>
+                        <div>Date: <strong><fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd" /></strong></div>
                     </div>
                 </div>
 
