@@ -1,6 +1,7 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" import="java.time.LocalDate, java.time.LocalDateTime" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<jsp:useBean id="now" class="java.util.Date" />
 <!DOCTYPE html>
 <html lang="en">
 <jsp:include page="/WEB-INF/views/common/header.jsp">
@@ -42,7 +43,7 @@
                                 </div>
                                 <div class="text-end mt-2 mt-sm-0">
                                     <span class="badge bg-success fs-6 mb-1"><i class="fas fa-check-circle me-1"></i> ACCOUNT ACTIVE</span>
-                                    <div class="small text-muted">Issue Date: <strong><%= LocalDate.now() %></strong></div>
+                                    <div class="small text-muted">Issue Date: <strong><fmt:formatDate value="${now}" pattern="yyyy-MM-dd" /></strong></div>
                                 </div>
                             </div>
 
