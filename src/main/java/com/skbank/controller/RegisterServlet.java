@@ -25,6 +25,7 @@ import javax.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(urlPatterns = {"/register", "/customer/register"})
@@ -44,8 +45,16 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        loadFormData(request);
-        request.getRequestDispatcher("/register.jsp").forward(request, response);
+        try {
+            loadFormData(request);
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
+        } catch (Throwable t) {
+            System.err.println("CRITICAL ERROR in RegisterServlet.doGet: " + t.getMessage());
+            t.printStackTrace();
+            request.setAttribute("accountTypes", createFallbackAccountTypes());
+            request.setAttribute("branches", createFallbackBranches());
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
+        }
     }
 
     @Override
@@ -171,11 +180,85 @@ public class RegisterServlet extends HttpServlet {
     private void loadFormData(HttpServletRequest request) {
         try {
             List<AccountType> accountTypes = accountTypeDAO.findAllActive();
+            if (accountTypes == null || accountTypes.isEmpty()) {
+                accountTypes = createFallbackAccountTypes();
+            }
+
             List<Branch> branches = branchDAO.findAllActive();
+            if (branches == null || branches.isEmpty()) {
+                branches = createFallbackBranches();
+            }
+
             request.setAttribute("accountTypes", accountTypes);
             request.setAttribute("branches", branches);
-        } catch (Exception e) {
-            System.err.println("Error loading registration form data: " + e.getMessage());
+
+        } catch (Throwable t) {
+            System.err.println("Error loading registration form data: " + t.getMessage());
+            request.setAttribute("accountTypes", createFallbackAccountTypes());
+            request.setAttribute("branches", createFallbackBranches());
         }
+    }
+
+    private List<AccountType> createFallbackAccountTypes() {
+        List<AccountType> list = new ArrayList<>();
+        
+        AccountType at1 = new AccountType();
+        at1.setTypeId(1);
+        at1.setTypeCode("SAVINGS");
+        at1.setTypeName("Savings Account");
+        at1.setDescription("Easy banking for daily personal transactions");
+        list.add(at1);
+
+        AccountType at2 = new AccountType();
+        at2.setTypeId(2);
+        at2.setTypeCode("CURRENT");
+        at2.setTypeName("Current Account");
+        at2.setDescription("Suitable for commercial & business transactions");
+        list.add(at2);
+
+        AccountType at3 = new AccountType();
+        at3.setTypeId(3);
+        at3.setTypeCode("SALARY");
+        at3.setTypeName("Salary Account");
+        at3.setDescription("Zero-balance account for corporate employees");
+        list.add(at3);
+
+        AccountType at4 = new AccountType();
+        at4.setTypeId(4);
+        at4.setTypeCode("BASIC_SAVINGS");
+        at4.setTypeName("Basic Savings Account");
+        at4.setDescription("Basic zero-maintenance savings account");
+        list.add(at4);
+
+        AccountType at5 = new AccountType();
+        at5.setTypeId(5);
+        at5.setTypeCode("SENIOR_SAVINGS");
+        at5.setTypeName("Senior Citizen Savings Account");
+        at5.setDescription("High-yield savings account for senior citizens");
+        list.add(at5);
+
+        return list;
+    }
+
+    private List<Branch> createFallbackBranches() {
+        List<Branch> list = new ArrayList<>();
+
+        Branch b1 = new Branch();
+        b1.setBranchId(1);
+        b1.setBranchCode("SKB001");
+        b1.setBranchName("SK Bank Bareilly Main Branch");
+        b1.setCity("Bareilly");
+        b1.setIfscCode("SKB0002401");
+        list.add(b1);
+
+        Branch b2 = new Branch();
+        b2.setBranchId(2);
+        b2.setBranchCode("SKB002");
+        b2.setBranchName("SK Bank Bareilly City Branch");
+        b2.setCity("Bareilly");
+        b2.setIfscCode("SKB0002402");
+        list.add(b2);
+
+        return list;
     }
 }
