@@ -67,7 +67,14 @@
                         <a href="${pageContext.request.contextPath}/register" class="btn btn-gold btn-sm w-100 mt-2 py-2"><i class="fas fa-user-plus me-1"></i> Open a New Bank Account</a>
                     </div>
 
-                    <div class="mt-4 text-center">
+                    <!-- PROMINENT ADMIN LOGIN LINK -->
+                    <div class="mt-3 p-2 bg-light rounded text-center border">
+                        <a href="${pageContext.request.contextPath}/admin/login" class="text-navy fw-bold small text-decoration-none">
+                            <i class="fas fa-user-shield text-warning me-1"></i> Are you a Bank Officer? <strong>Admin Login Portal →</strong>
+                        </a>
+                    </div>
+
+                    <div class="mt-3 text-center">
                         <a href="${pageContext.request.contextPath}/" class="text-secondary small text-decoration-none"><i class="fas fa-arrow-left me-1"></i> Back to Homepage</a>
                     </div>
                 </div>

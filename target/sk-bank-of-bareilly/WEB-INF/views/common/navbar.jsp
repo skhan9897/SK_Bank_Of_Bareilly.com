@@ -34,12 +34,18 @@
             <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0">
                 <c:choose>
                     <c:when test="${not empty sessionScope.loggedInUser}">
-                        <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-gold btn-sm"><i class="fas fa-chart-line me-1"></i> Dashboard</a>
+                        <c:if test="${sessionScope.loggedInUser.role == 'ADMIN'}">
+                            <a href="${pageContext.request.contextPath}/admin/dashboard" class="btn btn-warning btn-sm fw-bold"><i class="fas fa-user-shield me-1"></i> Admin Console</a>
+                        </c:if>
+                        <c:if test="${sessionScope.loggedInUser.role != 'ADMIN'}">
+                            <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-gold btn-sm"><i class="fas fa-chart-line me-1"></i> Dashboard</a>
+                        </c:if>
                         <a href="${pageContext.request.contextPath}/logout" class="btn btn-outline-light btn-sm"><i class="fas fa-sign-out-alt"></i> Logout</a>
                     </c:when>
                     <c:otherwise>
                         <a href="${pageContext.request.contextPath}/login" class="btn btn-outline-gold btn-sm px-3"><i class="fas fa-lock me-1"></i> Login</a>
                         <a href="${pageContext.request.contextPath}/register" class="btn btn-gold btn-sm px-3"><i class="fas fa-user-plus me-1"></i> Open Account</a>
+                        <a href="${pageContext.request.contextPath}/admin/login" class="btn btn-navy btn-sm px-2 border-warning text-warning" title="Admin Portal Login"><i class="fas fa-user-shield me-1"></i> Admin</a>
                     </c:otherwise>
                 </c:choose>
             </div>
