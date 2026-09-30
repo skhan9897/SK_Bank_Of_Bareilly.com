@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" import="java.time.LocalDate" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" import="java.time.LocalDate, java.time.LocalDateTime" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
@@ -42,7 +42,7 @@
                                 </div>
                                 <div class="text-end mt-2 mt-sm-0">
                                     <span class="badge bg-success fs-6 mb-1"><i class="fas fa-check-circle me-1"></i> ACCOUNT ACTIVE</span>
-                                    <div class="small text-muted">Issue Date: <strong><%= LocalDate.now() %></strong></div>
+                                    <div class="small text-muted">Issue Date: <strong><%= java.time.LocalDate.now() %></strong></div>
                                 </div>
                             </div>
 
