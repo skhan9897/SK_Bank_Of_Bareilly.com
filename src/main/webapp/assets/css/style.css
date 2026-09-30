@@ -1,24 +1,35 @@
 /* =========================================================
    SK BANK OF BAREILLY - CUSTOM PREMIUM STYLESHEET
-   Branding: Deep Navy Blue (#071F49) & Bank Gold (#D4A72C)
+   Branding: Deep Navy Blue (#062B63) & Bank Gold (#F4C542)
    ========================================================= */
 
 :root {
-    --primary-navy: #071F49;
-    --royal-blue: #0B4EA2;
-    --accent-gold: #D4A72C;
-    --light-gold: #F4D477;
+    --bank-navy: #062B63;
+    --bank-blue: #0B4A9E;
+    --bank-blue-light: #1769C2;
+    --bank-gold: #F4C542;
+    --bank-gold-dark: #D9A91A;
+    --bank-white: #FFFFFF;
+    --bank-text-light: #D9E7F7;
+    --bank-card-bg: linear-gradient(135deg, #062B63 0%, #0B4A9E 50%, #062B63 100%);
+    --bank-border: 1px solid rgba(244, 197, 66, 0.35);
+    --bank-glow: 0 10px 30px rgba(6, 43, 99, 0.4);
+
+    --primary-navy: var(--bank-navy);
+    --royal-blue: var(--bank-blue);
+    --accent-gold: var(--bank-gold-dark);
+    --light-gold: var(--bank-gold);
     --bg-light: #F5F8FC;
-    --white: #FFFFFF;
+    --white: var(--bank-white);
     --text-dark: #14213D;
     --text-muted: #6C757D;
     --success: #198754;
     --danger: #DC3545;
 
-    --grad-navy: linear-gradient(135deg, #071F49 0%, #0B4EA2 100%);
-    --grad-gold: linear-gradient(135deg, #D4A72C 0%, #F4D477 100%);
-    --box-shadow-soft: 0 10px 30px rgba(7, 31, 73, 0.08);
-    --box-shadow-gold: 0 4px 15px rgba(212, 167, 44, 0.3);
+    --grad-navy: linear-gradient(135deg, #062B63 0%, #0B4A9E 100%);
+    --grad-gold: linear-gradient(135deg, #D9A91A 0%, #F4C542 100%);
+    --box-shadow-soft: 0 10px 30px rgba(6, 43, 99, 0.12);
+    --box-shadow-gold: 0 4px 15px rgba(244, 197, 66, 0.35);
 }
 
 body {
@@ -36,11 +47,11 @@ body {
 .bank-navbar {
     background: var(--grad-navy);
     padding: 0.75rem 1.5rem;
-    box-shadow: 0 4px 15px rgba(7, 31, 73, 0.2);
-    border-bottom: 3px solid var(--accent-gold);
+    box-shadow: 0 4px 15px rgba(6, 43, 99, 0.3);
+    border-bottom: 3px solid var(--bank-gold);
 }
 
-/* LOGO IMAGE - CLEAN CIRCULAR CUT (REMOVES SQUARED GREY BOX) */
+/* LOGO IMAGE - CLEAN CIRCULAR CUT */
 .bank-logo-img {
     height: 48px;
     width: 48px;
@@ -61,7 +72,7 @@ body {
 }
 
 .bank-nav-link {
-    color: rgba(255, 255, 255, 0.88) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
     font-weight: 500;
     margin: 0 0.3rem;
     padding: 0.5rem 0.8rem !important;
@@ -70,47 +81,47 @@ body {
 }
 
 .bank-nav-link:hover, .bank-nav-link.active {
-    color: var(--light-gold) !important;
-    background: rgba(255, 255, 255, 0.1);
+    color: var(--bank-gold) !important;
+    background: rgba(255, 255, 255, 0.12);
 }
 
 /* BUTTONS */
-.btn-gold {
-    background: var(--grad-gold);
-    color: var(--primary-navy) !important;
+.btn-gold, .btn-bank-gold {
+    background: linear-gradient(135deg, #D9A91A 0%, #F4C542 100%);
+    color: #062B63 !important;
     font-weight: 700;
     border: none;
     border-radius: 8px;
-    padding: 0.6rem 1.4rem;
+    padding: 0.64rem 1.4rem;
     box-shadow: var(--box-shadow-gold);
     transition: all 0.3s ease;
 }
 
-.btn-gold:hover {
+.btn-gold:hover, .btn-bank-gold:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(212, 167, 44, 0.45);
+    box-shadow: 0 8px 25px rgba(244, 197, 66, 0.5);
     color: #000 !important;
 }
 
 .btn-navy {
     background: var(--grad-navy);
-    color: var(--white) !important;
+    color: var(--bank-white) !important;
     font-weight: 600;
-    border: 1px solid var(--accent-gold);
+    border: 1px solid var(--bank-gold);
     border-radius: 8px;
-    padding: 0.6rem 1.4rem;
+    padding: 0.64rem 1.4rem;
     transition: all 0.3s ease;
 }
 
 .btn-navy:hover {
-    background: var(--primary-navy);
-    color: var(--light-gold) !important;
-    box-shadow: 0 4px 15px rgba(7, 31, 73, 0.3);
+    background: var(--bank-navy);
+    color: var(--bank-gold) !important;
+    box-shadow: 0 4px 15px rgba(6, 43, 99, 0.4);
 }
 
 .btn-outline-gold {
-    border: 2px solid var(--accent-gold);
-    color: var(--accent-gold) !important;
+    border: 2px solid var(--bank-gold);
+    color: var(--bank-gold) !important;
     font-weight: 600;
     border-radius: 8px;
     background: transparent;
@@ -119,24 +130,24 @@ body {
 
 .btn-outline-gold:hover {
     background: var(--grad-gold);
-    color: var(--primary-navy) !important;
+    color: #062B63 !important;
 }
 
 /* HERO BANNER */
 .hero-section {
-    background-image: linear-gradient(rgba(7, 31, 73, 0.82), rgba(11, 78, 162, 0.72)), url('../images/sk-bank-banner.png');
+    background-image: linear-gradient(rgba(6, 43, 99, 0.88), rgba(11, 74, 158, 0.78)), url('../images/sk-bank-banner.png');
     background-size: cover;
     background-position: center;
-    color: var(--white);
+    color: var(--bank-white);
     padding: 5rem 1rem;
-    border-bottom: 4px solid var(--accent-gold);
+    border-bottom: 4px solid var(--bank-gold);
 }
 
 /* CARDS */
 .card-custom {
-    background: var(--white);
-    border-radius: 12px;
-    border: 1px solid rgba(11, 78, 162, 0.12);
+    background: var(--bank-white);
+    border-radius: 14px;
+    border: 1px solid rgba(11, 74, 158, 0.15);
     box-shadow: var(--box-shadow-soft);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
@@ -144,24 +155,24 @@ body {
 
 .card-custom:hover {
     transform: translateY(-4px);
-    box-shadow: 0 15px 35px rgba(7, 31, 73, 0.12);
+    box-shadow: 0 15px 35px rgba(6, 43, 99, 0.15);
 }
 
 .card-navy-header {
     background: var(--grad-navy);
-    color: var(--white);
-    border-bottom: 2px solid var(--accent-gold);
+    color: var(--bank-white);
+    border-bottom: 2px solid var(--bank-gold);
     padding: 1rem 1.25rem;
     font-weight: 700;
 }
 
 .card-balance {
-    background: var(--grad-navy);
-    color: var(--white);
+    background: var(--bank-card-bg);
+    color: var(--bank-white);
     border-radius: 16px;
     padding: 1.75rem;
-    border: 2px solid var(--accent-gold);
-    box-shadow: var(--box-shadow-soft);
+    border: var(--bank-border);
+    box-shadow: var(--bank-glow);
     position: relative;
 }
 
@@ -170,18 +181,54 @@ body {
     position: absolute;
     top: 0; right: 0;
     width: 100px; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(212, 167, 44, 0.15));
+    background: linear-gradient(90deg, transparent, rgba(244, 197, 66, 0.18));
     border-radius: 0 14px 14px 0;
+}
+
+/* PREMIUM NAVY BANKING LOGIN CARD */
+.login-card-theme {
+    background: var(--bank-card-bg);
+    border: var(--bank-border);
+    box-shadow: 0 15px 35px rgba(6, 43, 99, 0.5), 0 0 20px rgba(244, 197, 66, 0.15);
+    border-radius: 18px;
+    color: var(--bank-white);
+}
+
+.login-card-theme .form-control {
+    background-color: #0A3978;
+    color: #FFFFFF !important;
+    border: 1px solid #1769C2;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.login-card-theme .form-control::placeholder {
+    color: #A0C4EF;
+}
+
+.login-card-theme .form-control:focus {
+    background-color: #0D448E;
+    color: #FFFFFF !important;
+    border-color: #F4C542;
+    box-shadow: 0 0 12px rgba(244, 197, 66, 0.45);
+}
+
+.login-card-theme .form-label {
+    color: var(--bank-text-light);
+}
+
+.login-card-theme .text-gold {
+    color: var(--bank-gold) !important;
 }
 
 /* ATM DEBIT / CREDIT CARD STYLING */
 .bank-debit-card {
-    background: linear-gradient(135deg, #071F49 0%, #0B4EA2 50%, #071F49 100%);
-    border: 2px solid var(--accent-gold);
+    background: linear-gradient(135deg, #062B63 0%, #0B4A9E 50%, #062B63 100%);
+    border: 2px solid var(--bank-gold);
     border-radius: 16px;
-    color: var(--white);
+    color: var(--bank-white);
     padding: 1.5rem;
-    box-shadow: 0 10px 25px rgba(7, 31, 73, 0.3);
+    box-shadow: 0 10px 25px rgba(6, 43, 99, 0.35);
     position: relative;
     aspect-ratio: 1.586 / 1;
     display: flex;
@@ -192,7 +239,7 @@ body {
 .bank-debit-card .chip {
     width: 45px;
     height: 35px;
-    background: linear-gradient(135deg, #F4D477, #D4A72C);
+    background: linear-gradient(135deg, #F4C542, #D9A91A);
     border-radius: 6px;
 }
 
@@ -212,15 +259,15 @@ body {
 
 .sidebar {
     width: 260px;
-    background: var(--primary-navy);
+    background: var(--bank-navy);
     min-height: calc(100vh - 70px);
-    border-right: 3px solid var(--accent-gold);
+    border-right: 3px solid var(--bank-gold);
     padding-top: 1rem;
     flex-shrink: 0;
 }
 
 .sidebar .nav-link {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--bank-text-light);
     font-weight: 500;
     padding: 0.8rem 1.5rem;
     display: flex;
@@ -231,9 +278,9 @@ body {
 }
 
 .sidebar .nav-link:hover, .sidebar .nav-link.active {
-    color: var(--light-gold);
-    background: rgba(11, 78, 162, 0.4);
-    border-left-color: var(--accent-gold);
+    color: var(--bank-gold);
+    background: rgba(11, 74, 158, 0.45);
+    border-left-color: var(--bank-gold);
 }
 
 .main-content {
@@ -244,47 +291,68 @@ body {
 
 /* TABLES */
 .table-custom {
-    background: var(--white);
-    border-radius: 10px;
+    background: #062B63;
+    color: var(--bank-text-light);
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: var(--box-shadow-soft);
+    box-shadow: 0 10px 30px rgba(6, 43, 99, 0.2);
+    border: 1px solid rgba(244, 197, 66, 0.25);
 }
 
 .table-custom thead {
-    background: var(--grad-navy);
-    color: var(--white);
+    background: linear-gradient(135deg, #041E42 0%, #062B63 100%);
+    color: #F4C542;
+    border-bottom: 2px solid #D9A91A;
 }
 
 .table-custom th {
     padding: 1rem;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.5px;
     border: none;
+}
+
+.table-custom tbody tr {
+    background-color: #0A3978;
+    color: #FFFFFF;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid rgba(23, 105, 194, 0.3);
+}
+
+.table-custom tbody tr:nth-of-type(even) {
+    background-color: #08326E;
+}
+
+.table-custom tbody tr:hover {
+    background-color: #114B8C !important;
 }
 
 .table-custom td {
     padding: 0.9rem 1rem;
     vertical-align: middle;
+    color: #FFFFFF;
 }
 
 /* BADGES */
 .badge-gold {
     background: var(--grad-gold);
-    color: var(--primary-navy);
+    color: #062B63;
     font-weight: 700;
     padding: 0.4em 0.8em;
     border-radius: 20px;
 }
 
 .badge-navy {
-    background: var(--primary-navy);
-    color: var(--white);
+    background: #062B63;
+    color: #FFFFFF;
     padding: 0.4em 0.8em;
     border-radius: 20px;
+    border: 1px solid rgba(244, 197, 66, 0.3);
 }
 
 /* LOGIN SPLIT PAGE */
 .login-bg {
-    background-image: linear-gradient(rgba(7, 31, 73, 0.85), rgba(11, 78, 162, 0.75)), url('../images/sk-bank-background.png');
+    background-image: linear-gradient(rgba(6, 43, 99, 0.88), rgba(11, 74, 158, 0.78)), url('../images/sk-bank-background.png');
     background-size: cover;
     background-position: center;
     min-height: 100vh;
@@ -292,9 +360,9 @@ body {
 
 /* FOOTER */
 .bank-footer {
-    background: var(--primary-navy);
+    background: #062B63;
     color: rgba(255, 255, 255, 0.85);
-    border-top: 4px solid var(--accent-gold);
+    border-top: 4px solid var(--bank-gold);
     margin-top: auto;
     padding: 3rem 0 1.5rem 0;
 }
@@ -306,7 +374,7 @@ body {
 }
 
 .bank-footer a:hover {
-    color: var(--light-gold);
+    color: var(--bank-gold);
 }
 
 /* RESPONSIVE */
