@@ -4,6 +4,7 @@ com\skbank\service\AccountService.class
 com\skbank\controller\ComplaintServlet.class
 com\skbank\controller\admin\AdminDashboardServlet.class
 com\skbank\controller\admin\AdminLoginServlet.class
+com\skbank\util\SetBothAdminPasswords.class
 com\skbank\controller\KycServlet.class
 com\skbank\config\DatabaseConfig.class
 com\skbank\controller\TransferServlet.class
@@ -55,6 +56,7 @@ com\skbank\dao\BranchDAO.class
 com\skbank\model\KycDocument.class
 com\skbank\controller\DashboardServlet.class
 com\skbank\dao\PasswordResetDAO.class
+com\skbank\util\TestCustomerLogin.class
 com\skbank\model\Customer.class
 com\skbank\controller\RegisterServlet.class
 com\skbank\model\Card.class
@@ -67,6 +69,7 @@ com\skbank\model\Branch.class
 com\skbank\controller\admin\AdminComplaintServlet.class
 com\skbank\dao\ComplaintDAO.class
 com\skbank\util\DbVerifier.class
+com\skbank\util\VerifyHashMatch.class
 com\skbank\controller\LogoutServlet.class
 com\skbank\controller\admin\AdminLoanServlet.class
 com\skbank\controller\StatementServlet.class
@@ -99,6 +102,7 @@ com\skbank\util\EmiCalculatorUtil.class
 com\skbank\controller\admin\AdminKycServlet.class
 com\skbank\model\Account.class
 com\skbank\controller\ContactServlet.class
+com\skbank\util\CheckAdminInDb.class
 com\skbank\dao\SystemSettingsDAO.class
 com\skbank\controller\LoginServlet.class
 com\skbank\service\CardService.class
