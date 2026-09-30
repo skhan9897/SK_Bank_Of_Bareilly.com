@@ -36,6 +36,8 @@ import java.util.List;
 )
 public class RegisterServlet extends HttpServlet {
 
+    private static final String VIEW_PATH = "/WEB-INF/views/customer/register.jsp";
+
     private final AuthenticationService authService = new AuthenticationService();
     private final AccountService accountService = new AccountService();
     private final CardService cardService = new CardService();
@@ -47,13 +49,13 @@ public class RegisterServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             loadFormData(request);
-            request.getRequestDispatcher("/register.jsp").forward(request, response);
+            request.getRequestDispatcher(VIEW_PATH).forward(request, response);
         } catch (Throwable t) {
             System.err.println("CRITICAL ERROR in RegisterServlet.doGet: " + t.getMessage());
             t.printStackTrace();
             request.setAttribute("accountTypes", createFallbackAccountTypes());
             request.setAttribute("branches", createFallbackBranches());
-            request.getRequestDispatcher("/register.jsp").forward(request, response);
+            request.getRequestDispatcher(VIEW_PATH).forward(request, response);
         }
     }
 
@@ -99,31 +101,31 @@ public class RegisterServlet extends HttpServlet {
             password == null || password.trim().isEmpty() ||
             email == null || mobile == null) {
             request.setAttribute("errorMessage", "All required fields must be filled.");
-            request.getRequestDispatcher("/register.jsp").forward(request, response);
+            request.getRequestDispatcher(VIEW_PATH).forward(request, response);
             return;
         }
 
         if (!password.equals(confirmPassword)) {
             request.setAttribute("errorMessage", "Passwords do not match.");
-            request.getRequestDispatcher("/register.jsp").forward(request, response);
+            request.getRequestDispatcher(VIEW_PATH).forward(request, response);
             return;
         }
 
         if (!ValidationUtil.isStrongPassword(password)) {
             request.setAttribute("errorMessage", "Password must be at least 8 characters long and contain letters, numbers, and special characters.");
-            request.getRequestDispatcher("/register.jsp").forward(request, response);
+            request.getRequestDispatcher(VIEW_PATH).forward(request, response);
             return;
         }
 
         if (!ValidationUtil.isValidEmail(email)) {
             request.setAttribute("errorMessage", "Invalid email address format.");
-            request.getRequestDispatcher("/register.jsp").forward(request, response);
+            request.getRequestDispatcher(VIEW_PATH).forward(request, response);
             return;
         }
 
         if (!ValidationUtil.isValidMobile(mobile)) {
             request.setAttribute("errorMessage", "Invalid 10-digit mobile number.");
-            request.getRequestDispatcher("/register.jsp").forward(request, response);
+            request.getRequestDispatcher(VIEW_PATH).forward(request, response);
             return;
         }
 
@@ -166,14 +168,14 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("registeredCard", defaultCard);
             request.setAttribute("registeredUsername", username.trim());
 
-            request.getRequestDispatcher("/register.jsp").forward(request, response);
+            request.getRequestDispatcher(VIEW_PATH).forward(request, response);
 
         } catch (IllegalArgumentException e) {
             request.setAttribute("errorMessage", e.getMessage());
-            request.getRequestDispatcher("/register.jsp").forward(request, response);
+            request.getRequestDispatcher(VIEW_PATH).forward(request, response);
         } catch (Exception e) {
             request.setAttribute("errorMessage", "Registration failed: " + e.getMessage());
-            request.getRequestDispatcher("/register.jsp").forward(request, response);
+            request.getRequestDispatcher(VIEW_PATH).forward(request, response);
         }
     }
 
