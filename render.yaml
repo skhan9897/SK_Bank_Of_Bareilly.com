@@ -1,6 +1,7 @@
 # =========================================================
 # SK BANK OF BAREILLY - RENDER.COM BLUEPRINT CONFIGURATION
 # Auto-deployment setup for Render.com Web Service
+# Version: 1.0.1 (Production Release)
 # =========================================================
 
 services:
