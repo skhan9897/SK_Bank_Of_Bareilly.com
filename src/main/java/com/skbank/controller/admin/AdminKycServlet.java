@@ -1,6 +1,6 @@
 package com.skbank.controller.admin;
 
-import com.skbank.model.KycDocument;
+import com.skbank.model.CustomerKyc;
 import com.skbank.service.KycService;
 
 import javax.servlet.ServletException;
@@ -21,8 +21,10 @@ public class AdminKycServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            List<KycDocument> pendingDocs = kycService.getAllPendingKyc();
-            request.setAttribute("pendingKyc", pendingDocs);
+            List<CustomerKyc> pendingKyc = kycService.getAllPendingKyc();
+            List<CustomerKyc> allKyc = kycService.getAllKyc();
+            request.setAttribute("pendingKyc", pendingKyc);
+            request.setAttribute("allKyc", allKyc);
             request.getRequestDispatcher("/admin/kyc.jsp").forward(request, response);
         } catch (Exception e) {
             request.setAttribute("errorMessage", "Error loading KYC applications: " + e.getMessage());
@@ -34,21 +36,19 @@ public class AdminKycServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-        String kycIdStr = request.getParameter("kycId");
         String customerId = request.getParameter("customerId");
         String reason = request.getParameter("reason");
 
         try {
-            int kycId = Integer.parseInt(kycIdStr);
             if ("approve".equalsIgnoreCase(action)) {
-                kycService.updateKycStatus(kycId, customerId, "VERIFIED", null);
-                request.setAttribute("successMessage", "KYC Approved.");
+                kycService.updateKycStatus(customerId, "VERIFIED", null);
+                request.setAttribute("successMessage", "KYC Approved for Customer " + customerId);
             } else if ("reject".equalsIgnoreCase(action)) {
-                kycService.updateKycStatus(kycId, customerId, "REJECTED", reason);
-                request.setAttribute("successMessage", "KYC Rejected.");
+                kycService.updateKycStatus(customerId, "REJECTED", reason != null ? reason : "Identity verification failed.");
+                request.setAttribute("successMessage", "KYC Rejected for Customer " + customerId);
             }
         } catch (Exception e) {
-            request.setAttribute("errorMessage", "Error: " + e.getMessage());
+            request.setAttribute("errorMessage", "Error updating KYC: " + e.getMessage());
         }
 
         doGet(request, response);

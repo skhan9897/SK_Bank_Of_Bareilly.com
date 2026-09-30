@@ -22,9 +22,17 @@
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom">
                 <div>
                     <h3 class="fw-bold text-navy mb-1">Welcome back, ${sessionScope.customerProfile.fullName}!</h3>
-                    <p class="text-muted small mb-0">Customer ID: <span class="badge badge-navy">${sessionScope.customerProfile.customerId}</span> | KYC Status: <span class="badge bg-success">${sessionScope.customerProfile.kycStatus}</span></p>
+                    <p class="text-muted small mb-0">
+                        Customer ID: <span class="badge badge-navy me-2">${sessionScope.customerProfile.customerId}</span>
+                        KYC Status:
+                        <a href="${pageContext.request.contextPath}/kyc" class="text-decoration-none">
+                            <span class="badge ${sessionScope.customerProfile.kycStatus == 'VERIFIED' ? 'bg-success' : (sessionScope.customerProfile.kycStatus == 'REJECTED' ? 'bg-danger' : 'bg-warning text-dark')}">
+                                ${sessionScope.customerProfile.kycStatus == 'VERIFIED' ? '✓ KYC VERIFIED' : (sessionScope.customerProfile.kycStatus == 'REJECTED' ? '✕ KYC REJECTED' : '⚠ KYC PENDING')}
+                            </span>
+                        </a>
+                    </p>
                 </div>
-                <div>
+                <div class="mt-2 mt-md-0">
                     <a href="${pageContext.request.contextPath}/transfer" class="btn btn-gold fw-bold shadow-sm me-2"><i class="fas fa-paper-plane me-1"></i> Quick Transfer</a>
                     <a href="${pageContext.request.contextPath}/statements" class="btn btn-navy"><i class="fas fa-download me-1"></i> Statement</a>
                 </div>
@@ -107,9 +115,9 @@
                         </a>
                     </div>
                     <div class="col-6 col-md-3 col-lg-2">
-                        <a href="${pageContext.request.contextPath}/loans" class="p-3 d-block card-custom text-decoration-none text-navy">
-                            <i class="fas fa-hand-holding-usd fs-2 text-info mb-2"></i>
-                            <div class="fw-bold small">Apply Loan</div>
+                        <a href="${pageContext.request.contextPath}/kyc" class="p-3 d-block card-custom text-decoration-none text-navy">
+                            <i class="fas fa-id-card fs-2 text-info mb-2"></i>
+                            <div class="fw-bold small">KYC Verification</div>
                         </a>
                     </div>
                     <div class="col-6 col-md-3 col-lg-2">

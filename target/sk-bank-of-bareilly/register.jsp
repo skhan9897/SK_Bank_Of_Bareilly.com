@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <jsp:include page="/WEB-INF/views/common/header.jsp">
-    <jsp:param name="title" value="Digital Passbook & Virtual Card - SK Bank" />
+    <jsp:param name="title" value="Open Account & Digital Passbook - SK Bank" />
 </jsp:include>
 <style>
     @media print {
@@ -33,11 +33,11 @@
                             <!-- PASSBOOK HEADER -->
                             <div class="d-flex flex-wrap justify-content-between align-items-center pb-3 mb-4 border-bottom border-warning border-2">
                                 <div class="d-flex align-items-center gap-3">
-                                    <img src="${pageContext.request.contextPath}/images/sk-bank-logo-transparent.png" alt="SK Logo" style="height: 70px; object-fit: contain;">
+                                    <img src="${pageContext.request.contextPath}/${registeredCustomer.profilePhoto}" alt="Customer Photo" class="profile-photo" style="width: 65px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #D4A72C;">
                                     <div>
                                         <h3 class="fw-bold text-navy mb-0">SK Bank of Bareilly</h3>
                                         <p class="text-muted small mb-0">Head Office: 124 Civil Lines, Station Road, Bareilly, UP - 243001</p>
-                                        <span class="badge badge-gold px-2 py-1 mt-1"><i class="fas fa-shield-alt me-1"></i> Official Digital Passbook & Virtual Debit Card</span>
+                                        <span class="badge badge-gold px-2 py-1 mt-1"><i class="fas fa-shield-alt me-1"></i> Official Digital Passbook & Account Receipt</span>
                                     </div>
                                 </div>
                                 <div class="text-end mt-2 mt-sm-0">
@@ -54,11 +54,10 @@
                                         <h5 class="fw-bold text-navy border-bottom pb-2 mb-3"><i class="fas fa-wallet text-warning me-2"></i> Account Details</h5>
                                         <div class="mb-2">Account Number: <strong class="text-navy fs-5 d-block">${registeredAccount.accountNumber}</strong></div>
                                         <div class="mb-2">Customer ID: <strong class="badge badge-navy">${registeredCustomer.customerId}</strong></div>
-                                        <div class="mb-2">Account Type: <strong>Savings Account</strong></div>
+                                        <div class="mb-2">Account Type: <strong>${registeredAccount.accountTypeName}</strong></div>
                                         <div class="mb-2">IFSC Code: <strong class="text-navy">${registeredAccount.ifscCode}</strong></div>
-                                        <div class="mb-2">Branch: <strong>Bareilly Civil Lines Branch</strong></div>
-                                        <div class="mb-2">Initial Deposit Bonus: <strong class="text-success fs-6">₹ 10,000.00</strong></div>
-                                        <div>Available Balance: <strong class="text-success fs-5">₹ <fmt:formatNumber value="${registeredAccount.balance}" pattern="#,##0.00"/></strong></div>
+                                        <div class="mb-2">Branch: <strong>${registeredAccount.branchName}</strong></div>
+                                        <div>Initial Balance: <strong class="text-success fs-5">₹ 0.00</strong></div>
                                     </div>
                                 </div>
 
@@ -120,10 +119,10 @@
                             <!-- PASSBOOK FOOTER & ACTIONS -->
                             <div class="p-3 bg-navy text-white rounded d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
                                 <div class="small">
-                                    <i class="fas fa-info-circle text-warning me-1"></i> You can now log in to Internet Banking using your Customer ID/Username and password.
+                                    <i class="fas fa-info-circle text-warning me-1"></i> Your account has been opened with initial balance ₹0.00. Please deposit funds through authorized bank/admin process to start transacting.
                                 </div>
                                 <div class="no-print d-flex gap-2">
-                                    <button onclick="window.print()" class="btn btn-gold fw-bold shadow-sm"><i class="fas fa-print me-1"></i> PRINT PASSBOOK & VIRTUAL CARD</button>
+                                    <button onclick="window.print()" class="btn btn-gold fw-bold shadow-sm"><i class="fas fa-print me-1"></i> PRINT PASSBOOK & RECEIPT</button>
                                     <a href="${pageContext.request.contextPath}/login" class="btn btn-outline-light"><i class="fas fa-sign-in-alt me-1"></i> PROCEED TO LOGIN</a>
                                 </div>
                             </div>
@@ -139,11 +138,33 @@
                         <div class="card-custom p-4 p-md-5 bg-white shadow-lg">
                             <div class="text-center mb-4">
                                 <img src="${pageContext.request.contextPath}/images/sk-bank-logo-transparent.png" alt="SK Bank Logo" class="img-fluid mb-2" style="max-height: 90px; object-fit: contain;">
-                                <h2 class="fw-bold text-navy">Open a Digital Savings Account</h2>
+                                <h2 class="fw-bold text-navy">Open a Digital Bank Account</h2>
                                 <p class="text-muted">Fill in your details below to instantly open your account with SK Bank of Bareilly.</p>
                             </div>
 
-                            <form action="${pageContext.request.contextPath}/register" method="post" id="regForm">
+                            <form action="${pageContext.request.contextPath}/register" method="post" enctype="multipart/form-data" id="regForm">
+                                <!-- SECTION 1: ACCOUNT TYPE & BRANCH SELECTION -->
+                                <h5 class="fw-bold text-navy border-bottom pb-2 mb-3"><i class="fas fa-university me-2 text-warning"></i> Select Account Type & Branch</h5>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Select Account Type *</label>
+                                        <select name="accountTypeId" class="form-select form-select-lg fs-6" required>
+                                            <c:forEach var="type" items="${accountTypes}">
+                                                <option value="${type.typeId}">${type.typeName} - ${type.description}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Select Home Branch *</label>
+                                        <select name="branchId" class="form-select form-select-lg fs-6" required>
+                                            <c:forEach var="b" items="${branches}">
+                                                <option value="${b.branchId}">${b.branchName} (${b.city}) - IFSC: ${b.ifscCode}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- SECTION 2: PERSONAL DETAILS & OPTIONAL PROFILE PHOTO -->
                                 <h5 class="fw-bold text-navy border-bottom pb-2 mb-3"><i class="fas fa-user-circle me-2 text-warning"></i> Personal Details</h5>
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
@@ -170,8 +191,15 @@
                                         <label class="form-label fw-semibold">Occupation *</label>
                                         <input type="text" name="occupation" class="form-control" placeholder="e.g. Service / Business" required>
                                     </div>
+                                    <!-- OPTIONAL PROFILE PHOTO UPLOAD -->
+                                    <div class="col-12">
+                                        <label class="form-label fw-semibold">Profile Photo (Optional)</label>
+                                        <input type="file" name="profilePhoto" id="profilePhotoInput" class="form-control" accept=".jpg,.jpeg,.png,image/jpeg,image/png" onchange="validateProfilePhoto(this)">
+                                        <div class="form-text small">Profile photo is optional. JPG, JPEG or PNG only. Maximum file size: 5 MB.</div>
+                                    </div>
                                 </div>
 
+                                <!-- SECTION 3: CONTACT & IDENTITY DETAILS -->
                                 <h5 class="fw-bold text-navy border-bottom pb-2 mb-3"><i class="fas fa-address-book me-2 text-warning"></i> Contact & Identity Details</h5>
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
@@ -208,6 +236,7 @@
                                     </div>
                                 </div>
 
+                                <!-- SECTION 4: INTERNET BANKING CREDENTIALS -->
                                 <h5 class="fw-bold text-navy border-bottom pb-2 mb-3"><i class="fas fa-lock me-2 text-warning"></i> Internet Banking Credentials</h5>
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-4">
@@ -221,9 +250,6 @@
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold">Confirm Password *</label>
                                         <input type="password" name="confirmPassword" id="regConfirmPassword" class="form-control" required placeholder="Re-enter password">
-                                    </div>
-                                    <div class="col-12 d-none" id="passwordMatchAlert">
-                                        <div class="text-danger small"><i class="fas fa-times-circle me-1"></i> Passwords do not match.</div>
                                     </div>
                                 </div>
 
@@ -245,6 +271,28 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function validateProfilePhoto(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const maxSize = 5 * 1024 * 1024; // 5 MB
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+
+                if (file.size > maxSize) {
+                    alert("Profile photo must be less than or equal to 5 MB.");
+                    input.value = "";
+                    return;
+                }
+
+                if (!allowedTypes.includes(file.type.toLowerCase())) {
+                    alert("Invalid file type. Only JPG, JPEG, and PNG images are allowed.");
+                    input.value = "";
+                    return;
+                }
+            }
+        }
+    </script>
 
     <div class="no-print">
         <jsp:include page="/WEB-INF/views/common/footer.jsp" />

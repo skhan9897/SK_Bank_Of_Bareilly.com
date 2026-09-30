@@ -65,14 +65,11 @@ public class AccountServlet extends HttpServlet {
 
             } else {
                 String typeIdStr = request.getParameter("typeId");
-                String depositStr = request.getParameter("initialDeposit");
-
                 int typeId = Integer.parseInt(typeIdStr);
-                double initialDeposit = (depositStr != null && !depositStr.isEmpty()) ? Double.parseDouble(depositStr) : 1000.0;
 
-                boolean created = accountService.createNewAccount(customer.getCustomerId(), typeId, initialDeposit);
+                boolean created = accountService.createNewAccount(customer.getCustomerId(), typeId, 1);
                 if (created) {
-                    request.setAttribute("successMessage", "New Bank Account created successfully!");
+                    request.setAttribute("successMessage", "New Bank Account created successfully with ₹0.00 initial balance.");
                 } else {
                     request.setAttribute("errorMessage", "Failed to create new account.");
                 }

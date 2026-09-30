@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <jsp:include page="/WEB-INF/views/common/header.jsp">
-    <jsp:param name="title" value="KYC Approvals - Admin SK Bank" />
+    <jsp:param name="title" value="KYC Verification Directory - Admin SK Bank" />
 </jsp:include>
 <body>
 
@@ -15,8 +15,9 @@
         </jsp:include>
 
         <div class="main-content">
-            <div class="mb-4 pb-2 border-bottom">
-                <h3 class="fw-bold text-navy mb-0"><i class="fas fa-id-card text-warning me-2"></i> Pending KYC Approvals</h3>
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                <h3 class="fw-bold text-navy mb-0"><i class="fas fa-id-card text-warning me-2"></i> Number-Based KYC Directory</h3>
+                <span class="badge badge-gold px-3 py-2 fs-6">Aadhaar (12 Digits) + PAN (10 Chars)</span>
             </div>
 
             <jsp:include page="/WEB-INF/views/common/alerts.jsp" />
@@ -26,36 +27,42 @@
                     <table class="table table-hover align-middle table-custom mb-0">
                         <thead>
                             <tr>
-                                <th>Customer Name</th>
                                 <th>Customer ID</th>
-                                <th>Document Type</th>
-                                <th>Uploaded At</th>
-                                <th>Status</th>
+                                <th>Aadhaar Number (Masked)</th>
+                                <th>PAN Number (Masked)</th>
+                                <th>Verification Ref</th>
+                                <th>KYC Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <c:choose>
-                                <c:when test="${not empty pendingKyc}">
-                                    <c:forEach var="k" items="${pendingKyc}">
+                                <c:when test="${not empty allKyc}">
+                                    <c:forEach var="k" items="${allKyc}">
                                         <tr>
-                                            <td class="fw-bold text-navy">${k.customerName}</td>
-                                            <td class="fw-semibold">${k.customerId}</td>
-                                            <td><span class="badge badge-navy">${k.documentType}</span></td>
-                                            <td class="small text-muted">${k.uploadedAt}</td>
-                                            <td><span class="badge bg-warning">${k.status}</span></td>
+                                            <td class="fw-bold text-navy">
+                                                <a href="${pageContext.request.contextPath}/admin/customers?id=${k.customerId}" class="text-navy text-decoration-none">
+                                                    <i class="fas fa-user-circle me-1"></i> ${k.customerId}
+                                                </a>
+                                            </td>
+                                            <td class="fw-bold small">${k.aadhaarMasked}</td>
+                                            <td class="fw-bold small text-primary">${k.panMasked}</td>
+                                            <td class="small text-muted">${k.verificationReference}</td>
+                                            <td>
+                                                <span class="badge ${k.kycStatus == 'VERIFIED' ? 'bg-success' : (k.kycStatus == 'REJECTED' ? 'bg-danger' : 'bg-warning')}">
+                                                    ${k.kycStatus}
+                                                </span>
+                                            </td>
                                             <td>
                                                 <form action="${pageContext.request.contextPath}/admin/kyc" method="post" class="d-inline">
-                                                    <input type="hidden" name="kycId" value="${k.kycId}">
                                                     <input type="hidden" name="customerId" value="${k.customerId}">
                                                     <input type="hidden" name="action" value="approve">
-                                                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check"></i> Approve KYC</button>
+                                                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check"></i> Approve</button>
                                                 </form>
                                                 <form action="${pageContext.request.contextPath}/admin/kyc" method="post" class="d-inline">
-                                                    <input type="hidden" name="kycId" value="${k.kycId}">
                                                     <input type="hidden" name="customerId" value="${k.customerId}">
                                                     <input type="hidden" name="action" value="reject">
-                                                    <input type="hidden" name="reason" value="Document unclear or invalid">
+                                                    <input type="hidden" name="reason" value="Identity details mismatch">
                                                     <button type="submit" class="btn btn-outline-danger btn-sm"><i class="fas fa-times"></i> Reject</button>
                                                 </form>
                                             </td>
@@ -64,7 +71,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <tr>
-                                        <td colspan="6" class="text-center py-4 text-muted">No pending KYC approvals. All customer accounts are up to date!</td>
+                                        <td colspan="6" class="text-center py-4 text-muted">No KYC records submitted yet.</td>
                                     </tr>
                                 </c:otherwise>
                             </c:choose>
@@ -74,6 +81,8 @@
             </div>
         </div>
     </div>
+
+    <jsp:include page="/WEB-INF/views/common/footer.jsp" />
 
 </body>
 </html>

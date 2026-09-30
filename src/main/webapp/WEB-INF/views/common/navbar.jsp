@@ -1,15 +1,24 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<!-- MOBILE SIDEBAR OVERLAY BACKDROP -->
+<div id="sidebarOverlay" class="sidebar-overlay"></div>
+
 <nav class="navbar navbar-expand-lg bank-navbar sticky-top">
-    <div class="container-fluid px-lg-4">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="${pageContext.request.contextPath}/">
+    <div class="container-fluid px-2 px-lg-4">
+        <!-- MOBILE SIDEBAR HAMBURGER TOGGLE BUTTON -->
+        <button id="mobileMenuBtn" class="mobile-menu-btn d-lg-none me-1" type="button" aria-label="Open navigation menu">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <a class="navbar-brand d-flex align-items-center gap-2 me-auto" href="${pageContext.request.contextPath}/">
             <img src="${pageContext.request.contextPath}/images/sk-bank-logo-transparent.png"
                  alt="SK Bank of Bareilly" class="bank-logo-img">
-            <span class="text-white fw-bold fs-5 d-none d-sm-inline">SK Bank of Bareilly</span>
+            <span class="text-white fw-bold fs-5 bank-title-text">SK Bank of Bareilly</span>
         </a>
 
-        <button class="navbar-toggler text-white border-white" type="button" data-bs-toggle="collapse" data-bs-target="#bankNav">
-            <i class="fas fa-bars fs-4"></i>
+        <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="collapse" data-bs-target="#bankNav" aria-label="Toggle navigation">
+            <i class="fas fa-ellipsis-v fs-5"></i>
         </button>
 
         <div class="collapse navbar-collapse" id="bankNav">
@@ -22,7 +31,7 @@
                 <li class="nav-item"><a class="nav-link bank-nav-link" href="${pageContext.request.contextPath}/contact">Contact Us</a></li>
             </ul>
 
-            <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0">
                 <c:choose>
                     <c:when test="${not empty sessionScope.loggedInUser}">
                         <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-gold btn-sm"><i class="fas fa-chart-line me-1"></i> Dashboard</a>

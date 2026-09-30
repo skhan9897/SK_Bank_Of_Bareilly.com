@@ -1,7 +1,8 @@
 package com.skbank.controller;
 
+import com.skbank.dao.CustomerDAO;
 import com.skbank.model.Customer;
-import com.skbank.model.KycDocument;
+import com.skbank.model.CustomerKyc;
 import com.skbank.service.KycService;
 
 import javax.servlet.ServletException;
@@ -12,12 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.util.List;
 
-@WebServlet("/kyc")
+@WebServlet(urlPatterns = {"/kyc", "/customer/kyc"})
 public class KycServlet extends HttpServlet {
 
     private final KycService kycService = new KycService();
+    private final CustomerDAO customerDAO = new CustomerDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -31,12 +32,15 @@ public class KycServlet extends HttpServlet {
         }
 
         try {
-            List<KycDocument> docs = kycService.getCustomerKycDocuments(customer.getCustomerId());
-            request.setAttribute("kycDocuments", docs);
-            request.getRequestDispatcher("/kyc.jsp").forward(request, response);
+            CustomerKyc kyc = kycService.getKycStatus(customer.getCustomerId());
+            request.setAttribute("kyc", kyc);
+            
+            // Forward to views/customer/kyc.jsp
+            request.getRequestDispatcher("/WEB-INF/views/customer/kyc.jsp").forward(request, response);
+
         } catch (Exception e) {
-            request.setAttribute("errorMessage", "Error loading KYC details: " + e.getMessage());
-            request.getRequestDispatcher("/kyc.jsp").forward(request, response);
+            request.setAttribute("errorMessage", "Unable to load KYC details: " + e.getMessage());
+            request.getRequestDispatcher("/WEB-INF/views/customer/kyc.jsp").forward(request, response);
         }
     }
 
@@ -51,24 +55,28 @@ public class KycServlet extends HttpServlet {
             return;
         }
 
-        String docType = request.getParameter("documentType");
-        String filePath = request.getParameter("filePath");
+        String aadhaarNumber = request.getParameter("aadhaarNumber");
+        String panNumber = request.getParameter("panNumber");
 
         try {
-            KycDocument doc = new KycDocument();
-            doc.setCustomerId(customer.getCustomerId());
-            doc.setDocumentType(docType);
-            doc.setFilePath(filePath != null && !filePath.isEmpty() ? filePath : "uploads/kyc_sample.pdf");
-            doc.setStatus("PENDING");
+            CustomerKyc kyc = kycService.submitKyc(customer.getCustomerId(), aadhaarNumber, panNumber);
 
-            boolean uploaded = kycService.uploadDocument(doc);
-            if (uploaded) {
-                request.setAttribute("successMessage", "KYC Document Uploaded successfully. Pending verification.");
+            if ("VERIFIED".equalsIgnoreCase(kyc.getKycStatus())) {
+                request.setAttribute("successMessage", "KYC Verification Completed Successfully!");
             } else {
-                request.setAttribute("errorMessage", "Failed to upload KYC document.");
+                request.setAttribute("errorMessage", "KYC Verification Failed. " + (kyc.getRejectionReason() != null ? kyc.getRejectionReason() : "Please re-verify your details."));
             }
+
+            // Refresh customer profile in session
+            Customer updatedCustomer = customerDAO.findByCustomerId(customer.getCustomerId());
+            if (updatedCustomer != null) {
+                session.setAttribute("customerProfile", updatedCustomer);
+            }
+
+        } catch (IllegalArgumentException e) {
+            request.setAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
-            request.setAttribute("errorMessage", "Error: " + e.getMessage());
+            request.setAttribute("errorMessage", "KYC Submission Error: " + e.getMessage());
         }
 
         doGet(request, response);

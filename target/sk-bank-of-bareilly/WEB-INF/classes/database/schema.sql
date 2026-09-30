@@ -17,7 +17,8 @@ DROP TABLE IF EXISTS audit_logs;
 DROP TABLE IF EXISTS complaint_messages;
 DROP TABLE IF EXISTS complaints;
 DROP TABLE IF EXISTS notifications;
-DROP TABLE IF EXISTS kyc_documents;
+DROP TABLE IF EXISTS upi_accounts;
+DROP TABLE IF EXISTS customer_kyc;
 DROP TABLE IF EXISTS bill_payments;
 DROP TABLE IF EXISTS card_transactions;
 DROP TABLE IF EXISTS cards;
@@ -76,6 +77,7 @@ CREATE TABLE branches (
     ifsc_code VARCHAR(11) NOT NULL UNIQUE,
     phone VARCHAR(20) NOT NULL,
     email VARCHAR(100) NOT NULL,
+    status ENUM('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
@@ -99,7 +101,7 @@ CREATE TABLE employees (
 
 -- 5. CUSTOMERS
 CREATE TABLE customers (
-    customer_id VARCHAR(20) PRIMARY KEY, -- e.g. SKC10001
+    customer_id VARCHAR(20) PRIMARY KEY,
     user_id BIGINT NOT NULL UNIQUE,
     branch_id BIGINT NOT NULL DEFAULT 1,
     first_name VARCHAR(50) NOT NULL,
@@ -108,15 +110,15 @@ CREATE TABLE customers (
     gender ENUM('Male', 'Female', 'Other') NOT NULL,
     mobile VARCHAR(15) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
-    aadhaar VARCHAR(12) NOT NULL UNIQUE,
-    pan VARCHAR(10) NOT NULL UNIQUE,
+    aadhaar VARCHAR(255) NOT NULL,
+    pan VARCHAR(255) NOT NULL,
     address TEXT NOT NULL,
     city VARCHAR(50) NOT NULL,
     state VARCHAR(50) NOT NULL,
     pincode VARCHAR(10) NOT NULL,
     occupation VARCHAR(50) NOT NULL,
     kyc_status ENUM('PENDING', 'VERIFIED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
-    profile_photo VARCHAR(255) DEFAULT 'default-avatar.png',
+    profile_photo VARCHAR(500) DEFAULT 'assets/images/default-avatar.png',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
@@ -126,23 +128,26 @@ CREATE TABLE customers (
 -- 6. ACCOUNT TYPES
 CREATE TABLE account_types (
     type_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    type_name VARCHAR(50) NOT NULL UNIQUE, -- SAVINGS, CURRENT, SALARY, SENIOR, BUSINESS
-    minimum_balance DECIMAL(18,2) NOT NULL DEFAULT 1000.00,
-    interest_rate DECIMAL(5,2) NOT NULL DEFAULT 3.50,
+    type_code VARCHAR(50) NOT NULL UNIQUE,
+    type_name VARCHAR(100) NOT NULL,
     description TEXT,
+    minimum_balance DECIMAL(18,2) NOT NULL DEFAULT 0.00,
+    interest_rate DECIMAL(5,2) NOT NULL DEFAULT 0.00,
     status ENUM('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- 7. ACCOUNTS
+-- 7. ACCOUNTS (NEW ACCOUNTS START WITH BALANCE = 0.00)
 CREATE TABLE accounts (
     account_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    account_number VARCHAR(30) NOT NULL UNIQUE, -- e.g. SKB24010000001
+    account_number VARCHAR(30) NOT NULL UNIQUE,
     customer_id VARCHAR(20) NOT NULL,
     type_id BIGINT NOT NULL,
     branch_id BIGINT NOT NULL,
     balance DECIMAL(18,2) NOT NULL DEFAULT 0.00,
-    status ENUM('ACTIVE', 'BLOCKED', 'CLOSED') NOT NULL DEFAULT 'ACTIVE',
+    available_balance DECIMAL(18,2) NOT NULL DEFAULT 0.00,
+    status ENUM('ACTIVE', 'BLOCKED', 'CLOSED', 'PENDING') NOT NULL DEFAULT 'ACTIVE',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE,
@@ -184,9 +189,9 @@ CREATE TABLE beneficiaries (
 -- 10. TRANSACTIONS
 CREATE TABLE transactions (
     transaction_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    transaction_reference VARCHAR(50) NOT NULL UNIQUE, -- e.g. SKTXN202609291234
+    transaction_reference VARCHAR(50) NOT NULL UNIQUE,
     account_id BIGINT NOT NULL,
-    type ENUM('DEPOSIT', 'WITHDRAWAL', 'TRANSFER', 'NEFT', 'RTGS', 'IMPS', 'UPI', 'BILL_PAYMENT', 'CARD_PAYMENT', 'LOAN_EMI', 'FD_INVESTMENT', 'INTEREST_CREDIT', 'REFUND') NOT NULL,
+    type ENUM('DEPOSIT', 'WITHDRAWAL', 'TRANSFER', 'MOBILE_TRANSFER', 'ACCOUNT_TRANSFER', 'UPI_TRANSFER', 'NEFT', 'RTGS', 'IMPS', 'BILL_PAYMENT', 'CARD_PAYMENT', 'LOAN_EMI', 'FD_INVESTMENT', 'INTEREST_CREDIT', 'REFUND') NOT NULL,
     direction ENUM('CREDIT', 'DEBIT') NOT NULL,
     amount DECIMAL(18,2) NOT NULL,
     balance_before DECIMAL(18,2) NOT NULL,
@@ -210,7 +215,7 @@ CREATE TABLE transfer_requests (
     receiver_name VARCHAR(100) NOT NULL,
     transfer_type ENUM('INTERNAL', 'NEFT', 'RTGS', 'IMPS', 'UPI') NOT NULL,
     amount DECIMAL(18,2) NOT NULL,
-    remarks VARCHAR(200),
+    remarks VARCHAR(250),
     status ENUM('PENDING', 'APPROVED', 'REJECTED', 'PROCESSED') NOT NULL DEFAULT 'PENDING',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE,
@@ -220,7 +225,7 @@ CREATE TABLE transfer_requests (
 -- 12. FIXED DEPOSITS
 CREATE TABLE fixed_deposits (
     fd_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    fd_number VARCHAR(30) NOT NULL UNIQUE, -- e.g. SKFD2026001
+    fd_number VARCHAR(30) NOT NULL UNIQUE,
     customer_id VARCHAR(20) NOT NULL,
     account_id BIGINT NOT NULL,
     principal_amount DECIMAL(18,2) NOT NULL,
@@ -239,7 +244,7 @@ CREATE TABLE fixed_deposits (
 -- 13. LOAN TYPES
 CREATE TABLE loan_types (
     loan_type_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    type_name VARCHAR(50) NOT NULL UNIQUE, -- PERSONAL, HOME, CAR, EDUCATION, BUSINESS
+    type_name VARCHAR(50) NOT NULL UNIQUE,
     minimum_amount DECIMAL(18,2) NOT NULL DEFAULT 10000.00,
     maximum_amount DECIMAL(18,2) NOT NULL DEFAULT 50000000.00,
     interest_rate DECIMAL(5,2) NOT NULL DEFAULT 10.50,
@@ -251,7 +256,7 @@ CREATE TABLE loan_types (
 -- 14. LOANS
 CREATE TABLE loans (
     loan_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    loan_number VARCHAR(30) NOT NULL UNIQUE, -- e.g. SKL2026001
+    loan_number VARCHAR(30) NOT NULL UNIQUE,
     customer_id VARCHAR(20) NOT NULL,
     account_id BIGINT NOT NULL,
     loan_type_id BIGINT NOT NULL,
@@ -300,7 +305,7 @@ CREATE TABLE cards (
     account_id BIGINT NOT NULL,
     card_holder_name VARCHAR(100) NOT NULL,
     card_type ENUM('DEBIT', 'CREDIT') NOT NULL,
-    expiry_date VARCHAR(7) NOT NULL, -- MM/YYYY
+    expiry_date VARCHAR(7) NOT NULL,
     cvv_hash VARCHAR(255) NOT NULL,
     pin_hash VARCHAR(255) NOT NULL,
     daily_limit DECIMAL(18,2) NOT NULL DEFAULT 50000.00,
@@ -341,19 +346,38 @@ CREATE TABLE bill_payments (
     FOREIGN KEY (account_id) REFERENCES accounts(account_id)
 ) ENGINE=InnoDB;
 
--- 19. KYC DOCUMENTS
-CREATE TABLE kyc_documents (
+-- 19. CUSTOMER KYC (NUMBER-BASED AADHAAR + PAN)
+CREATE TABLE customer_kyc (
     kyc_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    customer_id VARCHAR(20) NOT NULL,
-    document_type ENUM('AADHAAR', 'PAN', 'ADDRESS_PROOF', 'PHOTO', 'OTHER') NOT NULL,
-    file_path VARCHAR(255) NOT NULL,
-    status ENUM('PENDING', 'VERIFIED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
-    rejection_reason TEXT,
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    customer_id VARCHAR(20) NOT NULL UNIQUE,
+    aadhaar_number VARCHAR(255) NOT NULL,
+    aadhaar_masked VARCHAR(20) NOT NULL,
+    pan_number VARCHAR(255) NOT NULL,
+    pan_masked VARCHAR(20) NOT NULL,
+    kyc_status ENUM('PENDING', 'VERIFIED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
+    verification_reference VARCHAR(50) NOT NULL UNIQUE,
+    verified_at DATETIME NULL,
+    rejection_reason TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 20. NOTIFICATIONS
+-- 20. UPI ACCOUNTS
+CREATE TABLE upi_accounts (
+    upi_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    customer_id VARCHAR(20) NOT NULL,
+    account_id BIGINT NOT NULL,
+    upi_address VARCHAR(100) NOT NULL UNIQUE,
+    upi_pin_hash VARCHAR(255) NULL,
+    status ENUM('ACTIVE', 'BLOCKED', 'DISABLED') NOT NULL DEFAULT 'ACTIVE',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE,
+    FOREIGN KEY (account_id) REFERENCES accounts(account_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- 21. NOTIFICATIONS
 CREATE TABLE notifications (
     notification_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
@@ -365,10 +389,10 @@ CREATE TABLE notifications (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 21. COMPLAINTS
+-- 22. COMPLAINTS
 CREATE TABLE complaints (
     complaint_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    complaint_number VARCHAR(30) NOT NULL UNIQUE, -- e.g. SKCMP202600001
+    complaint_number VARCHAR(30) NOT NULL UNIQUE,
     customer_id VARCHAR(20) NOT NULL,
     subject VARCHAR(200) NOT NULL,
     category VARCHAR(50) NOT NULL,
@@ -379,7 +403,7 @@ CREATE TABLE complaints (
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 22. COMPLAINT MESSAGES
+-- 23. COMPLAINT MESSAGES
 CREATE TABLE complaint_messages (
     message_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     complaint_id BIGINT NOT NULL,
@@ -391,11 +415,11 @@ CREATE TABLE complaint_messages (
     FOREIGN KEY (sender_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
--- 23. AUDIT LOGS
+-- 24. AUDIT LOGS
 CREATE TABLE audit_logs (
     log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NULL,
-    action ENUM('LOGIN', 'LOGOUT', 'ACCOUNT_CREATED', 'ACCOUNT_BLOCKED', 'TRANSFER', 'DEPOSIT', 'WITHDRAWAL', 'LOAN_APPROVED', 'LOAN_REJECTED', 'FD_CREATED', 'KYC_APPROVED', 'KYC_REJECTED', 'PROFILE_UPDATED') NOT NULL,
+    action VARCHAR(100) NOT NULL,
     module VARCHAR(50) NOT NULL,
     description TEXT NOT NULL,
     ip_address VARCHAR(50),
@@ -404,7 +428,7 @@ CREATE TABLE audit_logs (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
--- 24. PASSWORD RESET TOKENS
+-- 25. PASSWORD RESET TOKENS
 CREATE TABLE password_reset_tokens (
     token_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
@@ -415,7 +439,7 @@ CREATE TABLE password_reset_tokens (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- 25. OTP VERIFICATIONS
+-- 26. OTP VERIFICATIONS
 CREATE TABLE otp_verifications (
     otp_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NULL,
@@ -429,7 +453,7 @@ CREATE TABLE otp_verifications (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- 26. SYSTEM SETTINGS
+-- 27. SYSTEM SETTINGS
 CREATE TABLE system_settings (
     setting_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     setting_key VARCHAR(100) NOT NULL UNIQUE,
@@ -453,9 +477,11 @@ CREATE INDEX idx_loans_customer_id ON loans(customer_id);
 CREATE INDEX idx_loans_number ON loans(loan_number);
 CREATE INDEX idx_fds_number ON fixed_deposits(fd_number);
 CREATE INDEX idx_cards_number ON cards(card_number);
+CREATE INDEX idx_upi_address ON upi_accounts(upi_address);
 CREATE INDEX idx_complaints_number ON complaints(complaint_number);
 CREATE INDEX idx_audit_user_id ON audit_logs(user_id);
 CREATE INDEX idx_audit_created_at ON audit_logs(created_at);
+CREATE INDEX idx_kyc_customer_id ON customer_kyc(customer_id);
 
 -- =========================================================
 -- VIEWS

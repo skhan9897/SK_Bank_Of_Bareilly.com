@@ -1,0 +1,242 @@
+/* =========================================================
+   SK BANK OF BAREILLY - GLOBAL RESPONSIVE LAYOUT STYLESHEET
+   Supports Desktop (1200px+), Tablet (768-991px), Mobile (0-767px)
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+img, video, iframe, button, input, select, textarea {
+    max-width: 100%;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* SIDEBAR OVERLAY FOR MOBILE */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 9998;
+    backdrop-filter: blur(2px);
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* =========================================================
+   LARGE DESKTOP (1200px+)
+   ========================================================= */
+@media (min-width: 1200px) {
+    .dashboard-container {
+        display: flex;
+        width: 100%;
+        min-height: calc(100vh - 70px);
+    }
+
+    .sidebar {
+        width: 260px;
+        flex-shrink: 0;
+    }
+
+    .main-content {
+        flex: 1;
+        min-width: 0;
+        padding: 2rem;
+    }
+}
+
+/* =========================================================
+   TABLET LAYOUT (768px - 991px)
+   ========================================================= */
+@media (min-width: 768px) and (max-width: 991px) {
+    .main-container {
+        padding: 16px;
+    }
+
+    .dashboard-container {
+        display: flex;
+    }
+
+    .sidebar {
+        width: 220px;
+        flex-shrink: 0;
+    }
+
+    .main-content {
+        flex: 1;
+        min-width: 0;
+        padding: 1.25rem;
+    }
+
+    .bank-logo-img {
+        height: 40px;
+        width: 40px;
+    }
+
+    .hero-section {
+        padding: 3rem 1rem;
+    }
+
+    /* 2 COLUMNS FOR TABLET CARDS & QUICK ACTIONS */
+    .dashboard-grid, .quick-actions-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+}
+
+/* =========================================================
+   MOBILE LAYOUT (0px - 767px)
+   ========================================================= */
+@media (max-width: 767px) {
+    .main-container {
+        padding: 12px;
+    }
+
+    .dashboard-container {
+        display: block;
+        width: 100%;
+    }
+
+    /* OFF-CANVAS SLIDE-IN MOBILE SIDEBAR */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        width: 280px;
+        height: 100vh;
+        height: 100dvh;
+        z-index: 9999;
+        background: #071F49;
+        overflow-y: auto;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 4px 0 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .main-content {
+        width: 100%;
+        max-width: 100%;
+        padding: 1rem 0.75rem;
+    }
+
+    /* HAMBURGER TOGGLE BUTTON */
+    .mobile-menu-btn {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        font-size: 1.25rem;
+        color: #F4D477;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+
+    /* RESPONSIVE HEADER & LOGO */
+    .bank-navbar {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .bank-logo-img {
+        height: 36px;
+        width: 36px;
+    }
+
+    .bank-title-text {
+        font-size: 1.1rem !important;
+    }
+
+    /* MOBILE FORMS - SINGLE COLUMN */
+    .row.g-3 > [class*="col-"], .form-grid {
+        width: 100% !important;
+    }
+
+    /* TOUCH-FRIENDLY FORM INPUTS (PREVENTS IOS AUTO-ZOOM) */
+    .form-control, .form-select, .btn {
+        font-size: 16px !important;
+        min-height: 46px;
+    }
+
+    .btn-sm {
+        font-size: 14px !important;
+        min-height: 38px;
+    }
+
+    /* RESPONSIVE MODALS */
+    .modal-dialog {
+        width: auto;
+        max-width: calc(100% - 20px) !important;
+        margin: 10px auto;
+    }
+
+    /* RESPONSIVE HERO BANNER */
+    .hero-section {
+        padding: 2rem 0.5rem;
+        min-height: 200px;
+    }
+
+    .display-4 {
+        font-size: 1.8rem !important;
+    }
+
+    /* RESPONSIVE PROFILE AVATARS */
+    .profile-photo-large {
+        width: 90px !important;
+        height: 90px !important;
+    }
+
+    /* FULL WIDTH MOBILE BUTTONS */
+    .mobile-full-button {
+        width: 100% !important;
+    }
+}
+
+/* =========================================================
+   EXTRA SMALL MOBILE (0px - 575px)
+   ========================================================= */
+@media (max-width: 575px) {
+    .h3, h3 {
+        font-size: 1.35rem !important;
+    }
+
+    .h4, h4 {
+        font-size: 1.15rem !important;
+    }
+
+    /* SINGLE COLUMN CARDS FOR EXTRA SMALL SCREENS */
+    .card-balance {
+        padding: 1.25rem;
+    }
+
+    .display-6 {
+        font-size: 1.5rem !important;
+    }
+
+    .quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px;
+    }
+}

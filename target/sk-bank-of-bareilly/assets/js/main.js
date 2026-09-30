@@ -1,101 +1,100 @@
 /* =========================================================
-   SK BANK OF BAREILLY - JAVASCRIPT & AJAX HELPERS
+   SK BANK OF BAREILLY - MAIN JAVASCRIPT & MOBILE NAVIGATION
    ========================================================= */
 
 document.addEventListener('DOMContentLoaded', function () {
-    console.log("SK Bank of Bareilly Portal Initialized.");
+    // Mobile Hamburger Menu & Off-Canvas Sidebar Setup
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-    // Password Match Validation in Register
-    const passInput = document.getElementById('regPassword');
-    const confirmInput = document.getElementById('regConfirmPassword');
-    const matchAlert = document.getElementById('passwordMatchAlert');
-
-    if (passInput && confirmInput && matchAlert) {
-        confirmInput.addEventListener('input', function () {
-            if (passInput.value !== confirmInput.value) {
-                matchAlert.classList.remove('d-none');
-            } else {
-                matchAlert.classList.add('d-none');
+    if (mobileMenuBtn && sidebar) {
+        mobileMenuBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            sidebar.classList.toggle('active');
+            if (sidebarOverlay) {
+                sidebarOverlay.classList.toggle('active');
             }
+        });
+    }
+
+    if (sidebarOverlay && sidebar) {
+        sidebarOverlay.addEventListener('click', function () {
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
+        });
+    }
+
+    // Auto-close mobile sidebar when clicking a nav link on mobile screens
+    if (sidebar) {
+        const navLinks = sidebar.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                if (window.innerWidth < 768) {
+                    sidebar.classList.remove('active');
+                    if (sidebarOverlay) {
+                        sidebarOverlay.classList.remove('active');
+                    }
+                }
+            });
         });
     }
 });
 
-// EMI Calculator Function
-function calculateEmi() {
-    const principal = parseFloat(document.getElementById('emiAmount').value) || 0;
-    const rate = parseFloat(document.getElementById('emiRate').value) || 0;
-    const months = parseInt(document.getElementById('emiTenure').value) || 0;
-
-    if (principal <= 0 || rate <= 0 || months <= 0) {
-        document.getElementById('emiResultEmi').innerText = '₹ 0.00';
-        document.getElementById('emiResultTotal').innerText = '₹ 0.00';
-        document.getElementById('emiResultInterest').innerText = '₹ 0.00';
-        return;
-    }
-
-    const monthlyRate = rate / (12 * 100);
-    const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
-    const totalPayment = emi * months;
-    const totalInterest = totalPayment - principal;
-
-    document.getElementById('emiResultEmi').innerText = '₹ ' + emi.toLocaleString('en-IN', { maximumFractionDigits: 2 });
-    document.getElementById('emiResultTotal').innerText = '₹ ' + totalPayment.toLocaleString('en-IN', { maximumFractionDigits: 2 });
-    document.getElementById('emiResultInterest').innerText = '₹ ' + totalInterest.toLocaleString('en-IN', { maximumFractionDigits: 2 });
-}
-
-// Fixed Deposit Calculator
-function calculateFD() {
-    const amount = parseFloat(document.getElementById('fdAmount').value) || 0;
-    const months = parseInt(document.getElementById('fdTenure').value) || 12;
-
-    let rate = 6.0;
-    if (months >= 12 && months < 24) rate = 6.75;
-    else if (months >= 24 && months < 36) rate = 7.10;
-    else if (months >= 36) rate = 7.50;
-
-    const years = months / 12.0;
-    const maturity = amount * Math.pow((1 + (rate / 100.0) / 4.0), 4.0 * years);
-    const interest = maturity - amount;
-
-    if (document.getElementById('fdRateDisplay')) {
-        document.getElementById('fdRateDisplay').innerText = rate.toFixed(2) + ' %';
-    }
-    if (document.getElementById('fdMaturityDisplay')) {
-        document.getElementById('fdMaturityDisplay').innerText = '₹ ' + maturity.toLocaleString('en-IN', { maximumFractionDigits: 2 });
-    }
-    if (document.getElementById('fdInterestDisplay')) {
-        document.getElementById('fdInterestDisplay').innerText = '₹ ' + interest.toLocaleString('en-IN', { maximumFractionDigits: 2 });
-    }
-}
-
-// Print Bank Statement
-function printStatement() {
-    window.print();
-}
-
-// Export Table to CSV
+// CSV Export Helper Function
 function exportTableToCSV(filename) {
-    const table = document.querySelector(".table-custom");
+    const table = document.querySelector('table');
     if (!table) return;
 
     let csv = [];
-    const rows = table.querySelectorAll("tr");
+    const rows = table.querySelectorAll('tr');
 
     for (let i = 0; i < rows.length; i++) {
-        let row = [], cols = rows[i].querySelectorAll("td, th");
+        let row = [], cols = rows[i].querySelectorAll('td, th');
         for (let j = 0; j < cols.length; j++) {
-            row.push('"' + cols[j].innerText.trim() + '"');
+            // Clean inner text
+            let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s+)/gm, ' ');
+            data = data.replace(/"/g, '""');
+            row.push('"' + data + '"');
         }
-        csv.push(row.join(","));
+        csv.push(row.join(','));
     }
 
-    const csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
-    const downloadLink = document.createElement("a");
+    // Download CSV file
+    const csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
+    const downloadLink = document.createElement('a');
     downloadLink.download = filename;
     downloadLink.href = window.URL.createObjectURL(csvFile);
-    downloadLink.style.display = "none";
+    downloadLink.style.display = 'none';
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+}
+
+// EMI Calculator Helper Function
+function calculateEmi() {
+    const amountInput = document.getElementById('emiAmount');
+    const rateInput = document.getElementById('emiRate');
+    const tenureInput = document.getElementById('emiTenure');
+
+    if (!amountInput || !rateInput || !tenureInput) return;
+
+    const P = parseFloat(amountInput.value) || 0;
+    const annualRate = parseFloat(rateInput.value) || 0;
+    const N = parseInt(tenureInput.value) || 0;
+
+    if (P <= 0 || annualRate <= 0 || N <= 0) return;
+
+    const R = (annualRate / 12) / 100;
+    const emi = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
+    const totalPayable = emi * N;
+    const totalInterest = totalPayable - P;
+
+    const emiResultEmi = document.getElementById('emiResultEmi');
+    const emiResultInterest = document.getElementById('emiResultInterest');
+    const emiResultTotal = document.getElementById('emiResultTotal');
+
+    if (emiResultEmi) emiResultEmi.innerText = '₹ ' + emi.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+    if (emiResultInterest) emiResultInterest.innerText = '₹ ' + totalInterest.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+    if (emiResultTotal) emiResultTotal.innerText = '₹ ' + totalPayable.toLocaleString('en-IN', { maximumFractionDigits: 2 });
 }
