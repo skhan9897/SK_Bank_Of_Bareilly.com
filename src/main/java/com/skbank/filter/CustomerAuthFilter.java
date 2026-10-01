@@ -43,6 +43,16 @@ public class CustomerAuthFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+        String uri = httpRequest.getRequestURI();
+
+        // Bypass filter for public registration & login URLs
+        if (uri.endsWith("/customer/register") || uri.endsWith("/customer/login") ||
+            uri.endsWith("/register") || uri.endsWith("/login") ||
+            uri.contains("/assets/") || uri.contains("/images/") || uri.contains("/uploads/")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         HttpSession session = httpRequest.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("loggedInUser") : null;
 

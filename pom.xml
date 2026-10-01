@@ -33,14 +33,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Standard JSTL 1.2 for Tomcat 9 -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>
-
-        <!-- Apache Taglibs Standard Spec & Impl for Tomcat 9 Jasper JSTL -->
+        <!-- Apache Taglibs Standard Spec & Impl for Tomcat 9 JSTL -->
         <dependency>
             <groupId>org.apache.taglibs</groupId>
             <artifactId>taglibs-standard-spec</artifactId>
