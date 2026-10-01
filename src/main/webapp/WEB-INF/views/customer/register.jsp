@@ -150,17 +150,36 @@
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Select Account Type *</label>
                                         <select name="accountTypeId" class="form-select form-select-lg fs-6" required>
-                                            <c:forEach var="type" items="${accountTypes}">
-                                                <option value="${type.typeId}">${type.typeName} - ${type.description}</option>
-                                            </c:forEach>
+                                            <c:choose>
+                                                <c:when test="${not empty accountTypes}">
+                                                    <c:forEach var="type" items="${accountTypes}">
+                                                        <option value="${type.typeId}">${type.typeName} - ${type.description}</option>
+                                                    </c:forEach>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <option value="1" selected>Savings Account - Easy banking for daily personal transactions</option>
+                                                    <option value="2">Current Account - Suitable for commercial & business transactions</option>
+                                                    <option value="3">Salary Account - Zero-balance account for corporate employees</option>
+                                                    <option value="4">Basic Savings Account - Basic zero-maintenance savings account</option>
+                                                    <option value="5">Senior Citizen Savings Account - High-yield savings account for senior citizens</option>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Select Home Branch *</label>
                                         <select name="branchId" class="form-select form-select-lg fs-6" required>
-                                            <c:forEach var="b" items="${branches}">
-                                                <option value="${b.branchId}">${b.branchName} (${b.city}) - IFSC: ${b.ifscCode}</option>
-                                            </c:forEach>
+                                            <c:choose>
+                                                <c:when test="${not empty branches}">
+                                                    <c:forEach var="b" items="${branches}">
+                                                        <option value="${b.branchId}">${b.branchName} (${b.city}) - IFSC: ${b.ifscCode}</option>
+                                                    </c:forEach>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <option value="1" selected>SK Bank Bareilly Main Branch (Bareilly) - IFSC: SKB0002401</option>
+                                                    <option value="2">SK Bank Bareilly City Branch (Bareilly) - IFSC: SKB0002402</option>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </select>
                                     </div>
                                 </div>

@@ -1,4 +1,3 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <div class="sidebar">
     <div class="px-3 mb-3 text-center">
         <h6 class="text-warning fw-bold mb-0"><i class="fas fa-university me-1"></i> Admin Panel</h6>

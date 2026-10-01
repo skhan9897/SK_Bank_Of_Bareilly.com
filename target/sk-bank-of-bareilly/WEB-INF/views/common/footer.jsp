@@ -1,4 +1,3 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <footer class="bank-footer">
     <div class="container">
         <div class="row g-4">
