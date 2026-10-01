@@ -45,6 +45,13 @@
             <version>1.2.5</version>
         </dependency>
 
+        <!-- Eclipse JDT Compiler for Tomcat Jasper On-The-Fly JSP Compilation -->
+        <dependency>
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>ecj</artifactId>
+            <version>3.26.0</version>
+        </dependency>
+
         <!-- MySQL Connector -->
         <dependency>
             <groupId>com.mysql</groupId>
