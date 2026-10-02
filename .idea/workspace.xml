@@ -5,34 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a71f9876-05f1-4f73-8380-b66a0d6aa89d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/customer/transaction-details.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/login.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/login.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/otp.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/otp.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/register.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/register.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/footer.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/footer.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/navbar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/navbar.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/splash.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/splash.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/customer/fd-details.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/customer/fd-details.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/customer/transaction-details.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/customer/transaction-details.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly.war" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly.war" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/admin/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/admin/login.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/auth/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/auth/login.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/auth/otp.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/auth/otp.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/auth/register.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/auth/register.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/footer.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/footer.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/navbar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/navbar.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/splash.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/splash.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/customer/fd-details.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/customer/fd-details.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/customer/transaction-details.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/customer/transaction-details.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/assets/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/assets/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/index.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-com.skbank.service.LoanServiceImplTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-com.skbank.service.LoanServiceImplTest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-com.skbank.util.PasswordUtilTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-com.skbank.util.PasswordUtilTest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/com.skbank.service.LoanServiceImplTest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/com.skbank.service.LoanServiceImplTest.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/surefire-reports/com.skbank.util.PasswordUtilTest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/com.skbank.util.PasswordUtilTest.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/sk_bank_of_bareilly.sql" beforeDir="false" afterPath="$PROJECT_DIR$/database/sk_bank_of_bareilly.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +15,18 @@
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />

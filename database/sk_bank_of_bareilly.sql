@@ -1,5 +1,5 @@
 -- ===============================================================
--- SK BANK OF BAREILLY - COMPLETE DATABASE SCHEMA
+-- SK BANK OF BAREILLY - COMPLETE DATABASE SCHEMA (WITH PAYMENT BANK)
 -- Target Database: MySQL 8.0+
 -- Charset: utf8mb4
 -- Tagline: TRUST | GROWTH | TOGETHER
@@ -15,6 +15,12 @@ USE `sk_bank_of_bareilly`;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- Drop tables if they exist
+DROP TABLE IF EXISTS `payment_idempotency`;
+DROP TABLE IF EXISTS `payment_providers`;
+DROP TABLE IF EXISTS `fastag_accounts`;
+DROP TABLE IF EXISTS `recharge_transactions`;
+DROP TABLE IF EXISTS `payment_transactions`;
+DROP TABLE IF EXISTS `payment_wallets`;
 DROP TABLE IF EXISTS `audit_logs`;
 DROP TABLE IF EXISTS `admins`;
 DROP TABLE IF EXISTS `employees`;
@@ -49,15 +55,17 @@ CREATE TABLE `users` (
     `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
     `username` VARCHAR(50) NOT NULL UNIQUE,
     `password_hash` VARCHAR(255) NOT NULL,
-    `role` VARCHAR(20) NOT NULL DEFAULT 'CUSTOMER', -- 'CUSTOMER', 'ADMIN'
-    `status` VARCHAR(20) NOT NULL DEFAULT 'ACTIVE', -- 'ACTIVE', 'BLOCKED', 'DISABLED'
+    `role` VARCHAR(20) NOT NULL DEFAULT 'CUSTOMER',
+    `status` VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     `failed_login_attempts` INT NOT NULL DEFAULT 0,
     `account_locked_until` DATETIME NULL,
+    `auth_token` VARCHAR(255) NULL,
+    `token_expiry` DATETIME NULL,
     `last_login` DATETIME NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX `idx_users_username` (`username`),
-    INDEX `idx_users_role` (`role`)
+    INDEX `idx_users_token` (`auth_token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------
@@ -82,7 +90,7 @@ CREATE TABLE `admins` (
     `admin_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
     `user_id` BIGINT NOT NULL UNIQUE,
     `employee_id` BIGINT NULL,
-    `admin_role` VARCHAR(30) NOT NULL DEFAULT 'SUPER_ADMIN', -- 'SUPER_ADMIN', 'BANK_ADMIN', 'OPERATIONS_ADMIN', 'SUPPORT_ADMIN'
+    `admin_role` VARCHAR(30) NOT NULL DEFAULT 'SUPER_ADMIN',
     `status` VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
@@ -108,8 +116,8 @@ CREATE TABLE `customers` (
     `aadhaar_number` VARCHAR(20) NOT NULL UNIQUE,
     `pan_number` VARCHAR(20) NOT NULL UNIQUE,
     `profile_image` VARCHAR(255) NULL,
-    `kyc_status` VARCHAR(20) NOT NULL DEFAULT 'PENDING', -- 'PENDING', 'VERIFIED', 'REJECTED'
-    `status` VARCHAR(20) NOT NULL DEFAULT 'ACTIVE', -- 'ACTIVE', 'BLOCKED', 'DISABLED'
+    `kyc_status` VARCHAR(20) NOT NULL DEFAULT 'VERIFIED',
+    `status` VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
@@ -140,7 +148,7 @@ CREATE TABLE `branches` (
 -- ---------------------------------------------------------------
 CREATE TABLE `account_types` (
     `account_type_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
-    `type_code` VARCHAR(30) NOT NULL UNIQUE, -- 'SAVINGS', 'CURRENT', 'SALARY', 'BASIC_SAVINGS', 'SENIOR_CITIZEN'
+    `type_code` VARCHAR(30) NOT NULL UNIQUE,
     `type_name` VARCHAR(50) NOT NULL,
     `description` VARCHAR(255) NULL,
     `minimum_balance` DECIMAL(18,2) NOT NULL DEFAULT 0.00,
@@ -160,7 +168,7 @@ CREATE TABLE `accounts` (
     `account_number` VARCHAR(20) NOT NULL UNIQUE,
     `balance` DECIMAL(18,2) NOT NULL DEFAULT 0.00,
     `available_balance` DECIMAL(18,2) NOT NULL DEFAULT 0.00,
-    `status` VARCHAR(20) NOT NULL DEFAULT 'ACTIVE', -- 'ACTIVE', 'BLOCKED', 'CLOSED'
+    `status` VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     `opened_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `closed_at` DATETIME NULL,
     FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`),
@@ -193,13 +201,13 @@ CREATE TABLE `transactions` (
     `transaction_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
     `transaction_reference` VARCHAR(50) NOT NULL UNIQUE,
     `account_id` BIGINT NOT NULL,
-    `transaction_type` VARCHAR(30) NOT NULL, -- 'DEPOSIT', 'WITHDRAWAL', 'TRANSFER', 'MOBILE_TRANSFER', 'ACCOUNT_TRANSFER', 'UPI_TRANSFER', 'NEFT', 'RTGS', 'IMPS', 'BILL_PAYMENT', 'CARD_PAYMENT', 'LOAN_EMI', 'FD_INVESTMENT', 'INTEREST_CREDIT', 'REFUND'
+    `transaction_type` VARCHAR(30) NOT NULL,
     `amount` DECIMAL(18,2) NOT NULL,
     `balance_before` DECIMAL(18,2) NOT NULL,
     `balance_after` DECIMAL(18,2) NOT NULL,
     `related_account_id` BIGINT NULL,
     `description` VARCHAR(255) NOT NULL,
-    `status` VARCHAR(20) NOT NULL DEFAULT 'SUCCESS', -- 'SUCCESS', 'FAILED', 'PENDING'
+    `status` VARCHAR(20) NOT NULL DEFAULT 'SUCCESS',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`),
     FOREIGN KEY (`related_account_id`) REFERENCES `accounts` (`account_id`),
@@ -217,7 +225,7 @@ CREATE TABLE `transfer_requests` (
     `sender_account_id` BIGINT NOT NULL,
     `receiver_account_id` BIGINT NOT NULL,
     `amount` DECIMAL(18,2) NOT NULL,
-    `transfer_type` VARCHAR(30) NOT NULL, -- 'ACCOUNT', 'MOBILE', 'UPI', 'SELF'
+    `transfer_type` VARCHAR(30) NOT NULL,
     `remarks` VARCHAR(255) NULL,
     `status` VARCHAR(20) NOT NULL DEFAULT 'COMPLETED',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -256,7 +264,7 @@ CREATE TABLE `fixed_deposits` (
     `maturity_amount` DECIMAL(18,2) NOT NULL,
     `start_date` DATE NOT NULL,
     `maturity_date` DATE NOT NULL,
-    `status` VARCHAR(20) NOT NULL DEFAULT 'ACTIVE', -- 'ACTIVE', 'MATURED', 'CLOSED_PREMATURE'
+    `status` VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`),
     FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -266,7 +274,7 @@ CREATE TABLE `fixed_deposits` (
 -- ---------------------------------------------------------------
 CREATE TABLE `loan_types` (
     `loan_type_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
-    `loan_code` VARCHAR(30) NOT NULL UNIQUE, -- 'PERSONAL', 'HOME', 'CAR', 'EDUCATION', 'BUSINESS'
+    `loan_code` VARCHAR(30) NOT NULL UNIQUE,
     `loan_name` VARCHAR(50) NOT NULL,
     `description` VARCHAR(255) NULL,
     `interest_rate` DECIMAL(5,2) NOT NULL,
@@ -288,7 +296,7 @@ CREATE TABLE `loans` (
     `tenure_months` INT NOT NULL,
     `emi_amount` DECIMAL(18,2) NOT NULL,
     `outstanding_amount` DECIMAL(18,2) NOT NULL,
-    `status` VARCHAR(20) NOT NULL DEFAULT 'PENDING', -- 'PENDING', 'APPROVED', 'REJECTED', 'CLOSED'
+    `status` VARCHAR(20) NOT NULL DEFAULT 'PENDING',
     `applied_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `approved_at` DATETIME NULL,
     FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`),
@@ -317,10 +325,10 @@ CREATE TABLE `cards` (
     `card_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
     `customer_id` BIGINT NOT NULL,
     `account_id` BIGINT NOT NULL,
-    `card_number` VARCHAR(20) NOT NULL UNIQUE, -- Stored masked or encrypted; shown as XXXX XXXX XXXX 1234
-    `card_type` VARCHAR(20) NOT NULL, -- 'DEBIT', 'CREDIT'
+    `card_number` VARCHAR(20) NOT NULL UNIQUE,
+    `card_type` VARCHAR(20) NOT NULL,
     `expiry_date` DATE NOT NULL,
-    `card_status` VARCHAR(20) NOT NULL DEFAULT 'ACTIVE', -- 'ACTIVE', 'BLOCKED'
+    `card_status` VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`),
     FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`)
@@ -347,7 +355,7 @@ CREATE TABLE `bill_payments` (
     `bill_payment_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
     `customer_id` BIGINT NOT NULL,
     `account_id` BIGINT NOT NULL,
-    `biller_type` VARCHAR(50) NOT NULL, -- 'ELECTRICITY', 'WATER', 'GAS', 'MOBILE', 'DTH', 'INTERNET', 'INSURANCE', 'CREDIT_CARD'
+    `biller_type` VARCHAR(50) NOT NULL,
     `biller_name` VARCHAR(100) NOT NULL,
     `consumer_number` VARCHAR(50) NOT NULL,
     `amount` DECIMAL(18,2) NOT NULL,
@@ -366,7 +374,7 @@ CREATE TABLE `kyc` (
     `customer_id` BIGINT NOT NULL UNIQUE,
     `aadhaar_number` VARCHAR(20) NOT NULL,
     `pan_number` VARCHAR(20) NOT NULL,
-    `verification_status` VARCHAR(20) NOT NULL DEFAULT 'VERIFIED', -- 'PENDING', 'VERIFIED', 'REJECTED'
+    `verification_status` VARCHAR(20) NOT NULL DEFAULT 'VERIFIED',
     `verified_at` DATETIME NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`) ON DELETE CASCADE
@@ -380,7 +388,7 @@ CREATE TABLE `notifications` (
     `user_id` BIGINT NOT NULL,
     `title` VARCHAR(100) NOT NULL,
     `message` TEXT NOT NULL,
-    `notification_type` VARCHAR(30) NOT NULL DEFAULT 'GENERAL', -- 'LOGIN', 'TRANSFER', 'DEPOSIT', 'WITHDRAWAL', 'LOAN', 'FD', 'CARD', 'BILL', 'KYC', 'SECURITY'
+    `notification_type` VARCHAR(30) NOT NULL DEFAULT 'GENERAL',
     `is_read` BOOLEAN NOT NULL DEFAULT FALSE,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
@@ -394,8 +402,8 @@ CREATE TABLE `complaints` (
     `customer_id` BIGINT NOT NULL,
     `subject` VARCHAR(150) NOT NULL,
     `description` TEXT NOT NULL,
-    `priority` VARCHAR(20) NOT NULL DEFAULT 'MEDIUM', -- 'LOW', 'MEDIUM', 'HIGH', 'URGENT'
-    `status` VARCHAR(20) NOT NULL DEFAULT 'OPEN', -- 'OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'
+    `priority` VARCHAR(20) NOT NULL DEFAULT 'MEDIUM',
+    `status` VARCHAR(20) NOT NULL DEFAULT 'OPEN',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`)
@@ -440,11 +448,95 @@ CREATE TABLE `system_settings` (
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ---------------------------------------------------------------
+-- NEW PAYMENT BANK TABLES
+-- ---------------------------------------------------------------
+
+-- 25. PAYMENT_WALLETS TABLE
+CREATE TABLE `payment_wallets` (
+    `wallet_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `customer_id` BIGINT NOT NULL UNIQUE,
+    `wallet_number` VARCHAR(30) NOT NULL UNIQUE,
+    `balance` DECIMAL(18,2) NOT NULL DEFAULT 0.00,
+    `status` VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 26. PAYMENT_TRANSACTIONS TABLE
+CREATE TABLE `payment_transactions` (
+    `payment_transaction_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `customer_id` BIGINT NOT NULL,
+    `source_account_id` BIGINT NULL,
+    `payment_type` VARCHAR(50) NOT NULL, -- 'QR_PAY', 'SEND_MONEY', 'RECHARGE', 'ELECTRICITY', 'WATER', 'GAS', 'BROADBAND', 'FASTAG', 'INSURANCE', 'CREDIT_CARD'
+    `provider_code` VARCHAR(50) NULL,
+    `recipient_identifier` VARCHAR(100) NOT NULL,
+    `amount` DECIMAL(18,2) NOT NULL,
+    `reference_number` VARCHAR(50) NOT NULL UNIQUE,
+    `idempotency_key` VARCHAR(100) NULL UNIQUE,
+    `status` VARCHAR(20) NOT NULL DEFAULT 'SUCCESS', -- 'SUCCESS', 'PENDING', 'FAILED', 'REFUNDED'
+    `remarks` VARCHAR(255) NULL,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`),
+    INDEX `idx_pay_txn_cust` (`customer_id`),
+    INDEX `idx_pay_txn_ref` (`reference_number`),
+    INDEX `idx_pay_txn_idem` (`idempotency_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 27. RECHARGE_TRANSACTIONS TABLE
+CREATE TABLE `recharge_transactions` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `customer_id` BIGINT NOT NULL,
+    `mobile_number` VARCHAR(15) NOT NULL,
+    `operator` VARCHAR(50) NOT NULL,
+    `circle` VARCHAR(50) NULL,
+    `recharge_type` VARCHAR(20) NOT NULL DEFAULT 'PREPAID', -- 'PREPAID', 'POSTPAID', 'DTH'
+    `amount` DECIMAL(18,2) NOT NULL,
+    `reference_number` VARCHAR(50) NOT NULL UNIQUE,
+    `status` VARCHAR(20) NOT NULL DEFAULT 'SUCCESS',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 28. FASTAG_ACCOUNTS TABLE
+CREATE TABLE `fastag_accounts` (
+    `fastag_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `customer_id` BIGINT NOT NULL,
+    `vehicle_number` VARCHAR(20) NOT NULL UNIQUE,
+    `tag_id` VARCHAR(50) NOT NULL UNIQUE,
+    `issuer_bank` VARCHAR(100) NOT NULL DEFAULT 'SK BANK OF BAREILLY',
+    `balance` DECIMAL(18,2) NOT NULL DEFAULT 0.00,
+    `status` VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 29. PAYMENT_PROVIDERS TABLE
+CREATE TABLE `payment_providers` (
+    `provider_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `provider_type` VARCHAR(50) NOT NULL, -- 'MOBILE_OPERATOR', 'DTH', 'ELECTRICITY', 'WATER', 'GAS', 'BROADBAND', 'FASTAG', 'INSURANCE', 'CREDIT_CARD'
+    `provider_name` VARCHAR(100) NOT NULL,
+    `code` VARCHAR(50) NOT NULL UNIQUE,
+    `status` VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 30. PAYMENT_IDEMPOTENCY TABLE
+CREATE TABLE `payment_idempotency` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `idempotency_key` VARCHAR(100) NOT NULL UNIQUE,
+    `reference_number` VARCHAR(50) NOT NULL,
+    `response_payload` TEXT NOT NULL,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- ===============================================================
 -- SEED DATA INSERTION
 -- ===============================================================
 
--- 1. System Settings
+-- System Settings
 INSERT INTO `system_settings` (`setting_key`, `setting_value`, `description`) VALUES
 ('MAX_TRANSFER_AMOUNT', '500000.00', 'Maximum single transfer limit'),
 ('DAILY_TRANSFER_LIMIT', '1000000.00', 'Daily aggregated transfer limit'),
@@ -452,16 +544,20 @@ INSERT INTO `system_settings` (`setting_key`, `setting_value`, `description`) VA
 ('DAILY_WITHDRAWAL_LIMIT', '100000.00', 'Daily aggregated withdrawal limit'),
 ('MAX_UPI_TRANSACTION_AMOUNT', '100000.00', 'Maximum single UPI transfer limit'),
 ('OTP_EXPIRY_MINUTES', '5', 'OTP validity in minutes'),
-('SESSION_TIMEOUT_MINUTES', '30', 'Session timeout duration in minutes');
+('SESSION_TIMEOUT_MINUTES', '30', 'Session timeout duration in minutes'),
+('MAX_PAYMENT_AMOUNT', '100000.00', 'Payment bank single transaction limit'),
+('DAILY_PAYMENT_LIMIT', '200000.00', 'Payment bank daily aggregated limit'),
+('MAX_RECHARGE_AMOUNT', '10000.00', 'Max single mobile/DTH recharge amount'),
+('MAX_FASTAG_RECHARGE', '10000.00', 'Max single FASTag recharge limit');
 
--- 2. Branches
+-- Branches
 INSERT INTO `branches` (`branch_code`, `branch_name`, `address`, `city`, `state`, `pincode`, `ifsc_code`, `phone`) VALUES
 ('SKB001', 'Main Branch Bareilly', 'Civil Lines, Near Cantonment', 'Bareilly', 'Uttar Pradesh', '243001', 'SKBK0000001', '0581-2550001'),
 ('SKB002', 'Izzatnagar Branch', 'Near Railway Station, Izzatnagar', 'Bareilly', 'Uttar Pradesh', '243122', 'SKBK0000002', '0581-2550002'),
 ('SKB003', 'Rajendra Nagar Branch', 'Block B, Rajendra Nagar', 'Bareilly', 'Uttar Pradesh', '243122', 'SKBK0000003', '0581-2550003'),
 ('SKB004', 'Noida Cyber Branch', 'Sector 62, Electronic City', 'Noida', 'Uttar Pradesh', '201309', 'SKBK0000004', '0120-2550004');
 
--- 3. Account Types
+-- Account Types
 INSERT INTO `account_types` (`type_code`, `type_name`, `description`, `minimum_balance`, `interest_rate`) VALUES
 ('SAVINGS', 'Savings Account', 'Standard personal savings account with interest', 1000.00, 4.00),
 ('CURRENT', 'Current Account', 'Business account for high volume transactions', 5000.00, 0.00),
@@ -469,7 +565,7 @@ INSERT INTO `account_types` (`type_code`, `type_name`, `description`, `minimum_b
 ('BASIC_SAVINGS', 'Basic Savings Account (BSBD)', 'Zero-balance basic savings bank deposit account', 0.00, 3.50),
 ('SENIOR_CITIZEN', 'Senior Citizen Savings Account', 'Special savings account for citizens aged 60+', 1000.00, 5.00);
 
--- 4. Loan Types
+-- Loan Types
 INSERT INTO `loan_types` (`loan_code`, `loan_name`, `description`, `interest_rate`, `max_amount`, `max_tenure_months`) VALUES
 ('PERSONAL', 'Personal Loan', 'Quick personal loan for unexpected expenses', 10.50, 1000000.00, 60),
 ('HOME', 'Home Loan', 'Low interest loan to build or purchase your dream home', 8.25, 10000000.00, 240),
@@ -477,13 +573,31 @@ INSERT INTO `loan_types` (`loan_code`, `loan_name`, `description`, `interest_rat
 ('EDUCATION', 'Education Loan', 'Empower your higher studies in India or abroad', 7.90, 5000000.00, 120),
 ('BUSINESS', 'Business Growth Loan', 'Fuel your business expansion and working capital', 11.25, 20000000.00, 180);
 
--- 5. Seed Employees & Admins
--- BCrypt Hash for 'Admin@123': $2a$10$e8B.y9r.y/g4a1K/U4/Vv.5P1P4YpG9Uu6.fL3Y2x/E3c5m5gE3S. (or generated via BCrypt)
--- Generated BCrypt hash for "AdminPass123!": "$2a$10$4OInD52kP2c.0.wJc2Ake.GzPUp6Z39vBfDkW90/AInD2c/2aI.y6"
--- We will store a standard BCrypt password hash for admin accounts:
--- Password: "Admin@skbank123" -> BCrypt: "$2a$10$e8B.y9r.y/g4a1K/U4/Vv.5P1P4YpG9Uu6.fL3Y2x/E3c5m5gE3S."
--- (Our PasswordUtil will hash and check passwords properly using BCrypt)
+-- Payment Providers Seed
+INSERT INTO `payment_providers` (`provider_type`, `provider_name`, `code`) VALUES
+('MOBILE_OPERATOR', 'Jio Prepaid / Postpaid', 'JIO'),
+('MOBILE_OPERATOR', 'Airtel India', 'AIRTEL'),
+('MOBILE_OPERATOR', 'Vi (Vodafone Idea)', 'VI'),
+('MOBILE_OPERATOR', 'BSNL Prepaid', 'BSNL'),
+('DTH', 'Tata Play (Tata Sky)', 'TATAPLAY'),
+('DTH', 'Airtel Digital TV', 'AIRTEL_DTH'),
+('DTH', 'Dish TV', 'DISHTV'),
+('DTH', 'Sun Direct', 'SUNDIRECT'),
+('ELECTRICITY', 'UPPCL Urban (Uttar Pradesh)', 'UPPCL_URBAN'),
+('ELECTRICITY', 'UPPCL Rural (Uttar Pradesh)', 'UPPCL_RURAL'),
+('ELECTRICITY', 'BSES Rajdhani Delhi', 'BSES_DELHI'),
+('WATER', 'Bareilly Nagar Nigam Water', 'BAREILLY_WATER'),
+('WATER', 'Delhi Jal Board', 'DELHI_WATER'),
+('GAS', 'Indane Gas (LPG)', 'INDANE_GAS'),
+('GAS', 'Bharat Gas', 'BHARAT_GAS'),
+('GAS', 'HP Gas', 'HP_GAS'),
+('BROADBAND', 'Airtel Xstream Fiber', 'AIRTEL_FIBER'),
+('BROADBAND', 'JioFiber', 'JIO_FIBER'),
+('FASTAG', 'NHAI FASTag SK Bank', 'SK_FASTAG'),
+('INSURANCE', 'LIC India Premium', 'LIC_INDIA'),
+('CREDIT_CARD', 'SK Bank Credit Card Pay', 'SK_CREDIT_CARD');
 
+-- Seed Admins
 INSERT INTO `users` (`id`, `username`, `password_hash`, `role`, `status`) VALUES
 (1, 'superadmin', '$2a$10$wT0Xk3KqE1U6C7E2YfQe4O1N9A0M8B7C6D5E4F3G2H1I0J9K8L7M6', 'ADMIN', 'ACTIVE'),
 (2, 'bankadmin', '$2a$10$wT0Xk3KqE1U6C7E2YfQe4O1N9A0M8B7C6D5E4F3G2H1I0J9K8L7M6', 'ADMIN', 'ACTIVE');
@@ -495,6 +609,3 @@ INSERT INTO `employees` (`employee_id`, `employee_code`, `full_name`, `email`, `
 INSERT INTO `admins` (`admin_id`, `user_id`, `employee_id`, `admin_role`, `status`) VALUES
 (1, 1, 1, 'SUPER_ADMIN', 'ACTIVE'),
 (2, 2, 2, 'BANK_ADMIN', 'ACTIVE');
-
--- Note: Password for seed admin user "superadmin" is set via BCrypt.
--- In development, if password needs to be re-hashed, PasswordUtil will handle authenticating with BCrypt.

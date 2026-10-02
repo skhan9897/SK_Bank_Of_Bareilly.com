@@ -1,0 +1,18 @@
+<resources>
+    <style name="Theme.SKBankOfBareilly" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/sk_navy</item>
+        <item name="colorPrimaryVariant">@color/sk_navy</item>
+        <item name="colorOnPrimary">@color/sk_white</item>
+        <item name="colorSecondary">@color/sk_gold</item>
+        <item name="colorSecondaryVariant">@color/sk_gold_light</item>
+        <item name="colorOnSecondary">@color/sk_navy</item>
+        <item name="android:statusBarColor">@color/sk_navy</item>
+        <item name="android:windowBackground">@color/sk_bg</item>
+    </style>
+
+    <style name="Theme.SKBank.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/sk_navy</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/sk_bank_logo_splash</item>
+        <item name="postSplashScreenTheme">@style/Theme.SKBankOfBareilly</item>
+    </style>
+</resources>
