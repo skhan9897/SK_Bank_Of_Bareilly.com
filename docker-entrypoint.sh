@@ -23,11 +23,13 @@ if [ -z "$DB_URL" ] || [[ "$DB_URL" == *"localhost"* ]] || [[ "$DB_URL" == *"127
     done
 
     echo "Configuring MySQL root user and database..."
-    mysql -u root <<EOF
-CREATE DATABASE IF NOT EXISTS sk_bank_of_bareilly CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
-CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'root';
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+    # Set password using mysqladmin or GRANT statement (compatible with MariaDB 5.5+)
+    mysqladmin -u root password 'root' 2>/dev/null || true
+
+    mysql -u root -proot <<EOF
+CREATE DATABASE IF NOT EXISTS sk_bank_of_bareilly CHARACTER SET utf8mb4;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY 'root' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 EOF
 
