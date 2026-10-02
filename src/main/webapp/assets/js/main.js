@@ -1,100 +1,101 @@
-/* =========================================================
-   SK BANK OF BAREILLY - MAIN JAVASCRIPT & MOBILE NAVIGATION
-   ========================================================= */
+/* ===============================================================
+   SK BANK OF BAREILLY - JARS & AJAX SCRIPTS
+   =============================================================== */
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Mobile Hamburger Menu & Off-Canvas Sidebar Setup
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    // 1. Splash Screen Dismissal
+    const splash = document.getElementById('splash-screen');
+    if (splash) {
+        setTimeout(function () {
+            splash.classList.add('fade-out');
+            setTimeout(function () {
+                splash.style.display = 'none';
+            }, 500);
+        }, 1800);
+    }
+
+    // 2. Mobile Sidebar Toggle
+    const toggleBtn = document.getElementById('sidebar-toggle');
     const sidebar = document.querySelector('.sidebar');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    if (toggleBtn && sidebar) {
+        toggleBtn.addEventListener('click', function () {
+            sidebar.classList.toggle('show');
+        });
+    }
 
-    if (mobileMenuBtn && sidebar) {
-        mobileMenuBtn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            sidebar.classList.toggle('active');
-            if (sidebarOverlay) {
-                sidebarOverlay.classList.toggle('active');
+    // 3. Recipient Lookup for Send Money page
+    const recipientInput = document.getElementById('recipientInput');
+    const transferTypeSelect = document.getElementById('transferTypeSelect');
+    const lookupResultBox = document.getElementById('lookupResultBox');
+
+    if (recipientInput && lookupResultBox) {
+        let timer;
+        recipientInput.addEventListener('input', function () {
+            clearTimeout(timer);
+            const val = recipientInput.value.trim();
+            const type = transferTypeSelect ? transferTypeSelect.value : 'ACCOUNT';
+
+            if (val.length < 3) {
+                lookupResultBox.style.display = 'none';
+                return;
             }
-        });
-    }
 
-    if (sidebarOverlay && sidebar) {
-        sidebarOverlay.addEventListener('click', function () {
-            sidebar.classList.remove('active');
-            sidebarOverlay.classList.remove('active');
-        });
-    }
-
-    // Auto-close mobile sidebar when clicking a nav link on mobile screens
-    if (sidebar) {
-        const navLinks = sidebar.querySelectorAll('.nav-link');
-        navLinks.forEach(link => {
-            link.addEventListener('click', function () {
-                if (window.innerWidth < 768) {
-                    sidebar.classList.remove('active');
-                    if (sidebarOverlay) {
-                        sidebarOverlay.classList.remove('active');
-                    }
+            timer = setTimeout(function () {
+                let url = '';
+                if (type === 'MOBILE') {
+                    url = contextPath + '/customer/recipient/mobile?mobile=' + encodeURIComponent(val);
+                } else if (type === 'UPI') {
+                    url = contextPath + '/customer/recipient/upi?upiAddress=' + encodeURIComponent(val);
+                } else {
+                    url = contextPath + '/customer/recipient/account?accountNumber=' + encodeURIComponent(val);
                 }
-            });
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        lookupResultBox.style.display = 'block';
+                        if (data.success) {
+                            lookupResultBox.className = 'alert alert-success mt-3';
+                            document.getElementById('receiverAccountIdInput').value = data.accountId;
+                            document.getElementById('recipientNameInput').value = data.recipientName;
+
+                            let html = '<strong>Recipient Found:</strong> ' + data.recipientName;
+                            if (data.bankName) html += '<br><small>Bank: ' + data.bankName + ' (' + data.branchName + ')</small>';
+                            if (data.ownAccount) html += '<br><span class="badge bg-warning text-dark mt-1">Your Own Account</span>';
+
+                            lookupResultBox.innerHTML = html;
+                        } else {
+                            lookupResultBox.className = 'alert alert-danger mt-3';
+                            lookupResultBox.innerHTML = '<strong>Lookup Failed:</strong> ' + data.message;
+                            document.getElementById('receiverAccountIdInput').value = '';
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+            }, 400);
         });
     }
 });
 
-// CSV Export Helper Function
-function exportTableToCSV(filename) {
-    const table = document.querySelector('table');
-    if (!table) return;
+// EMI Calculator Function
+function calculateEmiClient(principalId, rateId, tenureId, resultEmiId, resultTotalId) {
+    const P = parseFloat(document.getElementById(principalId).value);
+    const annualRate = parseFloat(document.getElementById(rateId).value);
+    const N = parseInt(document.getElementById(tenureId).value);
 
-    let csv = [];
-    const rows = table.querySelectorAll('tr');
-
-    for (let i = 0; i < rows.length; i++) {
-        let row = [], cols = rows[i].querySelectorAll('td, th');
-        for (let j = 0; j < cols.length; j++) {
-            // Clean inner text
-            let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s+)/gm, ' ');
-            data = data.replace(/"/g, '""');
-            row.push('"' + data + '"');
-        }
-        csv.push(row.join(','));
+    if (isNaN(P) || isNaN(annualRate) || isNaN(N) || P <= 0 || annualRate <= 0 || N <= 0) {
+        return;
     }
 
-    // Download CSV file
-    const csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
-    const downloadLink = document.createElement('a');
-    downloadLink.download = filename;
-    downloadLink.href = window.URL.createObjectURL(csvFile);
-    downloadLink.style.display = 'none';
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-}
-
-// EMI Calculator Helper Function
-function calculateEmi() {
-    const amountInput = document.getElementById('emiAmount');
-    const rateInput = document.getElementById('emiRate');
-    const tenureInput = document.getElementById('emiTenure');
-
-    if (!amountInput || !rateInput || !tenureInput) return;
-
-    const P = parseFloat(amountInput.value) || 0;
-    const annualRate = parseFloat(rateInput.value) || 0;
-    const N = parseInt(tenureInput.value) || 0;
-
-    if (P <= 0 || annualRate <= 0 || N <= 0) return;
-
-    const R = (annualRate / 12) / 100;
-    const emi = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
+    const r = annualRate / (12 * 100);
+    const emi = (P * r * Math.pow(1 + r, N)) / (Math.pow(1 + r, N) - 1);
     const totalPayable = emi * N;
-    const totalInterest = totalPayable - P;
 
-    const emiResultEmi = document.getElementById('emiResultEmi');
-    const emiResultInterest = document.getElementById('emiResultInterest');
-    const emiResultTotal = document.getElementById('emiResultTotal');
-
-    if (emiResultEmi) emiResultEmi.innerText = '₹ ' + emi.toLocaleString('en-IN', { maximumFractionDigits: 2 });
-    if (emiResultInterest) emiResultInterest.innerText = '₹ ' + totalInterest.toLocaleString('en-IN', { maximumFractionDigits: 2 });
-    if (emiResultTotal) emiResultTotal.innerText = '₹ ' + totalPayable.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+    if (document.getElementById(resultEmiId)) {
+        document.getElementById(resultEmiId).innerText = '₹' + emi.toFixed(2);
+    }
+    if (document.getElementById(resultTotalId)) {
+        document.getElementById(resultTotalId).innerText = '₹' + totalPayable.toFixed(2);
+    }
 }

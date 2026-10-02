@@ -1,0 +1,52 @@
+package com.skbank.model;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+
+public class TransferRequest implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private Long transferId;
+    private String referenceNumber;
+    private Long senderAccountId;
+    private Long receiverAccountId;
+    private BigDecimal amount = BigDecimal.ZERO;
+    private TransferType transferType;
+    private String remarks;
+    private String status;
+    private Timestamp createdAt;
+    private Timestamp completedAt;
+
+    public TransferRequest() {}
+
+    public Long getTransferId() { return transferId; }
+    public void setTransferId(Long transferId) { this.transferId = transferId; }
+
+    public String getReferenceNumber() { return referenceNumber; }
+    public void setReferenceNumber(String referenceNumber) { this.referenceNumber = referenceNumber; }
+
+    public Long getSenderAccountId() { return senderAccountId; }
+    public void setSenderAccountId(Long senderAccountId) { this.senderAccountId = senderAccountId; }
+
+    public Long getReceiverAccountId() { return receiverAccountId; }
+    public void setReceiverAccountId(Long receiverAccountId) { this.receiverAccountId = receiverAccountId; }
+
+    public BigDecimal getAmount() { return amount; }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
+
+    public TransferType getTransferType() { return transferType; }
+    public void setTransferType(TransferType transferType) { this.transferType = transferType; }
+
+    public String getRemarks() { return remarks; }
+    public void setRemarks(String remarks) { this.remarks = remarks; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public Timestamp getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+
+    public Timestamp getCompletedAt() { return completedAt; }
+    public void setCompletedAt(Timestamp completedAt) { this.completedAt = completedAt; }
+}
