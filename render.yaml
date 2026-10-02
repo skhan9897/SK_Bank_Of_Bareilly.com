@@ -13,21 +13,8 @@ services:
     healthCheckPath: /
     envVars:
       - key: DB_URL
-        fromDatabase:
-          name: sk-bank-db
-          property: connectionString
+        value: jdbc:mysql://localhost:3306/sk_bank_of_bareilly?useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true
       - key: DB_USERNAME
-        fromDatabase:
-          name: sk-bank-db
-          property: user
+        value: root
       - key: DB_PASSWORD
-        fromDatabase:
-          name: sk-bank-db
-          property: password
-
-databases:
-  - name: sk-bank-db
-    databaseName: sk_bank_of_bareilly
-    user: sk_bank_user
-    plan: free
-    region: singapore
+        value: root

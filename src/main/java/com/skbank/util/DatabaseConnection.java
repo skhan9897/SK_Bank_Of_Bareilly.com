@@ -12,7 +12,7 @@ public class DatabaseConnection {
     private static final Logger LOGGER = Logger.getLogger(DatabaseConnection.class.getName());
 
     private static String driver = "com.mysql.cj.jdbc.Driver";
-    private static String url = "jdbc:mysql://localhost:3306/sk_bank_of_bareilly?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8";
+    private static String url = "jdbc:mysql://localhost:3306/sk_bank_of_bareilly?useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true&serverTimezone=UTC&characterEncoding=UTF-8";
     private static String username = "root";
     private static String password = "root";
 
@@ -34,11 +34,22 @@ public class DatabaseConnection {
         // Environment variables override properties if defined
         String envUrl = System.getenv("DB_URL");
         if (envUrl != null && !envUrl.trim().isEmpty()) {
+            envUrl = envUrl.trim();
+            if (envUrl.startsWith("mysql://")) {
+                envUrl = "jdbc:" + envUrl;
+            } else if (!envUrl.startsWith("jdbc:")) {
+                envUrl = "jdbc:mysql://" + envUrl;
+            }
+
+            if (!envUrl.contains("useSSL=")) {
+                envUrl += (envUrl.contains("?") ? "&" : "?") + "useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true&connectTimeout=10000";
+            }
             url = envUrl;
         }
+
         String envUser = System.getenv("DB_USERNAME");
         if (envUser != null && !envUser.trim().isEmpty()) {
-            username = envUser;
+            username = envUser.trim();
         }
         String envPass = System.getenv("DB_PASSWORD");
         if (envPass != null) {

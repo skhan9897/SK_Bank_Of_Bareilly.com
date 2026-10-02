@@ -27,7 +27,7 @@ public class TokenManager {
                     context,
                     PREF_NAME,
                     masterKey,
-                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SKEY_KEYGEN,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SKEY,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             );
         } catch (Exception e) {

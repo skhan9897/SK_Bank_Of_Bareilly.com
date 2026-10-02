@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="gender_array">
+        <item>MALE</item>
+        <item>FEMALE</item>
+        <item>OTHER</item>
+    </string-array>
+    <color name="black">#FF000000</color>
+    <color name="purple_200">#0B4EA2</color>
+    <color name="purple_500">#071F49</color>
+    <color name="purple_700">#071F49</color>
+    <color name="sk_bg">#F5F8FC</color>
+    <color name="sk_blue">#0B4EA2</color>
+    <color name="sk_border">#E2E8F0</color>
+    <color name="sk_danger">#EF4444</color>
+    <color name="sk_dark">#1E293B</color>
+    <color name="sk_gold">#D4A72C</color>
+    <color name="sk_gold_light">#F4D477</color>
+    <color name="sk_muted">#64748B</color>
+    <color name="sk_navy">#071F49</color>
+    <color name="sk_success">#10B981</color>
+    <color name="sk_warning">#F59E0B</color>
+    <color name="sk_white">#FFFFFF</color>
+    <color name="teal_200">#D4A72C</color>
+    <color name="teal_700">#D4A72C</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="app_name">SK Bank of Bareilly</string>
+    <string name="app_tagline">TRUST | GROWTH | TOGETHER</string>
+    <string name="welcome_message">Banking Made Simple, Secure &amp; Smarter</string>
+    <style name="Theme.SKBank.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/sk_navy</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/sk_bank_logo_splash</item>
+        <item name="postSplashScreenTheme">@style/Theme.SKBankOfBareilly</item>
+    </style>
+    <style name="Theme.SKBankOfBareilly" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/sk_navy</item>
+        <item name="colorPrimaryVariant">@color/sk_navy</item>
+        <item name="colorOnPrimary">@color/sk_white</item>
+        <item name="colorSecondary">@color/sk_gold</item>
+        <item name="colorSecondaryVariant">@color/sk_gold_light</item>
+        <item name="colorOnSecondary">@color/sk_navy</item>
+        <item name="android:statusBarColor">@color/sk_navy</item>
+        <item name="android:windowBackground">@color/sk_bg</item>
+    </style>
+</resources>
