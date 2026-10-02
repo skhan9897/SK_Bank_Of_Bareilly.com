@@ -185,6 +185,7 @@ com\skbank\model\UserStatus.class
 com\skbank\model\TransferRequest.class
 com\skbank\dao\impl\PaymentTransactionDAOImpl.class
 com\skbank\controller\customer\KycServlet.class
+com\skbank\util\DatabaseInitializer.class
 com\skbank\model\LoanType.class
 com\skbank\controller\admin\AdminCardServlet.class
 com\skbank\controller\api\BillPaymentApiServlet$BillPayload.class
