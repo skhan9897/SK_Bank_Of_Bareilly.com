@@ -46,11 +46,11 @@
 
                         <div class="col-md-6">
                             <label class="form-label fw-bold small">Aadhaar Number (12 Digits) *</label>
-                            <input type="text" name="aadhaarNumber" pattern="[0-9]{12}" class="form-control" required placeholder="12-digit Aadhaar">
+                            <input type="text" name="aadhaarNumber" pattern="[0-9]{12}" class="form-control" required placeholder="12-digit Aadhaar" oninput="this.value = this.value.replace(/[^\d]/g, '')">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold small">PAN Number *</label>
-                            <input type="text" name="panNumber" pattern="[A-Z]{5}[0-9]{4}[A-Z]" class="form-control text-uppercase" required placeholder="ABCDE1234F">
+                            <input type="text" name="panNumber" pattern="[A-Za-z]{5}[0-9]{4}[A-Za-z]" class="form-control text-uppercase" required placeholder="ABCDE1234F" oninput="this.value = this.value.toUpperCase()">
                         </div>
 
                         <div class="col-12">

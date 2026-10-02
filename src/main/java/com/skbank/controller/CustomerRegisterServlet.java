@@ -54,8 +54,11 @@ public class CustomerRegisterServlet extends HttpServlet {
             cust.setCity(request.getParameter("city"));
             cust.setState(request.getParameter("state"));
             cust.setPincode(request.getParameter("pincode"));
-            cust.setAadhaarNumber(request.getParameter("aadhaarNumber"));
-            cust.setPanNumber(request.getParameter("panNumber"));
+            String rawAadhaar = request.getParameter("aadhaarNumber");
+            cust.setAadhaarNumber(rawAadhaar != null ? rawAadhaar.replaceAll("\\s+", "").trim() : "");
+
+            String rawPan = request.getParameter("panNumber");
+            cust.setPanNumber(rawPan != null ? rawPan.replaceAll("\\s+", "").toUpperCase().trim() : "");
 
             String username = request.getParameter("username");
             String plainPassword = request.getParameter("password");
