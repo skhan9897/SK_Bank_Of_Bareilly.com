@@ -7,13 +7,12 @@
 FROM maven:3.9-eclipse-temurin-17 AS builder
 WORKDIR /app
 
-# Copy pom.xml and download dependencies
+# Copy pom.xml and source code
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
-# Copy source code and package WAR file
 COPY src ./src
-RUN mvn clean package -DskipTests
+
+# Package WAR file
+RUN mvn clean package -DskipTests -B
 
 # STAGE 2: Deploy WAR to Apache Tomcat 9 (Using official Docker Hub image)
 FROM tomcat:9.0-jdk17-temurin
