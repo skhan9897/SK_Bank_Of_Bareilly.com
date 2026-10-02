@@ -9,7 +9,7 @@
         <div class="col-lg-8">
             <div class="sk-card p-4 shadow-lg">
                 <div class="text-center mb-4">
-                    <img src="${pageContext.request.contextPath}/assets/images/sk-bank-logo.svg" alt="Logo" width="60" class="mb-2">
+                    <img src="${pageContext.request.contextPath}/assets/images/sk-bank-logo-transparent.png" alt="Logo" width="60" class="mb-2">
                     <h3 class="fw-bold text-navy">Open Account Online</h3>
                     <p class="text-muted small">Fill details below to open your digital bank account. Initial balance: <strong>₹0.00</strong></p>
                 </div>

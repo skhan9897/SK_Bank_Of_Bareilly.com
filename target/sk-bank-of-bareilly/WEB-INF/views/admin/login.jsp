@@ -9,7 +9,7 @@
         <div class="col-md-5">
             <div class="sk-card p-4 shadow-lg border-danger">
                 <div class="text-center mb-4">
-                    <div class="d-inline-block bg-danger bg-opacity-10 p-3 rounded-circle text-danger fs-1 mb-2"><i class="fa-solid fa-lock"></i></div>
+                    <img src="${pageContext.request.contextPath}/assets/images/sk-bank-logo-transparent.png" alt="Logo" width="60" class="mb-2">
                     <h4 class="fw-bold text-navy">Admin Portal Login</h4>
                     <p class="text-muted small">Authorized SK Bank Staff Only</p>
                 </div>

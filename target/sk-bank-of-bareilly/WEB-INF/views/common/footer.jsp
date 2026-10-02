@@ -4,7 +4,7 @@
         <div class="row g-4">
             <div class="col-lg-4 col-md-6">
                 <div class="d-flex align-items-center mb-3">
-                    <img src="${pageContext.request.contextPath}/assets/images/sk-bank-logo.svg" alt="Logo" width="40" height="40" class="me-2">
+                    <img src="${pageContext.request.contextPath}/assets/images/sk-bank-logo-transparent.png" alt="Logo" width="40" height="40" class="me-2">
                     <span class="h5 mb-0 font-weight-bold text-white">SK BANK OF BAREILLY</span>
                 </div>
                 <p class="text-muted small">Providing secure, reliable, and modern corporate & retail banking services. Committed to growth and trust.</p>

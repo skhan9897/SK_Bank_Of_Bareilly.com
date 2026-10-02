@@ -3,7 +3,7 @@
 <nav class="navbar navbar-expand-lg navbar-sk">
     <div class="container-fluid">
         <a class="navbar-brand d-flex align-items-center" href="${pageContext.request.contextPath}/">
-            <img src="${pageContext.request.contextPath}/assets/images/sk-bank-logo.svg" alt="Logo" width="45" height="45" class="me-2">
+            <img src="${pageContext.request.contextPath}/assets/images/sk-bank-logo-transparent.png" alt="Logo" width="45" height="45" class="me-2">
             <div>
                 <span class="navbar-brand-text">SK BANK OF BAREILLY</span>
                 <span class="navbar-brand-tagline">TRUST | GROWTH | TOGETHER</span>

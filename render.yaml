@@ -1,0 +1,33 @@
+# ===============================================================
+# SK BANK OF BAREILLY - RENDER DEPLOYMENT BLUEPRINT
+# Render Infrastructure-as-Code Configuration
+# ===============================================================
+
+services:
+  - type: web
+    name: sk-bank-of-bareilly
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore
+    healthCheckPath: /
+    envVars:
+      - key: DB_URL
+        fromDatabase:
+          name: sk-bank-db
+          property: connectionString
+      - key: DB_USERNAME
+        fromDatabase:
+          name: sk-bank-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: sk-bank-db
+          property: password
+
+databases:
+  - name: sk-bank-db
+    databaseName: sk_bank_of_bareilly
+    user: sk_bank_user
+    plan: free
+    region: singapore

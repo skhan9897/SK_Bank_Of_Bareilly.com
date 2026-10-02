@@ -6,10 +6,10 @@
 <%@ include file="/WEB-INF/views/common/navbar.jsp" %>
 
 <!-- HERO SECTION -->
-<section id="home" class="py-5 text-white position-relative" style="background: linear-gradient(135deg, #071F49 0%, #0B4EA2 100%);">
+<section id="home" class="py-5 text-white position-relative" style="background: linear-gradient(rgba(7, 31, 73, 0.82), rgba(11, 78, 162, 0.82)), url('${pageContext.request.contextPath}/assets/images/sk-bank-background.png') center/cover no-repeat;">
     <div class="container py-5">
         <div class="row align-items-center g-5">
-            <div class="col-lg-7">
+            <div class="col-lg-6">
                 <span class="badge bg-gold text-dark font-weight-bold px-3 py-2 rounded-pill mb-3">TRUST | GROWTH | TOGETHER</span>
                 <h1 class="display-4 font-weight-bold fw-bold mb-3">Banking Made Simple, Secure & Smarter</h1>
                 <p class="lead mb-4 text-light opacity-90">Experience premium corporate & retail digital banking with SK Bank of Bareilly. Manage deposits, transfers, loans, and UPI seamlessly.</p>
@@ -18,7 +18,10 @@
                     <a href="${pageContext.request.contextPath}/login" class="btn btn-outline-gold btn-lg px-4"><i class="fa-solid fa-right-to-bracket me-2"></i> Customer Login</a>
                 </div>
             </div>
-            <div class="col-lg-5 text-center">
+            <div class="col-lg-6 text-center">
+                <div class="mb-4">
+                    <img src="${pageContext.request.contextPath}/assets/images/sk-bank-banner.png" alt="SK Bank Banner" class="img-fluid rounded-4 shadow-lg border border-2 border-gold" style="max-height: 280px; object-fit: cover; width: 100%;">
+                </div>
                 <div class="sk-card bg-white text-dark shadow-lg border-gold p-4 text-start rounded-4">
                     <h5 class="fw-bold text-navy mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i> Quick Banking Features</h5>
                     <ul class="list-group list-group-flush mb-3">

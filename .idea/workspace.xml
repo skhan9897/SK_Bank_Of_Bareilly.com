@@ -5,461 +5,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a71f9876-05f1-4f73-8380-b66a0d6aa89d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.dockerignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/markdown.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/skbank/DashboardActivity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/skbank/LoginActivity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/skbank/SplashActivity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable-nodpi/sk_bank_logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/sk_bank_logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/themes.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nb-configuration.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/render.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/index.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/config/DatabaseConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/AccountServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/AuthCheckServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/BeneficiaryServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/BillPaymentServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/CardServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/ComplaintServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/ContactServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/DashboardServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/FDServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/KycServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/LoanServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/LoginServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/LogoutServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/NotificationServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/ProfileServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/RegisterServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/StatementServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/TransactionServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/TransferServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/admin/AdminFDServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/controller/admin/AdminFDServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/admin/AdminKycServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/customer/RecipientAccountServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/customer/RecipientMobileServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/customer/RecipientUpiServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/ComplaintMessageDAO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/EmployeeDAO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/FDDAO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/LoanTypeDAO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/NomineeDAO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/OtpDAO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/PasswordResetDAO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/RecipientDAO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/filter/AuthenticationFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/filter/EncodingFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/model/CustomerKyc.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/model/KycDocument.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/model/RecipientDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/AuthenticationService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/DefaultKycVerificationService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/FDService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/FDService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/KycService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/KycVerificationService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/RecipientService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/AccountNumberGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/AddSecondaryAdmin.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/CheckAdminInDb.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/DBConnection.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/DbInitializer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/DbVerifier.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/EmiCalculatorUtil.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/FileUploadUtil.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/FixAdminPassword.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/SetBothAdminPasswords.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/TestCustomerLogin.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/TestKycSubmission.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/TestLogin.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/TestRegisterServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/TestRegistration.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/TestTransferLimits.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/TransactionIdGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/TransparentLogoMaker.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/VerifyHashMatch.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/database.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/database/schema.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/database/seed-data.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/403.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/404.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/500.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/META-INF/context.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/beans.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/admin-header.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/admin-sidebar.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/alerts.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/footer.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/header.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/navbar.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/sidebar.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/customer/kyc.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/customer/register.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/accounts.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/admin/accounts.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/admin/complaints.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/admin/customer-detail.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/admin/customers.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/admin/dashboard.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/admin/deposit.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/admin/fixed-deposits.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/admin/kyc.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/admin/loans.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/admin/login.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/admin/reports.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/admin/transactions.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/css/responsive.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/css/splash.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/css/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/images/sk-bank-logo-transparent.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/images/sk-bank-logo-transparent.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/images/sk-bank-logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/images/sk-bank-logo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/main.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/js/splash.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/beneficiaries.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/cards.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/complaints.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/contact.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/dashboard.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/fixed-deposits.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/forgot-password.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/images/sk-bank-background.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/images/sk-bank-banner.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/images/sk-bank-logo-transparent.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/images/sk-bank-logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/kyc.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/loans.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/login.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/notifications.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/payments.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/profile.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/register.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/send-money.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/statements.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/transactions.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/transfer.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/persistence.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/config/DatabaseConfig.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/AccountServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/AuthCheckServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/BeneficiaryServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/BillPaymentServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/CardServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/ComplaintServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/ContactServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/DashboardServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/FDServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/HomeServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/KycServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/LoanServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/LoginServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/LogoutServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/NotificationServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/ProfileServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/RegisterServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/StatementServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/TransactionServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/TransferServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/admin/AdminAccountServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/admin/AdminComplaintServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/admin/AdminCustomerServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/admin/AdminDashboardServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/admin/AdminDepositServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/admin/AdminFDServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/admin/AdminKycServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/admin/AdminLoanServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/admin/AdminLoginServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/admin/AdminReportServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/admin/AdminTransactionServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/customer/RecipientAccountServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/customer/RecipientMobileServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/controller/customer/RecipientUpiServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/AccountDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/AccountTypeDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/AdminDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/AuditLogDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/BeneficiaryDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/BillPaymentDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/BranchDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/CardDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/CardTransactionDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/ComplaintDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/ComplaintMessageDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/CustomerDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/EmployeeDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/FDDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/KycDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/LoanDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/LoanPaymentDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/LoanTypeDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/NomineeDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/NotificationDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/OtpDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/PasswordResetDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/RecipientDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/SystemSettingsDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/TransactionDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/TransferDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/dao/UserDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/filter/AuthenticationFilter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/filter/CustomerAuthFilter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/filter/EncodingFilter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/Account.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/AccountType.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/AuditLog.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/Beneficiary.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/BillPayment.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/Branch.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/Card.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/Complaint.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/Customer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/CustomerKyc.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/FixedDeposit.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/KycDocument.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/Loan.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/Notification.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/RecipientDTO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/Transaction.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/model/User.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/service/AccountService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/service/AuthenticationService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/service/BillPaymentService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/service/CardService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/service/ComplaintService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/service/DefaultKycVerificationService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/service/FDService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/service/KycService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/service/KycVerificationService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/service/LoanService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/service/NotificationService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/service/RecipientService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/service/TransferService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/AccountNumberGenerator.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/AddSecondaryAdmin.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/CheckAdminInDb.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/DBConnection.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/DbInitializer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/DbVerifier.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/EmiCalculatorUtil.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/FileUploadUtil.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/FixAdminPassword.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/PasswordUtil.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/SetBothAdminPasswords.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/TestCustomerLogin.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/TestKycSubmission.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/TestLogin.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/TestRegisterServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/TestRegistration.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/TestTransferLimits.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/TransactionIdGenerator.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/TransparentLogoMaker.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/ValidationUtil.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/skbank/util/VerifyHashMatch.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/database.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/database/schema.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/database/seed-data.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly.war" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/403.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/404.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/500.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/META-INF/context.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/beans.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/META-INF/persistence.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/config/DatabaseConfig.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/AccountServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/AuthCheckServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/BeneficiaryServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/BillPaymentServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/CardServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/ComplaintServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/ContactServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/DashboardServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/FDServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/HomeServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/KycServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/LoanServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/LoginServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/LogoutServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/NotificationServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/ProfileServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/RegisterServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/StatementServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/TransactionServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/TransferServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/admin/AdminAccountServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/admin/AdminComplaintServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/admin/AdminCustomerServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/admin/AdminDashboardServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/admin/AdminDepositServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/admin/AdminFDServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/admin/AdminKycServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/admin/AdminLoanServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/admin/AdminLoginServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/admin/AdminReportServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/admin/AdminTransactionServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/customer/RecipientAccountServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/customer/RecipientMobileServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/controller/customer/RecipientUpiServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/AccountDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/AccountTypeDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/AdminDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/AuditLogDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/BeneficiaryDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/BillPaymentDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/BranchDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/CardDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/CardTransactionDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/ComplaintDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/ComplaintMessageDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/CustomerDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/EmployeeDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/FDDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/KycDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/LoanDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/LoanPaymentDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/LoanTypeDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/NomineeDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/NotificationDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/OtpDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/PasswordResetDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/RecipientDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/SystemSettingsDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/TransactionDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/TransferDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/dao/UserDAO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/filter/AuthenticationFilter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/filter/CustomerAuthFilter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/filter/EncodingFilter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/Account.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/AccountType.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/AuditLog.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/Beneficiary.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/BillPayment.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/Branch.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/Card.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/Complaint.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/Customer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/CustomerKyc.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/FixedDeposit.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/KycDocument.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/Loan.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/Notification.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/RecipientDTO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/Transaction.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/model/User.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/service/AccountService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/service/AuthenticationService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/service/BillPaymentService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/service/CardService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/service/ComplaintService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/service/DefaultKycVerificationService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/service/FDService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/service/KycService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/service/KycVerificationService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/service/LoanService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/service/NotificationService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/service/RecipientService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/service/TransferService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/AccountNumberGenerator.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/AddSecondaryAdmin.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/CheckAdminInDb.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/DBConnection.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/DbInitializer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/DbVerifier.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/EmiCalculatorUtil.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/FileUploadUtil.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/FixAdminPassword.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/PasswordUtil.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/SetBothAdminPasswords.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/TestCustomerLogin.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/TestKycSubmission.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/TestLogin.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/TestRegisterServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/TestRegistration.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/TestTransferLimits.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/TransactionIdGenerator.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/TransparentLogoMaker.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/ValidationUtil.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/com/skbank/util/VerifyHashMatch.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/database.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/database/schema.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/classes/database/seed-data.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/lib/ecj-3.26.0.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/lib/jbcrypt-0.4.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/lib/mysql-connector-j-8.3.0.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/lib/protobuf-java-3.25.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/lib/taglibs-standard-impl-1.2.5.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/lib/taglibs-standard-spec-1.2.5.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/admin/admin-header.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/admin/admin-sidebar.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/alerts.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/footer.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/header.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/navbar.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/sidebar.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/customer/kyc.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/customer/register.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/web.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/accounts.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/admin/accounts.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/admin/complaints.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/admin/customer-detail.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/admin/customers.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/admin/dashboard.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/admin/deposit.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/admin/fixed-deposits.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/admin/kyc.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/admin/loans.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/admin/login.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/admin/reports.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/admin/transactions.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/assets/css/responsive.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/assets/css/splash.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/assets/css/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/assets/images/sk-bank-background.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/assets/images/sk-bank-banner.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/assets/images/sk-bank-logo-transparent.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/assets/images/sk-bank-logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/assets/js/main.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/assets/js/splash.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/beneficiaries.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/cards.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/complaints.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/contact.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/dashboard.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/fixed-deposits.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/forgot-password.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/images/sk-bank-background.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/images/sk-bank-banner.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/images/sk-bank-logo-transparent.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/images/sk-bank-logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/index.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/kyc.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/loans.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/login.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/notifications.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/payments.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/profile.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/register.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/send-money.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/statements.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/transactions.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/transfer.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/customer/transaction-details.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/admin/login.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/login.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/otp.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/otp.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/register.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/register.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/footer.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/footer.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/navbar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/navbar.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/splash.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/splash.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/customer/fd-details.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/customer/fd-details.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/customer/transaction-details.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/customer/transaction-details.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/assets/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly.war" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly.war" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/admin/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/admin/login.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/auth/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/auth/login.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/auth/otp.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/auth/otp.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/auth/register.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/auth/register.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/footer.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/footer.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/navbar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/navbar.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/splash.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/common/splash.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/customer/fd-details.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/customer/fd-details.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/customer/transaction-details.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/WEB-INF/views/customer/transaction-details.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/assets/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/assets/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly/index.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-com.skbank.service.LoanServiceImplTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-com.skbank.service.LoanServiceImplTest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/surefire-reports/TEST-com.skbank.util.PasswordUtilTest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-com.skbank.util.PasswordUtilTest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/surefire-reports/com.skbank.service.LoanServiceImplTest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/com.skbank.service.LoanServiceImplTest.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/surefire-reports/com.skbank.util.PasswordUtilTest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/target/surefire-reports/com.skbank.util.PasswordUtilTest.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -481,22 +54,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Sajid Khan/OneDrive/Documents/NetBeansProjects/SKBankOfBareilly/src/main/webapp/images"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Sajid Khan/OneDrive/Documents/NetBeansProjects/SKBankOfBareilly/src/main/webapp/images&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\webapp\images" />

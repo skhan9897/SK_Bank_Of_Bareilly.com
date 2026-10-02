@@ -39,7 +39,7 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: var(--sk-navy);
+    background: linear-gradient(rgba(7, 31, 73, 0.90), rgba(7, 31, 73, 0.90)), url('../images/sk-bank-background.png') center/cover no-repeat;
     z-index: 99999;
     display: flex;
     flex-direction: column;

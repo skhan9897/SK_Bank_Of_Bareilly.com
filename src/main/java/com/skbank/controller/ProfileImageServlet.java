@@ -64,13 +64,13 @@ public class ProfileImageServlet extends HttpServlet {
             Customer cust = customerService.getCustomerById(requestedCustId);
             if (cust == null || cust.getProfileImage() == null || cust.getProfileImage().trim().isEmpty()) {
                 // Stream default avatar or 404
-                response.sendRedirect(request.getContextPath() + "/assets/images/default-avatar.png");
+                response.sendRedirect(request.getContextPath() + "/assets/images/default-avatar.svg");
                 return;
             }
 
             File file = new File(cust.getProfileImage());
             if (!file.exists() || !file.canRead()) {
-                response.sendRedirect(request.getContextPath() + "/assets/images/default-avatar.png");
+                response.sendRedirect(request.getContextPath() + "/assets/images/default-avatar.svg");
                 return;
             }
 
