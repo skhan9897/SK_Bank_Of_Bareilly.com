@@ -4,28 +4,93 @@
 <jsp:useBean id="nowDate" class="java.util.Date" />
 <!DOCTYPE html>
 <html lang="en">
-<jsp:include page="/WEB-INF/views/common/header.jsp">
-    <jsp:param name="title" value="Open Account & Digital Passbook - SK Bank" />
-</jsp:include>
-<style>
-    @media print {
-        body * { visibility: hidden; }
-        #digitalPassbookReceipt, #digitalPassbookReceipt * { visibility: visible; }
-        #digitalPassbookReceipt { position: absolute; left: 0; top: 0; width: 100%; border: none !important; box-shadow: none !important; }
-        .no-print { display: none !important; }
-    }
-</style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Open Account & Digital Passbook - SK Bank of Bareilly</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom Bank Styles -->
+    <link href="${pageContext.request.contextPath}/assets/css/style.css" rel="stylesheet">
+    <!-- Responsive Stylesheet -->
+    <link href="${pageContext.request.contextPath}/assets/css/responsive.css" rel="stylesheet">
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #digitalPassbookReceipt, #digitalPassbookReceipt * { visibility: visible; }
+            #digitalPassbookReceipt { position: absolute; left: 0; top: 0; width: 100%; border: none !important; box-shadow: none !important; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
 <body class="bg-light">
 
+    <!-- NAVBAR HEADER -->
     <div class="no-print">
-        <jsp:include page="/WEB-INF/views/common/navbar.jsp" />
+        <div id="sidebarOverlay" class="sidebar-overlay"></div>
+        <nav class="navbar navbar-expand-lg bank-navbar sticky-top">
+            <div class="container-fluid px-2 px-lg-4">
+                <button id="mobileMenuBtn" class="mobile-menu-btn d-lg-none me-1" type="button" aria-label="Open navigation menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a class="navbar-brand d-flex align-items-center gap-2 me-auto" href="${pageContext.request.contextPath}/">
+                    <img src="${pageContext.request.contextPath}/images/sk-bank-logo-transparent.png" alt="SK Bank of Bareilly" class="bank-logo-img">
+                    <span class="text-white fw-bold fs-5 bank-title-text">SK Bank of Bareilly</span>
+                </a>
+                <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="collapse" data-bs-target="#bankNav" aria-label="Toggle navigation">
+                    <i class="fas fa-ellipsis-v fs-5"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="bankNav">
+                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link bank-nav-link" href="${pageContext.request.contextPath}/">Home</a></li>
+                        <li class="nav-item"><a class="nav-link bank-nav-link" href="${pageContext.request.contextPath}/#services">Personal Banking</a></li>
+                        <li class="nav-item"><a class="nav-link bank-nav-link" href="${pageContext.request.contextPath}/#services">Business Banking</a></li>
+                        <li class="nav-item"><a class="nav-link bank-nav-link" href="${pageContext.request.contextPath}/#loans">Loans</a></li>
+                        <li class="nav-item"><a class="nav-link bank-nav-link" href="${pageContext.request.contextPath}/#deposits">Fixed Deposit</a></li>
+                        <li class="nav-item"><a class="nav-link bank-nav-link" href="${pageContext.request.contextPath}/contact">Contact Us</a></li>
+                    </ul>
+                    <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0">
+                        <c:choose>
+                            <c:when test="${not empty sessionScope.loggedInUser}">
+                                <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-gold btn-sm"><i class="fas fa-chart-line me-1"></i> Dashboard</a>
+                                <a href="${pageContext.request.contextPath}/logout" class="btn btn-outline-light btn-sm"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="${pageContext.request.contextPath}/login" class="btn btn-outline-gold btn-sm px-3"><i class="fas fa-lock me-1"></i> Login</a>
+                                <a href="${pageContext.request.contextPath}/register" class="btn btn-gold btn-sm px-3"><i class="fas fa-user-plus me-1"></i> Open Account</a>
+                                <a href="${pageContext.request.contextPath}/admin/login" class="btn btn-navy btn-sm px-2 border-warning text-warning" title="Admin Portal Login"><i class="fas fa-user-shield me-1"></i> Admin</a>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+                </div>
+            </div>
+        </nav>
     </div>
 
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-10">
 
-                <jsp:include page="/WEB-INF/views/common/alerts.jsp" />
+                <!-- ALERTS DISPLAY -->
+                <c:if test="${not empty errorMessage or not empty param.error}">
+                    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Error:</strong> ${not empty errorMessage ? errorMessage : param.error}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </c:if>
+
+                <c:if test="${not empty successMessage or not empty param.success}">
+                    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>Success:</strong> ${not empty successMessage ? successMessage : param.success}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </c:if>
 
                 <!-- DIGITAL PASSBOOK & VIRTUAL DEBIT CARD RECEIPT CARD -->
                 <c:choose>
@@ -292,6 +357,68 @@
         </div>
     </div>
 
+    <!-- FOOTER -->
+    <div class="no-print">
+        <footer class="bank-footer">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <img src="${pageContext.request.contextPath}/images/sk-bank-logo-transparent.png" alt="SK Logo" style="height: 45px;">
+                            <h5 class="text-white mb-0 fw-bold">SK Bank of Bareilly</h5>
+                        </div>
+                        <p class="small text-white-50">
+                            Your trusted financial partner for a brighter tomorrow. Providing secure, simple, and smart personal and commercial banking services in Bareilly and across Uttar Pradesh.
+                        </p>
+                    </div>
+                    <div class="col-md-2">
+                        <h6 class="text-warning fw-bold mb-3">Quick Links</h6>
+                        <ul class="list-unstyled small">
+                            <li class="mb-2"><a href="${pageContext.request.contextPath}/">Home</a></li>
+                            <li class="mb-2"><a href="${pageContext.request.contextPath}/#services">Services</a></li>
+                            <li class="mb-2"><a href="${pageContext.request.contextPath}/#loans">Loan Portal</a></li>
+                            <li class="mb-2"><a href="${pageContext.request.contextPath}/login">Internet Banking</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h6 class="text-warning fw-bold mb-3">Customer Support</h6>
+                        <ul class="list-unstyled small text-white-50">
+                            <li class="mb-2"><i class="fas fa-phone-alt text-warning me-2"></i> Toll Free: 1800-123-4567</li>
+                            <li class="mb-2"><i class="fas fa-envelope text-warning me-2"></i> support@skbankofbareilly.example</li>
+                            <li class="mb-2"><i class="fas fa-map-marker-alt text-warning me-2"></i> Bareilly Civil Lines, UP - 243001</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h6 class="text-warning fw-bold mb-3">Security & Trust</h6>
+                        <p class="small text-white-50">256-Bit SSL Encrypted Banking Portal. Fully compliant with RBI banking guidelines and security protocols.</p>
+                        <div class="d-flex gap-2 text-warning fs-5">
+                            <i class="fab fa-facebook"></i>
+                            <i class="fab fa-twitter"></i>
+                            <i class="fab fa-linkedin"></i>
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                    </div>
+                </div>
+                <hr class="border-secondary my-4">
+                <div class="row align-items-center small text-white-50">
+                    <div class="col-md-6 text-center text-md-start">
+                        © <%= java.util.Calendar.getInstance().get(java.util.Calendar.YEAR) %> SK Bank of Bareilly. All Rights Reserved.
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <a href="#" class="me-3">Privacy Policy</a>
+                        <a href="#" class="me-3">Terms & Conditions</a>
+                        <a href="#">Security Statement</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+
     <script>
         function validateProfilePhoto(input) {
             if (input.files && input.files[0]) {
@@ -313,10 +440,6 @@
             }
         }
     </script>
-
-    <div class="no-print">
-        <jsp:include page="/WEB-INF/views/common/footer.jsp" />
-    </div>
 
 </body>
 </html>
