@@ -73,17 +73,38 @@
                         <div class="col-md-6">
                             <label class="form-label fw-bold small">Preferred Branch *</label>
                             <select name="branchId" class="form-select" required>
-                                <c:forEach items="${branches}" var="b">
-                                    <option value="${b.branchId}">${b.branchName} (${b.ifscCode})</option>
-                                </c:forEach>
+                                <c:choose>
+                                    <c:when test="${not empty branches}">
+                                        <c:forEach items="${branches}" var="b">
+                                            <option value="${b.branchId}">${b.branchName} (${b.ifscCode})</option>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="1">Main Branch Bareilly (SKBK0000001)</option>
+                                        <option value="2">Izzatnagar Branch (SKBK0000002)</option>
+                                        <option value="3">Rajendra Nagar Branch (SKBK0000003)</option>
+                                        <option value="4">Noida Cyber Branch (SKBK0000004)</option>
+                                    </c:otherwise>
+                                </c:choose>
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold small">Account Type *</label>
                             <select name="accountTypeId" class="form-select" required>
-                                <c:forEach items="${accountTypes}" var="at">
-                                    <option value="${at.accountTypeId}">${at.typeName}</option>
-                                </c:forEach>
+                                <c:choose>
+                                    <c:when test="${not empty accountTypes}">
+                                        <c:forEach items="${accountTypes}" var="at">
+                                            <option value="${at.accountTypeId}">${at.typeName}</option>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="1">Savings Account</option>
+                                        <option value="2">Current Account</option>
+                                        <option value="3">Corporate Salary Account</option>
+                                        <option value="4">Basic Savings Account (BSBD)</option>
+                                        <option value="5">Senior Citizen Savings Account</option>
+                                    </c:otherwise>
+                                </c:choose>
                             </select>
                         </div>
 

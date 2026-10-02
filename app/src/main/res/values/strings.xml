@@ -2,4 +2,10 @@
     <string name="app_name">SK Bank of Bareilly</string>
     <string name="app_tagline">TRUST | GROWTH | TOGETHER</string>
     <string name="welcome_message">Banking Made Simple, Secure &amp; Smarter</string>
+
+    <string-array name="gender_array">
+        <item>MALE</item>
+        <item>FEMALE</item>
+        <item>OTHER</item>
+    </string-array>
 </resources>
