@@ -1,0 +1,45 @@
+package com.skbankofbareilly.mobile.model;
+
+public class Beneficiary {
+    private Long beneficiaryId;
+    private Long customerId;
+    private String beneficiaryName;
+    private String accountNumber;
+    private String ifscCode;
+    private String bankName;
+    private String nickname;
+    private String status;
+
+    public Beneficiary() {}
+
+    public Long getBeneficiaryId() { return beneficiaryId; }
+    public void setBeneficiaryId(Long beneficiaryId) { this.beneficiaryId = beneficiaryId; }
+
+    public Long getCustomerId() { return customerId; }
+    public void setCustomerId(Long customerId) { this.customerId = customerId; }
+
+    public String getBeneficiaryName() { return beneficiaryName; }
+    public void setBeneficiaryName(String beneficiaryName) { this.beneficiaryName = beneficiaryName; }
+
+    public String getAccountNumber() { return accountNumber; }
+    public void setAccountNumber(String accountNumber) { this.accountNumber = accountNumber; }
+
+    public String getIfscCode() { return ifscCode; }
+    public void setIfscCode(String ifscCode) { this.ifscCode = ifscCode; }
+
+    public String getBankName() { return bankName; }
+    public void setBankName(String bankName) { this.bankName = bankName; }
+
+    public String getNickname() { return nickname; }
+    public void setNickname(String nickname) { this.nickname = nickname; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public String getMaskedAccountNumber() {
+        if (accountNumber != null && accountNumber.length() >= 4) {
+            return "XXXXXX" + accountNumber.substring(accountNumber.length() - 4);
+        }
+        return accountNumber;
+    }
+}
