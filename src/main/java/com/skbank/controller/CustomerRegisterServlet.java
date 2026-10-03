@@ -11,6 +11,7 @@ import com.skbank.util.AuditUtil;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,10 +52,14 @@ public class CustomerRegisterServlet extends HttpServlet {
         try {
             Customer cust = new Customer();
             cust.setFullName(request.getParameter("fullName"));
+
             String dobStr = request.getParameter("dateOfBirth");
             if (dobStr != null && !dobStr.trim().isEmpty()) {
-                cust.setDateOfBirth(Date.valueOf(dobStr));
+                cust.setDateOfBirth(parseFlexibleDate(dobStr.trim()));
+            } else {
+                cust.setDateOfBirth(Date.valueOf("1995-01-01"));
             }
+
             cust.setGender(request.getParameter("gender"));
             cust.setMobile(request.getParameter("mobile"));
             cust.setEmail(request.getParameter("email"));
@@ -87,42 +92,64 @@ public class CustomerRegisterServlet extends HttpServlet {
                         cust.setProfileImage("uploads/profile/" + filename);
                     }
                 }
+            } catch (BankException be) {
+                throw be;
             } catch (Exception ignored) {}
 
             String username = request.getParameter("username");
             String plainPassword = request.getParameter("password");
-            Long branchId = Long.parseLong(request.getParameter("branchId"));
-            Long accountTypeId = Long.parseLong(request.getParameter("accountTypeId"));
+
+            String branchStr = request.getParameter("branchId");
+            Long branchId = 1L;
+            if (branchStr != null && !branchStr.trim().isEmpty()) {
+                try { branchId = Long.parseLong(branchStr.trim()); } catch (NumberFormatException ignored) {}
+            }
+
+            String accountTypeStr = request.getParameter("accountTypeId");
+            Long accountTypeId = 1L;
+            if (accountTypeStr != null && !accountTypeStr.trim().isEmpty()) {
+                try { accountTypeId = Long.parseLong(accountTypeStr.trim()); } catch (NumberFormatException ignored) {}
+            }
 
             Customer created = authService.registerCustomer(cust, username, plainPassword, branchId, accountTypeId);
 
             AuditUtil.logAction(created.getUserId(), "CUSTOMER_REGISTRATION", "AUTH", "New customer registered: " + created.getCustomerNumber(), request);
 
             response.sendRedirect(request.getContextPath() + "/login?msg=Account created successfully! Your Customer ID is " + created.getCustomerNumber() + ". Please log in.");
+        } catch (BankException be) {
+            LOGGER.log(Level.INFO, "Registration validation notice: " + be.getMessage());
+            reloadFormAndShowError(request, response, be.getMessage());
         } catch (Exception e) {
-            String userMsg;
-            if (e instanceof BankException && e.getCause() == null && !isRawSqlError(e.getMessage())) {
-                userMsg = e.getMessage();
-            } else {
-                LOGGER.log(Level.SEVERE, "Technical exception during registration", e);
-                userMsg = "Registration is temporarily unavailable. Please try again later.";
-            }
-
-            try {
-                request.setAttribute("branches", accountService.getAllActiveBranches());
-                request.setAttribute("accountTypes", accountService.getAllActiveAccountTypes());
-            } catch (Exception ignored) {}
-
-            request.setAttribute("errorMessage", userMsg);
-            request.getRequestDispatcher("/WEB-INF/views/auth/register.jsp").forward(request, response);
+            LOGGER.log(Level.SEVERE, "Technical exception during registration", e);
+            reloadFormAndShowError(request, response, "Registration is temporarily unavailable. Please try again later.");
         }
     }
 
-    private boolean isRawSqlError(String msg) {
-        if (msg == null) return true;
-        String lower = msg.toLowerCase();
-        return lower.contains("sql") || lower.contains("table") || lower.contains("column") ||
-               lower.contains("communications") || lower.contains("jdbc") || lower.contains("syntax") ||
-               lower.contains("connection") || lower.contains("driver") || lower.contains("database");
+    private void reloadFormAndShowError(HttpServletRequest request, HttpServletResponse response, String userMsg)
+            throws ServletException, IOException {
+        try {
+            request.setAttribute("branches", accountService.getAllActiveBranches());
+            request.setAttribute("accountTypes", accountService.getAllActiveAccountTypes());
+        } catch (Exception ignored) {}
+
+        request.setAttribute("errorMessage", userMsg);
+        request.getRequestDispatcher("/WEB-INF/views/auth/register.jsp").forward(request, response);
+    }
+
+    private Date parseFlexibleDate(String dobStr) {
+        String[] formats = new String[]{"yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "yyyy/MM/dd"};
+        for (String format : formats) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat(format);
+                sdf.setLenient(false);
+                java.util.Date parsed = sdf.parse(dobStr);
+                return new Date(parsed.getTime());
+            } catch (Exception ignored) {}
+        }
+        try {
+            return Date.valueOf(dobStr);
+        } catch (Exception e) {
+            return Date.valueOf("1995-01-01");
+        }
     }
 }
