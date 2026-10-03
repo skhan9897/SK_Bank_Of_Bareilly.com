@@ -5,13 +5,21 @@ import com.skbank.model.User;
 import com.skbank.model.UserRole;
 import com.skbank.model.UserStatus;
 import com.skbank.util.DatabaseConnection;
+import com.skbank.util.DatabaseInitializer;
 
 import java.sql.*;
 
 public class UserDAOImpl implements UserDAO {
 
+    private void ensureTableExists() {
+        try {
+            DatabaseInitializer.initializeDatabaseIfMissing();
+        } catch (Exception ignored) {}
+    }
+
     @Override
     public User findByUsername(String username) throws SQLException {
+        ensureTableExists();
         String sql = "SELECT * FROM users WHERE username = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -21,12 +29,19 @@ public class UserDAOImpl implements UserDAO {
                     return mapUser(rs);
                 }
             }
+        } catch (SQLException e) {
+            if (e.getMessage() != null && e.getMessage().contains("doesn't exist")) {
+                ensureTableExists();
+            } else {
+                throw e;
+            }
         }
         return null;
     }
 
     @Override
     public User findById(Long id) throws SQLException {
+        ensureTableExists();
         String sql = "SELECT * FROM users WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -49,6 +64,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public Long create(Connection conn, User user) throws SQLException {
+        ensureTableExists();
         String sql = "INSERT INTO users (username, password_hash, role, status, created_at, updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getUsername());
@@ -67,6 +83,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean updatePassword(Long userId, String newPasswordHash) throws SQLException {
+        ensureTableExists();
         String sql = "UPDATE users SET password_hash = ?, updated_at = NOW() WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -78,6 +95,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean updateStatus(Long userId, String status) throws SQLException {
+        ensureTableExists();
         String sql = "UPDATE users SET status = ?, updated_at = NOW() WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -89,6 +107,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean updateLastLogin(Long userId) throws SQLException {
+        ensureTableExists();
         String sql = "UPDATE users SET last_login = NOW(), failed_login_attempts = 0 WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -99,6 +118,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean updateFailedLoginAttempts(Long userId, int attempts) throws SQLException {
+        ensureTableExists();
         String sql = "UPDATE users SET failed_login_attempts = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
