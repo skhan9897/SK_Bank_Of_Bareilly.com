@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,31 +15,41 @@ public class DatabaseInitializer {
 
     private static final Logger LOGGER = Logger.getLogger(DatabaseInitializer.class.getName());
 
+    private static final List<String> REQUIRED_TABLES = Arrays.asList(
+            "users", "customers", "accounts", "branches", "account_types", "kyc", "notifications"
+    );
+
     public static void initializeDatabaseIfMissing() {
-        boolean usersTableExists = false;
+        boolean missingTableFound = false;
 
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SHOW TABLES LIKE 'users'")) {
-            if (rs.next()) {
-                usersTableExists = true;
+             Statement stmt = conn.createStatement()) {
+
+            for (String table : REQUIRED_TABLES) {
+                try (ResultSet rs = stmt.executeQuery("SHOW TABLES LIKE '" + table + "'")) {
+                    if (!rs.next()) {
+                        LOGGER.info("Table '" + table + "' missing in database.");
+                        missingTableFound = true;
+                    }
+                }
             }
         } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Table check notice: " + e.getMessage());
+            LOGGER.log(Level.WARNING, "Table existence check notice: " + e.getMessage());
+            missingTableFound = true;
         }
 
-        if (!usersTableExists) {
-            LOGGER.info("Database 'users' table missing. Running core DDL setup...");
+        if (missingTableFound) {
+            LOGGER.info("Executing core DDL setup to ensure users, customers, accounts, branches and account_types exist...");
             executeCoreDdlSetup();
         } else {
-            LOGGER.info("Database health check passed: 'users' table exists.");
+            LOGGER.info("Database health check passed: Core banking tables exist.");
         }
 
-        // Always attempt full schema import to guarantee all 30 tables and seed records exist
+        // Always run full schema import for auxiliary/payment bank tables
         executeFullSchemaImport();
     }
 
-    private static void executeCoreDdlSetup() {
+    public static void executeCoreDdlSetup() {
         String[] coreDdl = new String[] {
             "SET FOREIGN_KEY_CHECKS = 0;",
             "CREATE TABLE IF NOT EXISTS users (id BIGINT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(50) NOT NULL UNIQUE, password_hash VARCHAR(255) NOT NULL, role VARCHAR(20) NOT NULL DEFAULT 'CUSTOMER', status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE', failed_login_attempts INT NOT NULL DEFAULT 0, account_locked_until DATETIME NULL, auth_token VARCHAR(255) NULL, token_expiry DATETIME NULL, last_login DATETIME NULL, created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;",
