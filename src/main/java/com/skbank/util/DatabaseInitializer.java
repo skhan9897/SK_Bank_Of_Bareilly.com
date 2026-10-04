@@ -42,19 +42,21 @@ public class DatabaseInitializer {
 
     private static void ensureAutoIncrementPrimaryKeys(Connection conn) {
         String[] autoIncQueries = new String[] {
-            "ALTER TABLE users MODIFY COLUMN id BIGINT AUTO_INCREMENT;",
-            "ALTER TABLE customers MODIFY COLUMN customer_id BIGINT AUTO_INCREMENT;",
-            "ALTER TABLE accounts MODIFY COLUMN account_id BIGINT AUTO_INCREMENT;",
-            "ALTER TABLE branches MODIFY COLUMN branch_id BIGINT AUTO_INCREMENT;",
-            "ALTER TABLE account_types MODIFY COLUMN account_type_id BIGINT AUTO_INCREMENT;",
-            "ALTER TABLE kyc MODIFY COLUMN kyc_id BIGINT AUTO_INCREMENT;",
-            "ALTER TABLE notifications MODIFY COLUMN notification_id BIGINT AUTO_INCREMENT;"
+            "ALTER TABLE users MODIFY COLUMN id BIGINT NOT NULL AUTO_INCREMENT;",
+            "ALTER TABLE customers MODIFY COLUMN customer_id BIGINT NOT NULL AUTO_INCREMENT;",
+            "ALTER TABLE accounts MODIFY COLUMN account_id BIGINT NOT NULL AUTO_INCREMENT;",
+            "ALTER TABLE branches MODIFY COLUMN branch_id BIGINT NOT NULL AUTO_INCREMENT;",
+            "ALTER TABLE account_types MODIFY COLUMN account_type_id BIGINT NOT NULL AUTO_INCREMENT;",
+            "ALTER TABLE kyc MODIFY COLUMN kyc_id BIGINT NOT NULL AUTO_INCREMENT;",
+            "ALTER TABLE notifications MODIFY COLUMN notification_id BIGINT NOT NULL AUTO_INCREMENT;"
         };
         for (String q : autoIncQueries) {
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute(q);
-            } catch (Exception e) {
-                LOGGER.log(Level.FINE, "Auto-increment modify notice: " + e.getMessage());
+            } catch (Exception e1) {
+                try (Statement stmt = conn.createStatement()) {
+                    stmt.execute(q.replace(";", " PRIMARY KEY;"));
+                } catch (Exception ignored) {}
             }
         }
     }
