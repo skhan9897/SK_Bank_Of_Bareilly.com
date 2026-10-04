@@ -1,0 +1,240 @@
+/* ===============================================================
+   SK BANK OF BAREILLY - PREMIUM GLOBAL BANKING LOADER
+   Brand Colors:
+   - Deep Navy:   #071F49
+   - Royal Blue:  #0B4EA2
+   - Gold:        #D4A72C
+   - Light Gold:  #F4D477
+   - White:       #FFFFFF
+   =============================================================== */
+
+/* Fullscreen Center Overlay */
+.sk-bank-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(7, 31, 73, 0.85), rgba(11, 78, 162, 0.72));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sk-bank-loader.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* Centered Glassmorphism Panel */
+.sk-loader-panel {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: clamp(24px, 5vw, 36px);
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 22px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35), inset 0 0 15px rgba(212, 167, 44, 0.12);
+    width: min(90vw, 400px);
+    overflow: hidden;
+}
+
+/* Logo Wrapper with Rotating Rings */
+.sk-loader-logo-wrapper {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 18px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent !important;
+}
+
+/* Outer Gold Rotating Ring */
+.sk-loader-ring.ring-one {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #D4A72C;
+    border-right-color: #D4A72C;
+    z-index: 2;
+    animation: skRotateOuter 1.5s linear infinite;
+    filter: drop-shadow(0 0 8px rgba(212, 167, 44, 0.4));
+}
+
+/* Inner Light Gold/Royal Blue Rotating Ring */
+.sk-loader-ring.ring-two {
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-bottom-color: #F4D477;
+    border-left-color: #0B4EA2;
+    z-index: 1;
+    animation: skRotateInner 2.2s linear infinite;
+}
+
+/* Central Transparent SK Bank Logo */
+.sk-loader-logo {
+    width: 68px;
+    height: 68px;
+    object-fit: contain;
+    z-index: 3;
+    background: transparent !important;
+    filter: drop-shadow(0 0 10px rgba(212, 167, 44, 0.5));
+    animation: skLogoPulse 1.8s ease-in-out infinite;
+}
+
+/* Gold Radial Sweep Background Effect */
+.sk-loader-gold-sweep {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(212, 167, 44, 0.15) 0%, transparent 60%);
+    z-index: 0;
+    animation: skGoldSweep 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Title & Message Typography */
+.sk-loader-title {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    text-transform: uppercase;
+}
+
+.sk-loader-message {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #F4D477;
+    margin-bottom: 16px;
+    min-height: 22px;
+    line-height: 1.4;
+}
+
+/* Gold Progress Sweep Line */
+.sk-loader-progress {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.sk-loader-progress span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 40%;
+    background: linear-gradient(90deg, #D4A72C, #F4D477);
+    border-radius: 2px;
+    animation: skProgressSweep 1.6s ease-in-out infinite;
+}
+
+/* Secure Banking Badge */
+.sk-loader-secure {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Keyframe Animations */
+@keyframes skRotateOuter {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes skRotateInner {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+}
+
+@keyframes skLogoPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+}
+
+@keyframes skGoldSweep {
+    0%, 100% { transform: rotate(0deg); opacity: 0.5; }
+    50% { transform: rotate(180deg); opacity: 0.9; }
+}
+
+@keyframes skProgressSweep {
+    0% { left: -40%; }
+    100% { left: 100%; }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 576px) {
+    .sk-loader-panel {
+        width: calc(100vw - 32px);
+        padding: 24px 18px;
+    }
+    .sk-loader-logo-wrapper {
+        width: 95px;
+        height: 95px;
+    }
+    .sk-loader-logo {
+        width: 58px;
+        height: 58px;
+    }
+    .sk-loader-title {
+        font-size: 1.1rem;
+    }
+    .sk-loader-message {
+        font-size: 0.88rem;
+    }
+}
+
+/* Accessibility: Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .sk-loader-ring.ring-one,
+    .sk-loader-ring.ring-two,
+    .sk-loader-logo,
+    .sk-loader-gold-sweep,
+    .sk-loader-progress span {
+        animation: none !important;
+    }
+    .sk-loader-logo {
+        opacity: 0.9;
+    }
+}

@@ -4,7 +4,7 @@
         <div class="row g-4">
             <div class="col-lg-4 col-md-6">
                 <div class="d-flex align-items-center mb-3">
-                    <img src="${pageContext.request.contextPath}/assets/images/sk-bank-logo-transparent.png" alt="Logo" width="40" height="40" class="me-2">
+                    <img src="${pageContext.request.contextPath}/assets/images/sk-bank-logo-transparent.png" alt="Logo" width="40" height="40" class="me-2" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/assets/images/sk-bank-logo.png';">
                     <span class="h5 mb-0 font-weight-bold text-white">SK BANK OF BAREILLY</span>
                 </div>
                 <p class="text-muted small">Providing secure, reliable, and modern corporate & retail banking services. Committed to growth and trust.</p>
@@ -47,9 +47,58 @@
     </div>
 </footer>
 
+<!-- PREMIUM GLOBAL SK BANK PROCESSING LOADER -->
+<div id="skBankGlobalLoader"
+     class="sk-bank-loader"
+     aria-hidden="true"
+     role="status"
+     aria-live="polite">
+
+    <div class="sk-loader-panel">
+
+        <div class="sk-loader-logo-wrapper">
+
+            <div class="sk-loader-ring ring-one"></div>
+            <div class="sk-loader-ring ring-two"></div>
+
+            <img
+                src="${pageContext.request.contextPath}/assets/images/sk-bank-logo-transparent.png"
+                class="sk-loader-logo"
+                alt="SK Bank of Bareilly"
+                onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/assets/images/sk-bank-logo.png';"
+            />
+
+            <div class="sk-loader-gold-sweep"></div>
+
+        </div>
+
+        <div class="sk-loader-title">
+            SK Bank of Bareilly
+        </div>
+
+        <div id="skLoaderMessage"
+             class="sk-loader-message">
+            Processing your request...
+        </div>
+
+        <div class="sk-loader-progress">
+            <span></span>
+        </div>
+
+        <div class="sk-loader-secure">
+            <span>🔒</span>
+            Secure Banking Processing
+        </div>
+
+    </div>
+
+</div>
+
 <!-- Bootstrap 5 JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Custom Application JS -->
 <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+<!-- Global Banking Loader JS -->
+<script src="${pageContext.request.contextPath}/assets/js/sk-bank-loader.js" defer></script>
 </body>
 </html>
