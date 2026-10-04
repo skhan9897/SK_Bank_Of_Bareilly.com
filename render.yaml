@@ -13,8 +13,8 @@ services:
     healthCheckPath: /
     envVars:
       - key: DB_URL
-        value: jdbc:mysql://localhost:3306/sk_bank_of_bareilly?useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true
+        value: jdbc:mysql://bjkcueu7xmg0w4f52r7x-mysql.services.clever-cloud.com:3306/bjkcueu7xmg0w4f52r7x?useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true&serverTimezone=UTC&characterEncoding=UTF-8
       - key: DB_USERNAME
-        value: root
+        value: uqbtxyvc7q2exlt8
       - key: DB_PASSWORD
-        value: root
+        value: Osqa4c9dgHcCIZot4JdZ
