@@ -30,6 +30,7 @@ public class DatabaseInitializer {
             ensureNotificationsTable(conn);
 
             ensureAutoIncrementPrimaryKeys(conn);
+            ensureLegacyColumnsHaveDefaults(conn);
 
             conn.createStatement().execute("SET FOREIGN_KEY_CHECKS = 1;");
         } catch (Exception e) {
@@ -38,6 +39,23 @@ public class DatabaseInitializer {
 
         // Always run full schema import for auxiliary/payment bank tables
         executeFullSchemaImport();
+    }
+
+    private static void ensureLegacyColumnsHaveDefaults(Connection conn) {
+        String[] legacyFixes = new String[] {
+            "ALTER TABLE customers MODIFY COLUMN first_name VARCHAR(100) NULL DEFAULT '';",
+            "ALTER TABLE customers MODIFY COLUMN last_name VARCHAR(100) NULL DEFAULT '';",
+            "ALTER TABLE customers MODIFY COLUMN dob VARCHAR(50) NULL DEFAULT '';",
+            "ALTER TABLE customers MODIFY COLUMN aadhaar VARCHAR(50) NULL DEFAULT '';",
+            "ALTER TABLE customers MODIFY COLUMN pan VARCHAR(50) NULL DEFAULT '';"
+        };
+        for (String sql : legacyFixes) {
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute(sql);
+            } catch (Exception ignored) {
+                // Ignore if legacy column does not exist on table
+            }
+        }
     }
 
     private static void ensureAutoIncrementPrimaryKeys(Connection conn) {
