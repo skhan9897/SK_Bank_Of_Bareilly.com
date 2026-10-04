@@ -30,6 +30,7 @@ public class DatabaseInitializer {
             ensureNotificationsTable(conn);
 
             ensureAutoIncrementPrimaryKeys(conn);
+            ensureCustomerTriggers(conn);
 
             // Universal Column Sanitizer to fix ANY legacy NOT NULL column without defaults
             sanitizeTableColumnsToAllowDefaults(conn, "users");
@@ -49,6 +50,23 @@ public class DatabaseInitializer {
 
         // Always run full schema import for auxiliary/payment bank tables
         executeFullSchemaImport();
+    }
+
+    private static void ensureCustomerTriggers(Connection conn) {
+        String triggerSql = "CREATE TRIGGER IF NOT EXISTS before_customer_insert " +
+                            "BEFORE INSERT ON customers FOR EACH ROW " +
+                            "BEGIN " +
+                            "IF NEW.customer_number IS NULL OR TRIM(NEW.customer_number) = '' THEN " +
+                            "SET NEW.customer_number = CONCAT('SKC', UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 17))); " +
+                            "END IF; " +
+                            "END;";
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("DROP TRIGGER IF EXISTS before_customer_insert;");
+            stmt.execute(triggerSql);
+            LOGGER.info("Trigger 'before_customer_insert' configured successfully.");
+        } catch (Exception e) {
+            LOGGER.log(Level.FINE, "Trigger notice: " + e.getMessage());
+        }
     }
 
     private static void verifyCustomerAutoIncrementTest(Connection conn) {
