@@ -11,5 +11,6 @@ public interface AuthService {
     Customer registerCustomer(Customer customer, String username, String plainPassword, Long branchId, Long accountTypeId) throws BankException;
     Admin getAdminByUserId(Long userId) throws BankException;
     Customer getCustomerByUserId(Long userId) throws BankException;
+    Customer getCustomerById(Long customerId) throws BankException;
     boolean changePassword(Long userId, String oldPassword, String newPassword) throws BankException;
 }

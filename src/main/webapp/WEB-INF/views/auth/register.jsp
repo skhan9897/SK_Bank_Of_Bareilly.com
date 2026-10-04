@@ -196,9 +196,9 @@
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label fw-bold small text-navy">Choose Username *</label>
-                            <input type="text" name="username" id="regUsername" class="form-control form-control-lg" required placeholder="Min 4 characters">
-                            <div class="invalid-feedback">Please choose a valid username (min 4 chars).</div>
+                            <label class="form-label fw-bold small text-navy">Username (Auto-Generated) *</label>
+                            <input type="text" name="username" id="regUsername" class="form-control form-control-lg bg-light" readonly placeholder="Auto-generated (e.g. sajid4767)">
+                            <div class="form-text text-muted small">Generated automatically from Name &amp; Mobile.</div>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-bold small text-navy">Password *</label>
@@ -275,7 +275,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <span class="text-muted small d-block">Username</span>
+                                <span class="text-muted small d-block">Auto-Generated Username</span>
                                 <strong id="revUsername" class="text-navy"></strong>
                             </div>
                             <div class="col-md-6">
@@ -297,6 +297,27 @@
 </div>
 
 <script>
+    // Real-time Auto Username Generator
+    function updateAutoUsername() {
+        const name = document.getElementById('regFullName')?.value || '';
+        const mobile = document.getElementById('regMobile')?.value || '';
+
+        let base = name.replace(/[^a-zA-Z]/g, '').toLowerCase();
+        if (base.length > 8) base = base.substring(0, 8);
+        if (!base) base = 'skb';
+
+        let suffix = mobile.length >= 4 ? mobile.slice(-4) : '1234';
+
+        const autoUser = base + suffix;
+        const userField = document.getElementById('regUsername');
+        if (userField) {
+            userField.value = autoUser;
+        }
+    }
+
+    document.getElementById('regFullName')?.addEventListener('input', updateAutoUsername);
+    document.getElementById('regMobile')?.addEventListener('input', updateAutoUsername);
+
     // Image Preview & Validation (Max 5 MB)
     document.getElementById('profileImageInput')?.addEventListener('change', function (e) {
         const file = e.target.files[0];
@@ -371,6 +392,7 @@
     }
 
     function nextSection(current, next) {
+        updateAutoUsername();
         if (validateSection(current)) {
             showSection(next);
         }
@@ -381,6 +403,7 @@
     }
 
     function prepareReviewSection() {
+        updateAutoUsername();
         if (!validateSection(4)) return;
 
         // Populate Review Elements

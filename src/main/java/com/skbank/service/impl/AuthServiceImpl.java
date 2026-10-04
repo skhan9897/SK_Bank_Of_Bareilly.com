@@ -18,10 +18,10 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserDAO userDAO = new UserDAOImpl();
     private final CustomerDAO customerDAO = new CustomerDAOImpl();
-    private final AdminDAO adminDAO = new AdminDAOImpl();
     private final AccountDAO accountDAO = new AccountDAOImpl();
     private final KycDAO kycDAO = new KycDAOImpl();
     private final NotificationDAO notificationDAO = new NotificationDAOImpl();
+    private final AdminDAO adminDAO = new AdminDAOImpl();
 
     @Override
     public User authenticateCustomer(String username, String password) throws BankException {
@@ -30,13 +30,14 @@ public class AuthServiceImpl implements AuthService {
             if (user == null || user.getRole() != UserRole.CUSTOMER) {
                 throw new BankException("Invalid username or password");
             }
-            if (user.getStatus() == UserStatus.BLOCKED || user.getStatus() == UserStatus.DISABLED) {
-                throw new BankException("Your account has been " + user.getStatus().name().toLowerCase() + ". Please contact support.");
+            if (user.getStatus() != UserStatus.ACTIVE) {
+                throw new BankException("Customer account is disabled or blocked. Please contact support.");
             }
 
             if (!PasswordUtil.checkPassword(password, user.getPasswordHash())) {
-                userDAO.updateFailedLoginAttempts(user.getId(), user.getFailedLoginAttempts() + 1);
-                if (user.getFailedLoginAttempts() + 1 >= 5) {
+                int attempts = user.getFailedLoginAttempts() + 1;
+                userDAO.updateFailedLoginAttempts(user.getId(), attempts);
+                if (attempts >= 5) {
                     userDAO.updateStatus(user.getId(), UserStatus.BLOCKED.name());
                     throw new BankException("Account blocked due to 5 consecutive failed login attempts.");
                 }
@@ -93,9 +94,14 @@ public class AuthServiceImpl implements AuthService {
 
         Connection conn = null;
         try {
+            // Auto-generate username if empty or "AUTO"
+            if (username == null || username.trim().isEmpty() || "AUTO".equalsIgnoreCase(username.trim())) {
+                username = generateUniqueUsername(customer.getFullName(), customer.getMobile());
+            }
+
             // Check duplicates
             if (userDAO.findByUsername(username) != null) {
-                throw new BankException("Username '" + username + "' is already taken");
+                username = generateUniqueUsername(customer.getFullName(), customer.getMobile());
             }
             if (customerDAO.findByMobile(customer.getMobile()) != null) {
                 throw new BankException("Mobile number is already registered");
@@ -150,7 +156,7 @@ public class AuthServiceImpl implements AuthService {
             Notification notification = new Notification();
             notification.setUserId(userId);
             notification.setTitle("Welcome to SK BANK OF BAREILLY!");
-            notification.setMessage("Dear " + customer.getFullName() + ", your account " + accNum + " has been successfully opened. Welcome aboard!");
+            notification.setMessage("Dear " + customer.getFullName() + ", your account " + accNum + " has been successfully opened. Your username is: " + username);
             notification.setNotificationType("LOGIN");
             notificationDAO.create(conn, notification);
 
@@ -166,6 +172,31 @@ public class AuthServiceImpl implements AuthService {
                 try { conn.setAutoCommit(true); conn.close(); } catch (SQLException ignored) {}
             }
         }
+    }
+
+    private String generateUniqueUsername(String fullName, String mobile) throws SQLException {
+        String baseName = "";
+        if (fullName != null && !fullName.trim().isEmpty()) {
+            baseName = fullName.trim().replaceAll("[^a-zA-Z]", "").toLowerCase();
+            if (baseName.length() > 8) {
+                baseName = baseName.substring(0, 8);
+            }
+        }
+        if (baseName.isEmpty()) {
+            baseName = "skb";
+        }
+
+        String mobileSuffix = (mobile != null && mobile.length() >= 4) ? mobile.substring(mobile.length() - 4) : String.valueOf(1000 + new Random().nextInt(9000));
+
+        String candidate = baseName + mobileSuffix;
+        int count = 1;
+
+        while (userDAO.findByUsername(candidate) != null) {
+            candidate = baseName + mobileSuffix + count;
+            count++;
+        }
+
+        return candidate;
     }
 
     @Override
@@ -187,22 +218,30 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean changePassword(Long userId, String oldPassword, String newPassword) throws BankException {
+    public Customer getCustomerById(Long customerId) throws BankException {
+        try {
+            return customerDAO.findById(customerId);
+        } catch (SQLException e) {
+            throw new BankException("Error fetching customer details", e);
+        }
+    }
+
+    @Override
+    public boolean changePassword(Long userId, String currentPassword, String newPassword) throws BankException {
         try {
             User user = userDAO.findById(userId);
             if (user == null) {
                 throw new BankException("User not found");
             }
-            if (!PasswordUtil.checkPassword(oldPassword, user.getPasswordHash())) {
+            if (!PasswordUtil.checkPassword(currentPassword, user.getPasswordHash())) {
                 throw new BankException("Current password is incorrect");
             }
             if (newPassword == null || newPassword.length() < 6) {
                 throw new BankException("New password must be at least 6 characters long");
             }
-            String newHash = PasswordUtil.hashPassword(newPassword);
-            return userDAO.updatePassword(userId, newHash);
+            return userDAO.updatePassword(userId, PasswordUtil.hashPassword(newPassword));
         } catch (SQLException e) {
-            throw new BankException("Error updating password", e);
+            throw new BankException("Database error during password change: " + e.getMessage(), e);
         }
     }
 }

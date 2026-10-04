@@ -97,6 +97,10 @@ public class CustomerRegisterServlet extends HttpServlet {
             } catch (Exception ignored) {}
 
             String username = request.getParameter("username");
+            if (username == null || username.trim().isEmpty()) {
+                username = "AUTO";
+            }
+
             String plainPassword = request.getParameter("password");
 
             String branchStr = request.getParameter("branchId");
