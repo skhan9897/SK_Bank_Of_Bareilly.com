@@ -30,7 +30,15 @@ public class DatabaseInitializer {
             ensureNotificationsTable(conn);
 
             ensureAutoIncrementPrimaryKeys(conn);
-            ensureLegacyColumnsHaveDefaults(conn);
+
+            // Universal Column Sanitizer to fix ANY legacy NOT NULL column without defaults
+            sanitizeTableColumnsToAllowDefaults(conn, "users");
+            sanitizeTableColumnsToAllowDefaults(conn, "customers");
+            sanitizeTableColumnsToAllowDefaults(conn, "accounts");
+            sanitizeTableColumnsToAllowDefaults(conn, "branches");
+            sanitizeTableColumnsToAllowDefaults(conn, "account_types");
+            sanitizeTableColumnsToAllowDefaults(conn, "kyc");
+            sanitizeTableColumnsToAllowDefaults(conn, "notifications");
 
             conn.createStatement().execute("SET FOREIGN_KEY_CHECKS = 1;");
         } catch (Exception e) {
@@ -41,20 +49,48 @@ public class DatabaseInitializer {
         executeFullSchemaImport();
     }
 
-    private static void ensureLegacyColumnsHaveDefaults(Connection conn) {
-        String[] legacyFixes = new String[] {
-            "ALTER TABLE customers MODIFY COLUMN first_name VARCHAR(100) NULL DEFAULT '';",
-            "ALTER TABLE customers MODIFY COLUMN last_name VARCHAR(100) NULL DEFAULT '';",
-            "ALTER TABLE customers MODIFY COLUMN dob VARCHAR(50) NULL DEFAULT '';",
-            "ALTER TABLE customers MODIFY COLUMN aadhaar VARCHAR(50) NULL DEFAULT '';",
-            "ALTER TABLE customers MODIFY COLUMN pan VARCHAR(50) NULL DEFAULT '';"
-        };
-        for (String sql : legacyFixes) {
-            try (Statement stmt = conn.createStatement()) {
-                stmt.execute(sql);
-            } catch (Exception ignored) {
-                // Ignore if legacy column does not exist on table
+    private static void sanitizeTableColumnsToAllowDefaults(Connection conn, String tableName) {
+        String queryCols = "SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_DEFAULT, EXTRA " +
+                           "FROM information_schema.columns " +
+                           "WHERE table_schema = DATABASE() AND table_name = ?";
+        try (PreparedStatement ps = conn.prepareStatement(queryCols)) {
+            ps.setString(1, tableName);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String colName = rs.getString("COLUMN_NAME");
+                    String dataType = rs.getString("DATA_TYPE").toLowerCase();
+                    String isNullable = rs.getString("IS_NULLABLE");
+                    String colDefault = rs.getString("COLUMN_DEFAULT");
+                    String extra = rs.getString("EXTRA");
+
+                    // Skip primary key columns
+                    if (extra != null && extra.toLowerCase().contains("auto_increment")) {
+                        continue;
+                    }
+
+                    // If column is NOT NULL, has NO default
+                    if ("NO".equalsIgnoreCase(isNullable) && colDefault == null) {
+                        LOGGER.info("Universal Sanitizer: Fixing NOT NULL column '" + colName + "' in table '" + tableName + "'...");
+                        String modifySql;
+                        if (dataType.contains("int") || dataType.contains("decimal") || dataType.contains("float") || dataType.contains("double")) {
+                            modifySql = "ALTER TABLE `" + tableName + "` MODIFY COLUMN `" + colName + "` " + dataType + " NULL DEFAULT 0";
+                        } else if (dataType.contains("date") || dataType.contains("time")) {
+                            modifySql = "ALTER TABLE `" + tableName + "` MODIFY COLUMN `" + colName + "` " + dataType + " NULL DEFAULT NULL";
+                        } else {
+                            modifySql = "ALTER TABLE `" + tableName + "` MODIFY COLUMN `" + colName + "` " + dataType + "(255) NULL DEFAULT ''";
+                        }
+
+                        try (Statement stmt = conn.createStatement()) {
+                            stmt.execute(modifySql);
+                            LOGGER.info("Column '" + colName + "' in '" + tableName + "' sanitized to NULL DEFAULT.");
+                        } catch (Exception e) {
+                            LOGGER.log(Level.FINE, "Column modify notice for " + colName + ": " + e.getMessage());
+                        }
+                    }
+                }
             }
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Sanitize columns error for " + tableName + ": " + e.getMessage());
         }
     }
 

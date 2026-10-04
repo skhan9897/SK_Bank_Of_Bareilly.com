@@ -128,10 +128,10 @@ public class CustomerDAOImpl implements CustomerDAO {
     public Long create(Connection conn, Customer customer) throws SQLException {
         ensureTableExists();
 
-        // 1. Try Standard Auto-Increment Insert
-        String sqlAuto = "INSERT INTO customers (user_id, customer_number, full_name, date_of_birth, gender, mobile, email, address, city, state, pincode, aadhaar_number, pan_number, profile_image, kyc_status, status, created_at, updated_at) " +
-                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
-        try (PreparedStatement ps = conn.prepareStatement(sqlAuto, Statement.RETURN_GENERATED_KEYS)) {
+        String sql = "INSERT INTO customers (user_id, customer_number, full_name, date_of_birth, gender, mobile, email, address, city, state, pincode, aadhaar_number, pan_number, profile_image, kyc_status, status, created_at, updated_at) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setLong(1, customer.getUserId());
             ps.setString(2, customer.getCustomerNumber());
             ps.setString(3, customer.getFullName());
@@ -148,63 +148,19 @@ public class CustomerDAOImpl implements CustomerDAO {
             ps.setString(14, customer.getProfileImage());
             ps.setString(15, customer.getKycStatus() != null ? customer.getKycStatus().name() : "VERIFIED");
             ps.setString(16, customer.getStatus() != null ? customer.getStatus().name() : UserStatus.ACTIVE.name());
+
             ps.executeUpdate();
+
             try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next() && rs.getLong(1) > 0) return rs.getLong(1);
-            }
-        } catch (SQLException e) {
-            // If AUTO_INCREMENT is missing on database column, fallback to explicit customer_id generation
-            if (e.getMessage() != null && e.getMessage().contains("customer_id")) {
-                return createWithExplicitId(conn, customer);
-            }
-            throw e;
-        }
-
-        // Fallback retrieval by user_id
-        String queryKeySql = "SELECT customer_id FROM customers WHERE user_id = ?";
-        try (PreparedStatement ps2 = conn.prepareStatement(queryKeySql)) {
-            ps2.setLong(1, customer.getUserId());
-            try (ResultSet rs2 = ps2.executeQuery()) {
-                if (rs2.next()) return rs2.getLong(1);
+                if (rs.next()) {
+                    long generatedId = rs.getLong(1);
+                    customer.setCustomerId(generatedId);
+                    return generatedId;
+                }
             }
         }
 
-        return null;
-    }
-
-    private Long createWithExplicitId(Connection conn, Customer customer) throws SQLException {
-        long nextId = 1;
-        String maxSql = "SELECT COALESCE(MAX(customer_id), 0) + 1 FROM customers";
-        try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(maxSql)) {
-            if (rs.next()) {
-                nextId = rs.getLong(1);
-            }
-        }
-
-        String sqlExplicit = "INSERT INTO customers (customer_id, user_id, customer_number, full_name, date_of_birth, gender, mobile, email, address, city, state, pincode, aadhaar_number, pan_number, profile_image, kyc_status, status, created_at, updated_at) " +
-                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
-        try (PreparedStatement ps = conn.prepareStatement(sqlExplicit)) {
-            ps.setLong(1, nextId);
-            ps.setLong(2, customer.getUserId());
-            ps.setString(3, customer.getCustomerNumber());
-            ps.setString(4, customer.getFullName());
-            ps.setDate(5, customer.getDateOfBirth());
-            ps.setString(6, customer.getGender());
-            ps.setString(7, customer.getMobile());
-            ps.setString(8, customer.getEmail());
-            ps.setString(9, customer.getAddress());
-            ps.setString(10, customer.getCity());
-            ps.setString(11, customer.getState());
-            ps.setString(12, customer.getPincode());
-            ps.setString(13, customer.getAadhaarNumber());
-            ps.setString(14, customer.getPanNumber());
-            ps.setString(15, customer.getProfileImage());
-            ps.setString(16, customer.getKycStatus() != null ? customer.getKycStatus().name() : "VERIFIED");
-            ps.setString(17, customer.getStatus() != null ? customer.getStatus().name() : UserStatus.ACTIVE.name());
-            ps.executeUpdate();
-            return nextId;
-        }
+        throw new SQLException("Creating customer failed, no generated ID obtained.");
     }
 
     @Override
