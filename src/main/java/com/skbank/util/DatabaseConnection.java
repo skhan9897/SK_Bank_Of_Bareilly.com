@@ -58,9 +58,16 @@ public class DatabaseConnection {
 
         try {
             Class.forName(driver);
+            LOGGER.info("Database Connection Configured: " + sanitizeUrl(url) + " | DB User: " + username);
         } catch (ClassNotFoundException e) {
             LOGGER.log(Level.SEVERE, "MySQL JDBC Driver not found!", e);
         }
+    }
+
+    private static String sanitizeUrl(String rawUrl) {
+        if (rawUrl == null) return "null";
+        int paramIdx = rawUrl.indexOf('?');
+        return paramIdx > 0 ? rawUrl.substring(0, paramIdx) : rawUrl;
     }
 
     public static Connection getConnection() throws SQLException {
