@@ -40,6 +40,8 @@ public class DatabaseInitializer {
             sanitizeTableColumnsToAllowDefaults(conn, "kyc");
             sanitizeTableColumnsToAllowDefaults(conn, "notifications");
 
+            verifyCustomerAutoIncrementTest(conn);
+
             conn.createStatement().execute("SET FOREIGN_KEY_CHECKS = 1;");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error during database schema initialization", e);
@@ -47,6 +49,38 @@ public class DatabaseInitializer {
 
         // Always run full schema import for auxiliary/payment bank tables
         executeFullSchemaImport();
+    }
+
+    private static void verifyCustomerAutoIncrementTest(Connection conn) {
+        String testCustomerNumber = "TEST-CUSTOMER-AUTOINC";
+        // Clean up any old test record first
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("DELETE FROM customers WHERE customer_number = '" + testCustomerNumber + "'");
+        } catch (Exception ignored) {}
+
+        long testUserId = 999999;
+        String insertTestSql = "INSERT INTO customers (user_id, customer_number, full_name, date_of_birth, gender, mobile, email, address, city, state, pincode, aadhaar_number, pan_number, profile_image, kyc_status, status, created_at, updated_at) " +
+                               "VALUES (?, ?, 'Registration Test', '1995-01-01', 'MALE', '9999999999', 'registration-test@example.com', 'Test Address', 'Bareilly', 'Uttar Pradesh', '243001', '123456789012', 'ABCDE1234F', NULL, 'VERIFIED', 'ACTIVE', NOW(), NOW())";
+
+        try (PreparedStatement ps = conn.prepareStatement(insertTestSql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setLong(1, testUserId);
+            ps.setString(2, testCustomerNumber);
+            ps.executeUpdate();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    long generatedId = rs.getLong(1);
+                    LOGGER.info("AUTO_INCREMENT VERIFICATION PASSED: Successfully inserted test customer and retrieved generated customer_id = " + generatedId);
+                } else {
+                    LOGGER.log(Level.SEVERE, "AUTO_INCREMENT VERIFICATION FAILED: Test customer inserted but no generated customer_id key returned!");
+                }
+            }
+            // Delete test record
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute("DELETE FROM customers WHERE customer_number = '" + testCustomerNumber + "'");
+            } catch (Exception ignored) {}
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "AUTO_INCREMENT VERIFICATION FAILED with Exception: " + e.getMessage(), e);
+        }
     }
 
     private static void sanitizeTableColumnsToAllowDefaults(Connection conn, String tableName) {
@@ -105,14 +139,25 @@ public class DatabaseInitializer {
             "ALTER TABLE kyc MODIFY COLUMN kyc_id BIGINT NOT NULL AUTO_INCREMENT;",
             "ALTER TABLE notifications MODIFY COLUMN notification_id BIGINT NOT NULL AUTO_INCREMENT;"
         };
-        for (String q : autoIncQueries) {
-            try (Statement stmt = conn.createStatement()) {
-                stmt.execute(q);
-            } catch (Exception e1) {
-                try (Statement stmt = conn.createStatement()) {
-                    stmt.execute(q.replace(";", " PRIMARY KEY;"));
-                } catch (Exception ignored) {}
+
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
+            for (String q : autoIncQueries) {
+                try {
+                    stmt.execute(q);
+                    LOGGER.info("Successfully executed: " + q);
+                } catch (Exception e1) {
+                    try {
+                        stmt.execute(q.replace(";", " PRIMARY KEY;"));
+                        LOGGER.info("Successfully executed with PRIMARY KEY: " + q);
+                    } catch (Exception e2) {
+                        LOGGER.log(Level.FINE, "Auto-increment modify notice: " + e2.getMessage());
+                    }
+                }
             }
+            stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error modifying primary key columns", e);
         }
     }
 
