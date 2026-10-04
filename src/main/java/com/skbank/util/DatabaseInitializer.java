@@ -96,6 +96,7 @@ public class DatabaseInitializer {
 
     private static void ensureAutoIncrementPrimaryKeys(Connection conn) {
         String[] autoIncQueries = new String[] {
+            "ALTER TABLE users MODIFY COLUMN user_id BIGINT NOT NULL AUTO_INCREMENT;",
             "ALTER TABLE users MODIFY COLUMN id BIGINT NOT NULL AUTO_INCREMENT;",
             "ALTER TABLE customers MODIFY COLUMN customer_id BIGINT NOT NULL AUTO_INCREMENT;",
             "ALTER TABLE accounts MODIFY COLUMN account_id BIGINT NOT NULL AUTO_INCREMENT;",
@@ -117,26 +118,26 @@ public class DatabaseInitializer {
 
     private static void ensureUsersTable(Connection conn) {
         String createDdl = "CREATE TABLE IF NOT EXISTS users (" +
-                "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                "username VARCHAR(50) NOT NULL UNIQUE, " +
+                "user_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "username VARCHAR(100) NOT NULL UNIQUE, " +
                 "password_hash VARCHAR(255) NOT NULL, " +
-                "role VARCHAR(20) NOT NULL DEFAULT 'CUSTOMER', " +
-                "status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE', " +
+                "role VARCHAR(30) NOT NULL DEFAULT 'CUSTOMER', " +
+                "status VARCHAR(30) NOT NULL DEFAULT 'ACTIVE', " +
                 "failed_login_attempts INT NOT NULL DEFAULT 0, " +
                 "account_locked_until DATETIME NULL, " +
                 "auth_token VARCHAR(255) NULL, " +
                 "token_expiry DATETIME NULL, " +
-                "last_login DATETIME NULL, " +
+                "last_login_at DATETIME NULL, " +
                 "created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
         String[] cols = new String[]{"username", "password_hash", "role", "status", "failed_login_attempts", "auth_token", "token_expiry"};
         String[] alterDdls = new String[]{
-                "VARCHAR(50) NOT NULL UNIQUE",
+                "VARCHAR(100) NOT NULL UNIQUE",
                 "VARCHAR(255) NOT NULL",
-                "VARCHAR(20) NOT NULL DEFAULT 'CUSTOMER'",
-                "VARCHAR(20) NOT NULL DEFAULT 'ACTIVE'",
+                "VARCHAR(30) NOT NULL DEFAULT 'CUSTOMER'",
+                "VARCHAR(30) NOT NULL DEFAULT 'ACTIVE'",
                 "INT NOT NULL DEFAULT 0",
                 "VARCHAR(255) NULL",
                 "DATETIME NULL"
@@ -147,18 +148,20 @@ public class DatabaseInitializer {
     private static void ensureEmployeesTable(Connection conn) {
         String createDdl = "CREATE TABLE IF NOT EXISTS employees (" +
                 "employee_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                "employee_code VARCHAR(20) NOT NULL UNIQUE, " +
+                "user_id BIGINT NOT NULL UNIQUE, " +
+                "branch_id BIGINT NULL, " +
+                "employee_number VARCHAR(20) NOT NULL UNIQUE, " +
                 "full_name VARCHAR(100) NOT NULL, " +
-                "email VARCHAR(100) NOT NULL UNIQUE, " +
-                "mobile VARCHAR(15) NOT NULL UNIQUE, " +
-                "department VARCHAR(50) NOT NULL, " +
                 "designation VARCHAR(50) NOT NULL, " +
-                "status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE', " +
-                "created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP" +
+                "mobile VARCHAR(15) NOT NULL UNIQUE, " +
+                "email VARCHAR(100) NOT NULL UNIQUE, " +
+                "status VARCHAR(30) NOT NULL DEFAULT 'ACTIVE', " +
+                "created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
+                "FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
-        String[] cols = new String[]{"employee_code", "full_name", "email", "mobile", "department", "designation", "status"};
-        String[] alterDdls = new String[]{"VARCHAR(20) NOT NULL UNIQUE", "VARCHAR(100) NOT NULL", "VARCHAR(100) NOT NULL UNIQUE", "VARCHAR(15) NOT NULL UNIQUE", "VARCHAR(50) NOT NULL", "VARCHAR(50) NOT NULL", "VARCHAR(20) NOT NULL DEFAULT 'ACTIVE'"};
+        String[] cols = new String[]{"employee_number", "full_name", "email", "mobile", "designation", "status"};
+        String[] alterDdls = new String[]{"VARCHAR(20) NOT NULL UNIQUE", "VARCHAR(100) NOT NULL", "VARCHAR(100) NOT NULL UNIQUE", "VARCHAR(15) NOT NULL UNIQUE", "VARCHAR(50) NOT NULL", "VARCHAR(30) NOT NULL DEFAULT 'ACTIVE'"};
         sanitizeAndEnsureTableSchema(conn, "employees", createDdl, cols, alterDdls);
     }
 
@@ -167,14 +170,14 @@ public class DatabaseInitializer {
                 "admin_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "user_id BIGINT NOT NULL UNIQUE, " +
                 "employee_id BIGINT NULL, " +
-                "admin_role VARCHAR(30) NOT NULL DEFAULT 'SUPER_ADMIN', " +
-                "status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE', " +
+                "full_name VARCHAR(100) NOT NULL, " +
+                "status VARCHAR(30) NOT NULL DEFAULT 'ACTIVE', " +
                 "created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
-                "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE" +
+                "FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
-        String[] cols = new String[]{"user_id", "admin_role", "status"};
-        String[] alterDdls = new String[]{"BIGINT NOT NULL UNIQUE", "VARCHAR(30) NOT NULL DEFAULT 'SUPER_ADMIN'", "VARCHAR(20) NOT NULL DEFAULT 'ACTIVE'"};
+        String[] cols = new String[]{"user_id", "full_name", "status"};
+        String[] alterDdls = new String[]{"BIGINT NOT NULL UNIQUE", "VARCHAR(100) NOT NULL DEFAULT 'Admin'", "VARCHAR(30) NOT NULL DEFAULT 'ACTIVE'"};
         sanitizeAndEnsureTableSchema(conn, "admins", createDdl, cols, alterDdls);
     }
 
@@ -194,12 +197,12 @@ public class DatabaseInitializer {
                 "pincode VARCHAR(10) NOT NULL, " +
                 "aadhaar_number VARCHAR(20) NOT NULL UNIQUE, " +
                 "pan_number VARCHAR(20) NOT NULL UNIQUE, " +
-                "profile_image VARCHAR(255) NULL, " +
+                "profile_image VARCHAR(500) NULL, " +
                 "kyc_status VARCHAR(20) NOT NULL DEFAULT 'VERIFIED', " +
-                "status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE', " +
+                "status VARCHAR(30) NOT NULL DEFAULT 'ACTIVE', " +
                 "created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, " +
-                "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE" +
+                "FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
         String[] cols = new String[]{
@@ -221,9 +224,9 @@ public class DatabaseInitializer {
                 "VARCHAR(10) NOT NULL DEFAULT '243001'",
                 "VARCHAR(20) NOT NULL DEFAULT ''",
                 "VARCHAR(20) NOT NULL DEFAULT ''",
-                "VARCHAR(255) NULL",
+                "VARCHAR(500) NULL",
                 "VARCHAR(20) NOT NULL DEFAULT 'VERIFIED'",
-                "VARCHAR(20) NOT NULL DEFAULT 'ACTIVE'"
+                "VARCHAR(30) NOT NULL DEFAULT 'ACTIVE'"
         };
         sanitizeAndEnsureTableSchema(conn, "customers", createDdl, cols, alterDdls);
     }
@@ -239,21 +242,22 @@ public class DatabaseInitializer {
                 "pincode VARCHAR(10) NOT NULL, " +
                 "ifsc_code VARCHAR(20) NOT NULL UNIQUE, " +
                 "phone VARCHAR(15) NOT NULL, " +
-                "status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE', " +
+                "email VARCHAR(100) NULL, " +
+                "status VARCHAR(30) NOT NULL DEFAULT 'ACTIVE', " +
                 "created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
         String[] cols = new String[]{"branch_code", "branch_name", "ifsc_code", "status"};
-        String[] alterDdls = new String[]{"VARCHAR(20) NOT NULL UNIQUE", "VARCHAR(100) NOT NULL", "VARCHAR(20) NOT NULL UNIQUE", "VARCHAR(20) NOT NULL DEFAULT 'ACTIVE'"};
+        String[] alterDdls = new String[]{"VARCHAR(20) NOT NULL UNIQUE", "VARCHAR(100) NOT NULL", "VARCHAR(20) NOT NULL UNIQUE", "VARCHAR(30) NOT NULL DEFAULT 'ACTIVE'"};
         sanitizeAndEnsureTableSchema(conn, "branches", createDdl, cols, alterDdls);
 
         // Seed default branches
         try (Statement stmt = conn.createStatement()) {
-            stmt.execute("INSERT IGNORE INTO branches (branch_id, branch_code, branch_name, address, city, state, pincode, ifsc_code, phone) VALUES " +
-                    "(1, 'SKB001', 'Main Branch Bareilly', 'Civil Lines, Near Cantonment', 'Bareilly', 'Uttar Pradesh', '243001', 'SKBK0000001', '0581-2550001'), " +
-                    "(2, 'SKB002', 'Izzatnagar Branch', 'Near Railway Station, Izzatnagar', 'Bareilly', 'Uttar Pradesh', '243122', 'SKBK0000002', '0581-2550002'), " +
-                    "(3, 'SKB003', 'Rajendra Nagar Branch', 'Block B, Rajendra Nagar', 'Bareilly', 'Uttar Pradesh', '243122', 'SKBK0000003', '0581-2550003'), " +
-                    "(4, 'SKB004', 'Noida Cyber Branch', 'Sector 62, Electronic City', 'Noida', 'Uttar Pradesh', '201309', 'SKBK0000004', '0120-2550004');");
+            stmt.execute("INSERT IGNORE INTO branches (branch_id, branch_code, branch_name, address, city, state, pincode, ifsc_code, phone, email) VALUES " +
+                    "(1, 'SKB001', 'Main Branch Bareilly', 'Civil Lines, Near Cantonment', 'Bareilly', 'Uttar Pradesh', '243001', 'SKBK0000001', '0581-2550001', 'main.bareilly@skbank.com'), " +
+                    "(2, 'SKB002', 'Izzatnagar Branch', 'Near Railway Station, Izzatnagar', 'Bareilly', 'Uttar Pradesh', '243122', 'SKBK0000002', '0581-2550002', 'izzatnagar@skbank.com'), " +
+                    "(3, 'SKB003', 'Rajendra Nagar Branch', 'Block B, Rajendra Nagar', 'Bareilly', 'Uttar Pradesh', '243122', 'SKBK0000003', '0581-2550003', 'rajendra.nagar@skbank.com'), " +
+                    "(4, 'SKB004', 'Noida Cyber Branch', 'Sector 62, Electronic City', 'Noida', 'Uttar Pradesh', '201309', 'SKBK0000004', '0120-2550004', 'noida@skbank.com');");
         } catch (Exception ignored) {}
     }
 
@@ -265,12 +269,12 @@ public class DatabaseInitializer {
                 "description VARCHAR(255) NULL, " +
                 "minimum_balance DECIMAL(18,2) NOT NULL DEFAULT 0.00, " +
                 "interest_rate DECIMAL(5,2) NOT NULL DEFAULT 0.00, " +
-                "status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE', " +
+                "status VARCHAR(30) NOT NULL DEFAULT 'ACTIVE', " +
                 "created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
         String[] cols = new String[]{"type_code", "type_name", "status"};
-        String[] alterDdls = new String[]{"VARCHAR(30) NOT NULL UNIQUE", "VARCHAR(50) NOT NULL", "VARCHAR(20) NOT NULL DEFAULT 'ACTIVE'"};
+        String[] alterDdls = new String[]{"VARCHAR(30) NOT NULL UNIQUE", "VARCHAR(50) NOT NULL", "VARCHAR(30) NOT NULL DEFAULT 'ACTIVE'"};
         sanitizeAndEnsureTableSchema(conn, "account_types", createDdl, cols, alterDdls);
 
         // Seed default account types
@@ -279,8 +283,8 @@ public class DatabaseInitializer {
                     "(1, 'SAVINGS', 'Savings Account', 'Standard personal savings account with interest', 1000.00, 4.00), " +
                     "(2, 'CURRENT', 'Current Account', 'Business account for high volume transactions', 5000.00, 0.00), " +
                     "(3, 'SALARY', 'Corporate Salary Account', 'Zero-balance salary account with premium benefits', 0.00, 4.50), " +
-                    "(4, 'BASIC_SAVINGS', 'Basic Savings Account (BSBD)', 'Zero-balance basic savings bank deposit account', 0.00, 3.50), " +
-                    "(5, 'SENIOR_CITIZEN', 'Senior Citizen Savings Account', 'Special savings account for citizens aged 60+', 1000.00, 5.00);");
+                    "(4, 'PREMIUM', 'Premium Savings Account', 'High interest rate account with dedicated relationship manager', 10000.00, 5.50), " +
+                    "(5, 'BASIC_SAVINGS', 'Basic Savings Account (BSBD)', 'Zero-balance basic savings bank deposit account', 0.00, 3.50);");
         } catch (Exception ignored) {}
     }
 
@@ -293,7 +297,7 @@ public class DatabaseInitializer {
                 "account_number VARCHAR(20) NOT NULL UNIQUE, " +
                 "balance DECIMAL(18,2) NOT NULL DEFAULT 0.00, " +
                 "available_balance DECIMAL(18,2) NOT NULL DEFAULT 0.00, " +
-                "status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE', " +
+                "status VARCHAR(30) NOT NULL DEFAULT 'ACTIVE', " +
                 "opened_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "closed_at DATETIME NULL, " +
                 "FOREIGN KEY (customer_id) REFERENCES customers(customer_id), " +
@@ -302,7 +306,7 @@ public class DatabaseInitializer {
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
         String[] cols = new String[]{"customer_id", "account_type_id", "branch_id", "account_number", "balance", "available_balance", "status"};
-        String[] alterDdls = new String[]{"BIGINT NOT NULL", "BIGINT NOT NULL", "BIGINT NOT NULL", "VARCHAR(20) NOT NULL UNIQUE", "DECIMAL(18,2) NOT NULL DEFAULT 0.00", "DECIMAL(18,2) NOT NULL DEFAULT 0.00", "VARCHAR(20) NOT NULL DEFAULT 'ACTIVE'"};
+        String[] alterDdls = new String[]{"BIGINT NOT NULL", "BIGINT NOT NULL", "BIGINT NOT NULL", "VARCHAR(20) NOT NULL UNIQUE", "DECIMAL(18,2) NOT NULL DEFAULT 0.00", "DECIMAL(18,2) NOT NULL DEFAULT 0.00", "VARCHAR(30) NOT NULL DEFAULT 'ACTIVE'"};
         sanitizeAndEnsureTableSchema(conn, "accounts", createDdl, cols, alterDdls);
     }
 
@@ -312,14 +316,14 @@ public class DatabaseInitializer {
                 "customer_id BIGINT NOT NULL UNIQUE, " +
                 "aadhaar_number VARCHAR(20) NOT NULL, " +
                 "pan_number VARCHAR(20) NOT NULL, " +
-                "verification_status VARCHAR(20) NOT NULL DEFAULT 'VERIFIED', " +
+                "verification_status VARCHAR(30) NOT NULL DEFAULT 'VERIFIED', " +
                 "verified_at DATETIME NULL, " +
                 "created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
         String[] cols = new String[]{"customer_id", "aadhaar_number", "pan_number", "verification_status"};
-        String[] alterDdls = new String[]{"BIGINT NOT NULL UNIQUE", "VARCHAR(20) NOT NULL", "VARCHAR(20) NOT NULL", "VARCHAR(20) NOT NULL DEFAULT 'VERIFIED'"};
+        String[] alterDdls = new String[]{"BIGINT NOT NULL UNIQUE", "VARCHAR(20) NOT NULL", "VARCHAR(20) NOT NULL", "VARCHAR(30) NOT NULL DEFAULT 'VERIFIED'"};
         sanitizeAndEnsureTableSchema(conn, "kyc", createDdl, cols, alterDdls);
     }
 
@@ -332,7 +336,7 @@ public class DatabaseInitializer {
                 "notification_type VARCHAR(30) NOT NULL DEFAULT 'GENERAL', " +
                 "is_read BOOLEAN NOT NULL DEFAULT FALSE, " +
                 "created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
-                "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE" +
+                "FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
         String[] cols = new String[]{"user_id", "title", "message", "notification_type", "is_read"};
