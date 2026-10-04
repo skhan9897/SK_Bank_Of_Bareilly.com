@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,35 +12,9 @@ public class DatabaseInitializer {
 
     private static final Logger LOGGER = Logger.getLogger(DatabaseInitializer.class.getName());
 
-    private static final List<String> REQUIRED_TABLES = Arrays.asList(
-            "users", "customers", "accounts", "branches", "account_types", "kyc", "notifications"
-    );
-
     public static void initializeDatabaseIfMissing() {
-        boolean missingTableFound = false;
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement()) {
-
-            for (String table : REQUIRED_TABLES) {
-                try (ResultSet rs = stmt.executeQuery("SHOW TABLES LIKE '" + table + "'")) {
-                    if (!rs.next()) {
-                        LOGGER.info("Table '" + table + "' missing in database.");
-                        missingTableFound = true;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Table existence check notice: " + e.getMessage());
-            missingTableFound = true;
-        }
-
-        if (missingTableFound) {
-            LOGGER.info("Executing core DDL setup to ensure users, customers, accounts, branches and account_types exist...");
-            executeCoreDdlSetup();
-        } else {
-            LOGGER.info("Database health check passed: Core banking tables exist.");
-        }
+        LOGGER.info("Ensuring core database tables exist (users, customers, accounts, branches, account_types)...");
+        executeCoreDdlSetup();
 
         // Always run full schema import for auxiliary/payment bank tables
         executeFullSchemaImport();
