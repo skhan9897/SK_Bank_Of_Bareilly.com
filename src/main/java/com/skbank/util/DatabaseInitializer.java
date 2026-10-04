@@ -15,7 +15,7 @@ public class DatabaseInitializer {
     private static final Logger LOGGER = Logger.getLogger(DatabaseInitializer.class.getName());
 
     public static void initializeDatabaseIfMissing() {
-        LOGGER.info("Sanitizing and ensuring full database schema compatibility across all tables...");
+        LOGGER.info("Sanitizing and ensuring full database schema & AUTO_INCREMENT compatibility across all tables...");
         try (Connection conn = DatabaseConnection.getConnection()) {
             conn.createStatement().execute("SET FOREIGN_KEY_CHECKS = 0;");
 
@@ -29,6 +29,8 @@ public class DatabaseInitializer {
             ensureKycTable(conn);
             ensureNotificationsTable(conn);
 
+            ensureAutoIncrementPrimaryKeys(conn);
+
             conn.createStatement().execute("SET FOREIGN_KEY_CHECKS = 1;");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error during database schema initialization", e);
@@ -36,6 +38,25 @@ public class DatabaseInitializer {
 
         // Always run full schema import for auxiliary/payment bank tables
         executeFullSchemaImport();
+    }
+
+    private static void ensureAutoIncrementPrimaryKeys(Connection conn) {
+        String[] autoIncQueries = new String[] {
+            "ALTER TABLE users MODIFY COLUMN id BIGINT AUTO_INCREMENT;",
+            "ALTER TABLE customers MODIFY COLUMN customer_id BIGINT AUTO_INCREMENT;",
+            "ALTER TABLE accounts MODIFY COLUMN account_id BIGINT AUTO_INCREMENT;",
+            "ALTER TABLE branches MODIFY COLUMN branch_id BIGINT AUTO_INCREMENT;",
+            "ALTER TABLE account_types MODIFY COLUMN account_type_id BIGINT AUTO_INCREMENT;",
+            "ALTER TABLE kyc MODIFY COLUMN kyc_id BIGINT AUTO_INCREMENT;",
+            "ALTER TABLE notifications MODIFY COLUMN notification_id BIGINT AUTO_INCREMENT;"
+        };
+        for (String q : autoIncQueries) {
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute(q);
+            } catch (Exception e) {
+                LOGGER.log(Level.FINE, "Auto-increment modify notice: " + e.getMessage());
+            }
+        }
     }
 
     private static void ensureUsersTable(Connection conn) {
