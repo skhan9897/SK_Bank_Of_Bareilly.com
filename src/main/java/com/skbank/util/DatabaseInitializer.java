@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,7 +15,7 @@ public class DatabaseInitializer {
     private static final Logger LOGGER = Logger.getLogger(DatabaseInitializer.class.getName());
 
     public static void initializeDatabaseIfMissing() {
-        LOGGER.info("Ensuring core database tables exist (users, customers, accounts, branches, account_types)...");
+        LOGGER.info("Ensuring core database tables and columns exist (users, customers, accounts, branches, account_types)...");
         executeCoreDdlSetup();
 
         // Always run full schema import for auxiliary/payment bank tables
@@ -46,9 +48,42 @@ public class DatabaseInitializer {
                     LOGGER.log(Level.FINE, "Core DDL statement notice: " + e.getMessage());
                 }
             }
-            LOGGER.info("Core database DDL setup completed.");
+
+            // Ensure missing columns on pre-existing tables are automatically added
+            ensureColumnExists(conn, "customers", "customer_number", "VARCHAR(20) NULL UNIQUE AFTER user_id");
+            ensureColumnExists(conn, "customers", "profile_image", "VARCHAR(255) NULL");
+            ensureColumnExists(conn, "customers", "kyc_status", "VARCHAR(20) NOT NULL DEFAULT 'VERIFIED'");
+            ensureColumnExists(conn, "customers", "status", "VARCHAR(20) NOT NULL DEFAULT 'ACTIVE'");
+
+            ensureColumnExists(conn, "users", "auth_token", "VARCHAR(255) NULL");
+            ensureColumnExists(conn, "users", "token_expiry", "DATETIME NULL");
+            ensureColumnExists(conn, "users", "failed_login_attempts", "INT NOT NULL DEFAULT 0");
+            ensureColumnExists(conn, "users", "account_locked_until", "DATETIME NULL");
+
+            ensureColumnExists(conn, "accounts", "available_balance", "DECIMAL(18,2) NOT NULL DEFAULT 0.00");
+            ensureColumnExists(conn, "accounts", "closed_at", "DATETIME NULL");
+
+            LOGGER.info("Core database DDL setup & column migration completed.");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Core DDL setup failed", e);
+        }
+    }
+
+    private static void ensureColumnExists(Connection conn, String table, String column, String ddl) {
+        String checkSql = "SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = ? AND column_name = ?";
+        try (PreparedStatement ps = conn.prepareStatement(checkSql)) {
+            ps.setString(1, table);
+            ps.setString(2, column);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next() && rs.getInt(1) == 0) {
+                    LOGGER.info("Adding missing column '" + column + "' to table '" + table + "'...");
+                    try (Statement stmt = conn.createStatement()) {
+                        stmt.execute("ALTER TABLE `" + table + "` ADD COLUMN `" + column + "` " + ddl);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.FINE, "Column check notice for " + table + "." + column + ": " + e.getMessage());
         }
     }
 
