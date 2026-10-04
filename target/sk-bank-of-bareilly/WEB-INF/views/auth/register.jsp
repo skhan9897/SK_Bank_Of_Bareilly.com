@@ -8,10 +8,10 @@
     <div class="glass-registration-card">
         <!-- HEADER -->
         <div class="registration-header">
-            <img src="${pageContext.request.contextPath}/assets/images/sk-bank-logo-transparent.png"
+            <img src="${pageContext.request.contextPath}/assets/images/sk-bank-logo-final-transparent.png?v=20261004"
                  alt="SK Bank Logo"
                  class="registration-logo"
-                 onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/assets/images/sk-bank-logo.png';">
+                 onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/assets/images/sk-bank-logo-transparent.png';">
             <h2 class="fw-bold mb-1 text-white">Open Account Online</h2>
             <p class="text-gold-light mb-2 small fw-semibold">Secure Digital Banking Registration</p>
             <div class="d-inline-block bg-white text-navy px-3 py-1 rounded-pill fw-bold small shadow-sm mb-2">

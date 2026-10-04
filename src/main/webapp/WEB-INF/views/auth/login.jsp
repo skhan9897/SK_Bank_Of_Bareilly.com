@@ -9,7 +9,7 @@
         <div class="col-md-5">
             <div class="sk-card p-4 shadow-lg border-gold">
                 <div class="text-center mb-4">
-                    <img src="${pageContext.request.contextPath}/assets/images/sk-bank-logo-transparent.png" alt="Logo" width="70" class="mb-2">
+                    <img src="${pageContext.request.contextPath}/assets/images/sk-bank-logo-final-transparent.png?v=20261004" alt="Logo" width="70" class="mb-2" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/assets/images/sk-bank-logo-transparent.png';">
                     <h4 class="fw-bold text-navy">Customer Login</h4>
                     <p class="text-muted small">Access your SK Bank accounts securely</p>
                 </div>
