@@ -1,11 +1,14 @@
 package com.skbank.controller;
 
+import com.skbank.dto.DigitalPassbookDTO;
 import com.skbank.exception.BankException;
 import com.skbank.model.Customer;
 import com.skbank.service.AccountService;
 import com.skbank.service.AuthService;
+import com.skbank.service.PassbookService;
 import com.skbank.service.impl.AccountServiceImpl;
 import com.skbank.service.impl.AuthServiceImpl;
+import com.skbank.service.impl.PassbookServiceImpl;
 import com.skbank.util.AuditUtil;
 
 import java.io.File;
@@ -31,6 +34,7 @@ public class CustomerRegisterServlet extends HttpServlet {
 
     private final AuthService authService = new AuthServiceImpl();
     private final AccountService accountService = new AccountServiceImpl();
+    private final PassbookService passbookService = new PassbookServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -74,7 +78,7 @@ public class CustomerRegisterServlet extends HttpServlet {
             String rawPan = request.getParameter("panNumber");
             cust.setPanNumber(rawPan != null ? rawPan.replaceAll("\\s+", "").toUpperCase().trim() : "");
 
-            // Optional Profile Image Upload
+            // Optional Profile Image Upload (Max 5 MB)
             try {
                 Part filePart = request.getPart("profileImage");
                 if (filePart != null && filePart.getSize() > 0) {
@@ -119,7 +123,13 @@ public class CustomerRegisterServlet extends HttpServlet {
 
             AuditUtil.logAction(created.getUserId(), "CUSTOMER_REGISTRATION", "AUTH", "New customer registered: " + created.getCustomerNumber(), request);
 
-            response.sendRedirect(request.getContextPath() + "/login?msg=Account created successfully! Your Customer ID is " + created.getCustomerNumber() + ". Please log in.");
+            // Fetch Digital Passbook DTO for Success & Passbook Screen
+            DigitalPassbookDTO passbook = passbookService.getPassbookByCustomerId(created.getCustomerId());
+
+            request.setAttribute("registrationSuccess", true);
+            request.setAttribute("passbook", passbook);
+            request.getRequestDispatcher("/WEB-INF/views/auth/register.jsp").forward(request, response);
+
         } catch (BankException be) {
             LOGGER.log(Level.INFO, "Registration validation notice: " + be.getMessage());
             reloadFormAndShowError(request, response, be.getMessage());

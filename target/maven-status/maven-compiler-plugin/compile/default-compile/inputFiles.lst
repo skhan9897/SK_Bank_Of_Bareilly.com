@@ -43,6 +43,7 @@ C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\mai
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\dao\FixedDepositDAO.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\model\TransactionStatus.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\CustomerLogoutServlet.java
+C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\dto\DigitalPassbookDTO.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\dao\impl\TransferDAOImpl.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\dao\impl\LoanDAOImpl.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\service\impl\ComplaintServiceImpl.java
@@ -68,6 +69,7 @@ C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\mai
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\model\ProviderType.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\service\impl\BeneficiaryServiceImpl.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\admin\AdminDashboardServlet.java
+C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\DigitalPassbookPrintServlet.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\model\KycStatus.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\model\CardStatus.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\service\UpiService.java
@@ -108,6 +110,7 @@ C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\mai
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\dao\impl\AdminDAOImpl.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\OtpServlet.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\filter\CustomerAuthFilter.java
+C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\service\impl\PassbookServiceImpl.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\model\AdminRole.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\admin\AdminCustomerServlet.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\service\AdminService.java
@@ -162,6 +165,7 @@ C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\mai
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\model\LoanPayment.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\service\TransactionService.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\api\SecurityApiServlet.java
+C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\DigitalPassbookPdfServlet.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\dto\TransferDTO.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\api\CustomerAuthApiServlet.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\dao\impl\IdempotencyDAOImpl.java
@@ -198,6 +202,7 @@ C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\mai
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\admin\AdminNotificationServlet.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\api\LoanApiServlet.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\service\FdService.java
+C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\service\PassbookService.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\dao\impl\PaymentWalletDAOImpl.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\controller\api\CustomerDashboardApiServlet.java
 C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\java\com\skbank\model\LoanType.java

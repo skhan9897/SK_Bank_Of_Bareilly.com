@@ -1,4 +1,5 @@
 com\skbank\service\AccountService.class
+com\skbank\service\PassbookService.class
 com\skbank\controller\api\CustomerAuthApiServlet$OtpPayload.class
 com\skbank\controller\admin\AdminLoginServlet.class
 com\skbank\dto\CustomerDashboardDTO.class
@@ -25,6 +26,7 @@ com\skbank\dao\AuditLogDAO.class
 com\skbank\model\PaymentType.class
 com\skbank\controller\customer\CustomerDashboardServlet.class
 com\skbank\dao\impl\FixedDepositDAOImpl.class
+com\skbank\service\impl\PassbookServiceImpl.class
 com\skbank\controller\api\NotificationApiServlet.class
 com\skbank\controller\admin\AdminCustomerServlet.class
 com\skbank\service\impl\CardServiceImpl.class
@@ -162,10 +164,13 @@ com\skbank\service\FdService.class
 com\skbank\model\TransactionType.class
 com\skbank\model\UpiAccount.class
 com\skbank\controller\api\LoanApiServlet.class
+com\skbank\controller\DigitalPassbookPdfServlet.class
+com\skbank\dto\DigitalPassbookDTO.class
 com\skbank\model\CardType.class
 com\skbank\dao\AccountDAO.class
 com\skbank\dao\impl\SystemSettingsDAOImpl.class
 com\skbank\model\ComplaintStatus.class
+com\skbank\controller\DigitalPassbookPrintServlet.class
 com\skbank\dao\impl\ComplaintDAOImpl.class
 com\skbank\model\AccountStatus.class
 com\skbank\model\PaymentTransaction.class
