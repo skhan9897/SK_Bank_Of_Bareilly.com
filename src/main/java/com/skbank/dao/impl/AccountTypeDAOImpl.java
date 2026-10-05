@@ -61,11 +61,7 @@ public class AccountTypeDAOImpl implements AccountTypeDAO {
 
     private AccountType mapAccountType(ResultSet rs) throws SQLException {
         AccountType at = new AccountType();
-        try {
-            at.setAccountTypeId(rs.getLong("type_id"));
-        } catch (SQLException e) {
-            try { at.setAccountTypeId(rs.getLong("account_type_id")); } catch (SQLException ignored) {}
-        }
+        at.setAccountTypeId(rs.getLong("type_id"));
         try { at.setTypeCode(rs.getString("type_code")); } catch (SQLException ignored) {}
         try { at.setTypeName(rs.getString("type_name")); } catch (SQLException ignored) {}
         try { at.setDescription(rs.getString("description")); } catch (SQLException ignored) {}

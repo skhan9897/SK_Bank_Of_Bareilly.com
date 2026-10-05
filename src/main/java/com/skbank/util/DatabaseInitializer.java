@@ -68,23 +68,23 @@ public class DatabaseInitializer {
                 stmt.execute("ALTER TABLE accounts DROP FOREIGN KEY accounts_ibfk_2;");
             } catch (Exception ignored) {}
 
-            // 3. Copy any existing type_id data to account_type_id if type_id existed on accounts
+            // 3. Ensure accounts.type_id column exists
             try {
-                stmt.execute("UPDATE accounts SET account_type_id = type_id WHERE account_type_id IS NULL AND type_id IS NOT NULL;");
+                stmt.execute("ALTER TABLE accounts ADD COLUMN type_id BIGINT NOT NULL;");
             } catch (Exception ignored) {}
 
-            // 4. Ensure accounts.account_type_id is BIGINT NOT NULL
+            // 4. Copy existing account_type_id data to type_id if type_id is null/0
             try {
-                stmt.execute("ALTER TABLE accounts MODIFY COLUMN account_type_id BIGINT NOT NULL;");
+                stmt.execute("UPDATE accounts SET type_id = account_type_id WHERE type_id = 0 OR type_id IS NULL;");
             } catch (Exception ignored) {}
 
-            // 5. Add canonical foreign key constraint from accounts.account_type_id to account_types.type_id
+            // 5. Add canonical foreign key constraint from accounts.type_id to account_types.type_id
             try {
-                stmt.execute("ALTER TABLE accounts ADD CONSTRAINT fk_accounts_account_type FOREIGN KEY (account_type_id) REFERENCES account_types(type_id);");
+                stmt.execute("ALTER TABLE accounts ADD CONSTRAINT fk_accounts_account_type FOREIGN KEY (type_id) REFERENCES account_types(type_id);");
             } catch (Exception ignored) {}
 
             stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
-            LOGGER.info("Canonical account_types FK migration executed successfully.");
+            LOGGER.info("Canonical account_types FK migration (accounts.type_id -> account_types.type_id) executed successfully.");
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Account types FK migration notice: " + e.getMessage());
         }
@@ -344,7 +344,7 @@ public class DatabaseInitializer {
         String createDdl = "CREATE TABLE IF NOT EXISTS accounts (" +
                 "account_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "customer_id VARCHAR(20) NOT NULL, " +
-                "account_type_id BIGINT NOT NULL, " +
+                "type_id BIGINT NOT NULL, " +
                 "branch_id BIGINT NOT NULL, " +
                 "account_number VARCHAR(20) NOT NULL UNIQUE, " +
                 "balance DECIMAL(18,2) NOT NULL DEFAULT 0.00, " +
@@ -353,11 +353,11 @@ public class DatabaseInitializer {
                 "opened_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "closed_at DATETIME NULL, " +
                 "FOREIGN KEY (customer_id) REFERENCES customers(customer_id), " +
-                "FOREIGN KEY (account_type_id) REFERENCES account_types(type_id), " +
+                "FOREIGN KEY (type_id) REFERENCES account_types(type_id), " +
                 "FOREIGN KEY (branch_id) REFERENCES branches(branch_id)" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
-        String[] cols = new String[]{"customer_id", "account_type_id", "branch_id", "account_number", "balance", "available_balance", "status"};
+        String[] cols = new String[]{"customer_id", "type_id", "branch_id", "account_number", "balance", "available_balance", "status"};
         String[] alterDdls = new String[]{"VARCHAR(20) NOT NULL", "BIGINT NOT NULL", "BIGINT NOT NULL", "VARCHAR(20) NOT NULL UNIQUE", "DECIMAL(18,2) NOT NULL DEFAULT 0.00", "DECIMAL(18,2) NOT NULL DEFAULT 0.00", "VARCHAR(30) NOT NULL DEFAULT 'ACTIVE'"};
         sanitizeAndEnsureTableSchema(conn, "accounts", createDdl, cols, alterDdls);
     }
