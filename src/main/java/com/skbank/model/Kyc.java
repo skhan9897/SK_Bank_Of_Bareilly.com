@@ -7,7 +7,7 @@ public class Kyc implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long kycId;
-    private String customerId;
+    private Long customerId;
     private String aadhaarNumber;
     private String panNumber;
     private KycStatus verificationStatus = KycStatus.VERIFIED;
@@ -19,8 +19,8 @@ public class Kyc implements Serializable {
     public Long getKycId() { return kycId; }
     public void setKycId(Long kycId) { this.kycId = kycId; }
 
-    public String getCustomerId() { return customerId; }
-    public void setCustomerId(String customerId) { this.customerId = customerId; }
+    public Long getCustomerId() { return customerId; }
+    public void setCustomerId(Long customerId) { this.customerId = customerId; }
 
     public String getAadhaarNumber() { return aadhaarNumber; }
     public void setAadhaarNumber(String aadhaarNumber) { this.aadhaarNumber = aadhaarNumber; }
@@ -36,18 +36,4 @@ public class Kyc implements Serializable {
 
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
-
-    public String getMaskedAadhaar() {
-        if (aadhaarNumber != null && aadhaarNumber.length() >= 4) {
-            return "XXXX XXXX " + aadhaarNumber.substring(aadhaarNumber.length() - 4);
-        }
-        return "XXXX XXXX XXXX";
-    }
-
-    public String getMaskedPan() {
-        if (panNumber != null && panNumber.length() == 10) {
-            return panNumber.substring(0, 2) + "*****" + panNumber.substring(7);
-        }
-        return "*****";
-    }
 }

@@ -131,15 +131,16 @@ public class AuthServiceImpl implements AuthService {
             Long userId = userDAO.create(conn, user);
             user.setId(userId);
 
-            // 2. Create Customer with VARCHAR(20) SKC... customer_id
+            // 2. Create Customer (AUTO_INCREMENT customer_id)
             Random rand = new Random();
             String custNum = "SKC" + (10000000 + rand.nextInt(90000000));
             customer.setUserId(userId);
-            customer.setCustomerId(custNum);
-            customer.setCustomerNumber(custNum);
+            customer.setCustomerNumber(custNum); // Set ONLY customer_number (e.g. SKC82644968)
             customer.setKycStatus(KycStatus.VERIFIED);
             customer.setStatus(UserStatus.ACTIVE);
-            String customerId = customerDAO.create(conn, customer);
+
+            Long customerId = customerDAO.create(conn, customer); // Returns generated AUTO_INCREMENT Long customer_id
+            customer.setCustomerId(customerId); // Set generated Long customerId
 
             // Validate accountTypeId against account_types table
             AccountType selectedType = null;
@@ -172,7 +173,7 @@ public class AuthServiceImpl implements AuthService {
 
             // 3. Create Account - MANDATORY RULE: balance = 0.00, available_balance = 0.00
             Account account = new Account();
-            account.setCustomerId(customerId);
+            account.setCustomerId(customerId); // Passes generated Long customerId
             account.setAccountTypeId(validAccountTypeId);
             account.setBranchId(validBranchId);
             String accNum = "SK" + (1000000000L + (long)(rand.nextDouble() * 9000000000L));
@@ -184,7 +185,7 @@ public class AuthServiceImpl implements AuthService {
 
             // 4. Create KYC
             Kyc kyc = new Kyc();
-            kyc.setCustomerId(customerId);
+            kyc.setCustomerId(customerId); // Passes generated Long customerId
             kyc.setAadhaarNumber(customer.getAadhaarNumber());
             kyc.setPanNumber(customer.getPanNumber());
             kyc.setVerificationStatus(KycStatus.VERIFIED);
@@ -256,7 +257,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Customer getCustomerById(String customerId) throws BankException {
+    public Customer getCustomerById(Long customerId) throws BankException {
         try {
             return customerDAO.findById(customerId);
         } catch (SQLException e) {

@@ -16,7 +16,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final CustomerDAO customerDAO = new CustomerDAOImpl();
 
     @Override
-    public Complaint createComplaint(String customerId, String subject, String description, String priority) throws BankException {
+    public Complaint createComplaint(Long customerId, String subject, String description, String priority) throws BankException {
         if (subject == null || subject.trim().isEmpty() || description == null || description.trim().isEmpty()) {
             throw new BankException("Subject and description are required");
         }
@@ -48,7 +48,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     @Override
-    public List<Complaint> getCustomerComplaints(String customerId) throws BankException {
+    public List<Complaint> getCustomerComplaints(Long customerId) throws BankException {
         try {
             return complaintDAO.findByCustomerId(customerId);
         } catch (Exception e) {

@@ -30,7 +30,7 @@ public class PassbookServiceImpl implements PassbookService {
     }
 
     @Override
-    public DigitalPassbookDTO getPassbookByCustomerId(String customerId) throws BankException {
+    public DigitalPassbookDTO getPassbookByCustomerId(Long customerId) throws BankException {
         try {
             Customer cust = customerDAO.findById(customerId);
             if (cust == null) {

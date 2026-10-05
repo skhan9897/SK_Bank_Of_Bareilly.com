@@ -5,5 +5,5 @@ import com.skbank.exception.BankException;
 
 public interface PassbookService {
     DigitalPassbookDTO getPassbookByUserId(Long userId) throws BankException;
-    DigitalPassbookDTO getPassbookByCustomerId(String customerId) throws BankException;
+    DigitalPassbookDTO getPassbookByCustomerId(Long customerId) throws BankException;
 }

@@ -24,7 +24,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
     private final NotificationDAO notificationDAO = new NotificationDAOImpl();
 
     @Override
-    public BillPayment processBillPayment(String customerId, Long accountId, String billerType, String billerName, String consumerNumber, BigDecimal amount) throws BankException {
+    public BillPayment processBillPayment(Long customerId, Long accountId, String billerType, String billerName, String consumerNumber, BigDecimal amount) throws BankException {
         if (!ValidationUtil.isValidAmount(amount)) {
             throw new BankException("Payment amount must be greater than zero");
         }
@@ -105,7 +105,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
     }
 
     @Override
-    public List<BillPayment> getCustomerBillPayments(String customerId) throws BankException {
+    public List<BillPayment> getCustomerBillPayments(Long customerId) throws BankException {
         try {
             return billPaymentDAO.findByCustomerId(customerId);
         } catch (Exception e) {

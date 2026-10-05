@@ -7,8 +7,8 @@ import com.skbank.model.ComplaintMessage;
 import java.util.List;
 
 public interface ComplaintService {
-    Complaint createComplaint(String customerId, String subject, String description, String priority) throws BankException;
-    List<Complaint> getCustomerComplaints(String customerId) throws BankException;
+    Complaint createComplaint(Long customerId, String subject, String description, String priority) throws BankException;
+    List<Complaint> getCustomerComplaints(Long customerId) throws BankException;
     Complaint getComplaintById(Long complaintId) throws BankException;
     List<ComplaintMessage> getComplaintMessages(Long complaintId) throws BankException;
     boolean addMessage(Long complaintId, Long senderUserId, String message) throws BankException;

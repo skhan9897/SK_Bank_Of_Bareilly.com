@@ -5,8 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a71f9876-05f1-4f73-8380-b66a0d6aa89d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/impl/AccountTypeDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/dao/impl/AccountTypeDAOImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/register.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/register.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/CustomerDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/dao/CustomerDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/KycDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/dao/KycDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/impl/CustomerDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/dao/impl/CustomerDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/impl/KycDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/dao/impl/KycDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/model/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/model/Customer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/model/Kyc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/model/Kyc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/AdminService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/BillPaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/BillPaymentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/ComplaintService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/ComplaintService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/CustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/CustomerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/PassbookService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/PassbookService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/PaymentBankService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/PaymentBankService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/impl/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/impl/AuthServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/impl/ComplaintServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/impl/ComplaintServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/impl/PassbookServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/impl/PassbookServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -13,11 +13,11 @@ import java.util.List;
 public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
-    public Customer findById(String customerId) throws SQLException {
+    public Customer findById(Long customerId) throws SQLException {
         String sql = "SELECT * FROM customers WHERE customer_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, customerId);
+            ps.setLong(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return mapCustomer(rs);
             }
@@ -78,39 +78,45 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
 
     @Override
-    public String create(Customer customer) throws SQLException {
+    public Long create(Customer customer) throws SQLException {
         try (Connection conn = DatabaseConnection.getConnection()) {
             return create(conn, customer);
         }
     }
 
     @Override
-    public String create(Connection conn, Customer customer) throws SQLException {
-        String sql = "INSERT INTO customers (customer_id, user_id, customer_number, full_name, date_of_birth, gender, mobile, email, address, city, state, pincode, aadhaar_number, pan_number, profile_image, kyc_status, status, created_at, updated_at) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+    public Long create(Connection conn, Customer customer) throws SQLException {
+        String sql = "INSERT INTO customers (user_id, customer_number, full_name, date_of_birth, gender, mobile, email, address, city, state, pincode, aadhaar_number, pan_number, profile_image, kyc_status, status, created_at, updated_at) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, customer.getCustomerId());
-            ps.setLong(2, customer.getUserId());
-            ps.setString(3, customer.getCustomerNumber());
-            ps.setString(4, customer.getFullName());
-            ps.setDate(5, customer.getDateOfBirth());
-            ps.setString(6, customer.getGender());
-            ps.setString(7, customer.getMobile());
-            ps.setString(8, customer.getEmail());
-            ps.setString(9, customer.getAddress());
-            ps.setString(10, customer.getCity());
-            ps.setString(11, customer.getState());
-            ps.setString(12, customer.getPincode());
-            ps.setString(13, customer.getAadhaarNumber());
-            ps.setString(14, customer.getPanNumber());
-            ps.setString(15, customer.getProfileImage());
-            ps.setString(16, customer.getKycStatus() != null ? customer.getKycStatus().name() : KycStatus.VERIFIED.name());
-            ps.setString(17, customer.getStatus() != null ? customer.getStatus().name() : UserStatus.ACTIVE.name());
+        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setLong(1, customer.getUserId());
+            ps.setString(2, customer.getCustomerNumber());
+            ps.setString(3, customer.getFullName());
+            ps.setDate(4, customer.getDateOfBirth());
+            ps.setString(5, customer.getGender());
+            ps.setString(6, customer.getMobile());
+            ps.setString(7, customer.getEmail());
+            ps.setString(8, customer.getAddress());
+            ps.setString(9, customer.getCity());
+            ps.setString(10, customer.getState());
+            ps.setString(11, customer.getPincode());
+            ps.setString(12, customer.getAadhaarNumber());
+            ps.setString(13, customer.getPanNumber());
+            ps.setString(14, customer.getProfileImage());
+            ps.setString(15, customer.getKycStatus() != null ? customer.getKycStatus().name() : KycStatus.VERIFIED.name());
+            ps.setString(16, customer.getStatus() != null ? customer.getStatus().name() : UserStatus.ACTIVE.name());
 
             ps.executeUpdate();
-            return customer.getCustomerId();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    Long generatedId = rs.getLong(1);
+                    customer.setCustomerId(generatedId);
+                    return generatedId;
+                }
+            }
         }
+        throw new SQLException("Failed to retrieve AUTO_INCREMENT customer_id for new customer.");
     }
 
     @Override
@@ -125,40 +131,40 @@ public class CustomerDAOImpl implements CustomerDAO {
             ps.setString(5, c.getCity());
             ps.setString(6, c.getState());
             ps.setString(7, c.getPincode());
-            ps.setString(8, c.getCustomerId());
+            ps.setLong(8, c.getCustomerId());
             return ps.executeUpdate() > 0;
         }
     }
 
     @Override
-    public boolean updateProfileImage(String customerId, String imagePath) throws SQLException {
+    public boolean updateProfileImage(Long customerId, String imagePath) throws SQLException {
         String sql = "UPDATE customers SET profile_image = ?, updated_at = NOW() WHERE customer_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, imagePath);
-            ps.setString(2, customerId);
+            ps.setLong(2, customerId);
             return ps.executeUpdate() > 0;
         }
     }
 
     @Override
-    public boolean updateKycStatus(String customerId, String kycStatus) throws SQLException {
+    public boolean updateKycStatus(Long customerId, String kycStatus) throws SQLException {
         String sql = "UPDATE customers SET kyc_status = ?, updated_at = NOW() WHERE customer_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, kycStatus);
-            ps.setString(2, customerId);
+            ps.setLong(2, customerId);
             return ps.executeUpdate() > 0;
         }
     }
 
     @Override
-    public boolean updateStatus(String customerId, String status) throws SQLException {
+    public boolean updateStatus(Long customerId, String status) throws SQLException {
         String sql = "UPDATE customers SET status = ?, updated_at = NOW() WHERE customer_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, status);
-            ps.setString(2, customerId);
+            ps.setLong(2, customerId);
             return ps.executeUpdate() > 0;
         }
     }
@@ -216,7 +222,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     private Customer mapCustomer(ResultSet rs) throws SQLException {
         Customer c = new Customer();
-        c.setCustomerId(rs.getString("customer_id"));
+        c.setCustomerId(rs.getLong("customer_id"));
         c.setUserId(rs.getLong("user_id"));
         c.setCustomerNumber(rs.getString("customer_number"));
         c.setFullName(rs.getString("full_name"));
