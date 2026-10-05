@@ -30,6 +30,7 @@ public class DatabaseInitializer {
             ensureNotificationsTable(conn);
 
             ensureVarcharCustomerKeys(conn);
+            ensureCanonicalAccountTypesFK(conn);
 
             // Universal Column Sanitizer to fix ANY legacy NOT NULL column without defaults
             sanitizeTableColumnsToAllowDefaults(conn, "users");
@@ -47,6 +48,46 @@ public class DatabaseInitializer {
 
         // Always run full schema import for auxiliary/payment bank tables
         executeFullSchemaImport();
+    }
+
+    private static void ensureCanonicalAccountTypesFK(Connection conn) {
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
+            
+            // 1. Ensure account_types primary key column is type_id
+            try {
+                stmt.execute("ALTER TABLE account_types MODIFY COLUMN type_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY;");
+            } catch (Exception e1) {
+                try {
+                    stmt.execute("ALTER TABLE account_types MODIFY COLUMN type_id BIGINT NOT NULL AUTO_INCREMENT;");
+                } catch (Exception ignored) {}
+            }
+
+            // 2. Drop obsolete accounts_ibfk_2 foreign key if present
+            try {
+                stmt.execute("ALTER TABLE accounts DROP FOREIGN KEY accounts_ibfk_2;");
+            } catch (Exception ignored) {}
+
+            // 3. Copy any existing type_id data to account_type_id if type_id existed on accounts
+            try {
+                stmt.execute("UPDATE accounts SET account_type_id = type_id WHERE account_type_id IS NULL AND type_id IS NOT NULL;");
+            } catch (Exception ignored) {}
+
+            // 4. Ensure accounts.account_type_id is BIGINT NOT NULL
+            try {
+                stmt.execute("ALTER TABLE accounts MODIFY COLUMN account_type_id BIGINT NOT NULL;");
+            } catch (Exception ignored) {}
+
+            // 5. Add canonical foreign key constraint from accounts.account_type_id to account_types.type_id
+            try {
+                stmt.execute("ALTER TABLE accounts ADD CONSTRAINT fk_accounts_account_type FOREIGN KEY (account_type_id) REFERENCES account_types(type_id);");
+            } catch (Exception ignored) {}
+
+            stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
+            LOGGER.info("Canonical account_types FK migration executed successfully.");
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Account types FK migration notice: " + e.getMessage());
+        }
     }
 
     private static void ensureVarcharCustomerKeys(Connection conn) {
@@ -274,7 +315,7 @@ public class DatabaseInitializer {
 
     private static void ensureAccountTypesTable(Connection conn) {
         String createDdl = "CREATE TABLE IF NOT EXISTS account_types (" +
-                "account_type_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "type_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "type_code VARCHAR(30) NOT NULL UNIQUE, " +
                 "type_name VARCHAR(50) NOT NULL, " +
                 "description VARCHAR(255) NULL, " +
@@ -290,7 +331,7 @@ public class DatabaseInitializer {
 
         // Seed default account types
         try (Statement stmt = conn.createStatement()) {
-            stmt.execute("INSERT IGNORE INTO account_types (account_type_id, type_code, type_name, description, minimum_balance, interest_rate) VALUES " +
+            stmt.execute("INSERT IGNORE INTO account_types (type_id, type_code, type_name, description, minimum_balance, interest_rate) VALUES " +
                     "(1, 'SAVINGS', 'Savings Account', 'Standard personal savings account with interest', 1000.00, 4.00), " +
                     "(2, 'CURRENT', 'Current Account', 'Business account for high volume transactions', 5000.00, 0.00), " +
                     "(3, 'SALARY', 'Corporate Salary Account', 'Zero-balance salary account with premium benefits', 0.00, 4.50), " +
@@ -312,7 +353,7 @@ public class DatabaseInitializer {
                 "opened_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "closed_at DATETIME NULL, " +
                 "FOREIGN KEY (customer_id) REFERENCES customers(customer_id), " +
-                "FOREIGN KEY (account_type_id) REFERENCES account_types(account_type_id), " +
+                "FOREIGN KEY (account_type_id) REFERENCES account_types(type_id), " +
                 "FOREIGN KEY (branch_id) REFERENCES branches(branch_id)" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 

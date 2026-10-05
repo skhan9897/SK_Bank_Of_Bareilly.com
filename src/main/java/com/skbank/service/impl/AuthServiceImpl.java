@@ -12,6 +12,7 @@ import com.skbank.util.ValidationUtil;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Random;
 
 public class AuthServiceImpl implements AuthService {
@@ -19,6 +20,8 @@ public class AuthServiceImpl implements AuthService {
     private final UserDAO userDAO = new UserDAOImpl();
     private final CustomerDAO customerDAO = new CustomerDAOImpl();
     private final AccountDAO accountDAO = new AccountDAOImpl();
+    private final BranchDAO branchDAO = new BranchDAOImpl();
+    private final AccountTypeDAO accountTypeDAO = new AccountTypeDAOImpl();
     private final KycDAO kycDAO = new KycDAOImpl();
     private final NotificationDAO notificationDAO = new NotificationDAOImpl();
     private final AdminDAO adminDAO = new AdminDAOImpl();
@@ -132,11 +135,40 @@ public class AuthServiceImpl implements AuthService {
             customer.setStatus(UserStatus.ACTIVE);
             String customerId = customerDAO.create(conn, customer);
 
+            // Validate accountTypeId against account_types table
+            AccountType selectedType = null;
+            if (accountTypeId != null) {
+                selectedType = accountTypeDAO.findById(accountTypeId);
+            }
+            if (selectedType == null) {
+                List<AccountType> allTypes = accountTypeDAO.findAllActive();
+                if (!allTypes.isEmpty()) {
+                    selectedType = allTypes.get(0);
+                }
+            }
+            if (selectedType == null) {
+                throw new BankException("Selected account type is invalid.");
+            }
+            Long validAccountTypeId = selectedType.getAccountTypeId();
+
+            // Validate branchId against branches table
+            Branch selectedBranch = null;
+            if (branchId != null) {
+                selectedBranch = branchDAO.findById(branchId);
+            }
+            if (selectedBranch == null) {
+                List<Branch> allBranches = branchDAO.findAllActive();
+                if (!allBranches.isEmpty()) {
+                    selectedBranch = allBranches.get(0);
+                }
+            }
+            Long validBranchId = selectedBranch != null ? selectedBranch.getBranchId() : 1L;
+
             // 3. Create Account - MANDATORY RULE: balance = 0.00, available_balance = 0.00
             Account account = new Account();
             account.setCustomerId(customerId);
-            account.setAccountTypeId(accountTypeId != null ? accountTypeId : 1L); // Default Savings
-            account.setBranchId(branchId != null ? branchId : 1L); // Default Main Branch
+            account.setAccountTypeId(validAccountTypeId);
+            account.setBranchId(validBranchId);
             String accNum = "SK" + (1000000000L + (long)(rand.nextDouble() * 9000000000L));
             account.setAccountNumber(accNum);
             account.setBalance(BigDecimal.ZERO);
