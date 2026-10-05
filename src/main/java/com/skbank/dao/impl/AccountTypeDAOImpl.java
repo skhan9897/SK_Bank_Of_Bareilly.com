@@ -12,11 +12,10 @@ public class AccountTypeDAOImpl implements AccountTypeDAO {
 
     @Override
     public AccountType findById(Long accountTypeId) throws SQLException {
-        String sql = "SELECT * FROM account_types WHERE account_type_id = ? OR type_id = ?";
+        String sql = "SELECT * FROM account_types WHERE type_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, accountTypeId);
-            ps.setLong(2, accountTypeId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return mapAccountType(rs);
             }
@@ -48,7 +47,6 @@ public class AccountTypeDAOImpl implements AccountTypeDAO {
                 list.add(mapAccountType(rs));
             }
         } catch (Exception e) {
-            // Fallback query if status column differs
             String fallbackSql = "SELECT * FROM account_types ORDER BY type_id ASC";
             try (Connection conn = DatabaseConnection.getConnection();
                  PreparedStatement ps = conn.prepareStatement(fallbackSql);
@@ -64,9 +62,9 @@ public class AccountTypeDAOImpl implements AccountTypeDAO {
     private AccountType mapAccountType(ResultSet rs) throws SQLException {
         AccountType at = new AccountType();
         try {
-            at.setAccountTypeId(rs.getLong("account_type_id"));
+            at.setAccountTypeId(rs.getLong("type_id"));
         } catch (SQLException e) {
-            try { at.setAccountTypeId(rs.getLong("type_id")); } catch (SQLException ignored) {}
+            try { at.setAccountTypeId(rs.getLong("account_type_id")); } catch (SQLException ignored) {}
         }
         try { at.setTypeCode(rs.getString("type_code")); } catch (SQLException ignored) {}
         try { at.setTypeName(rs.getString("type_name")); } catch (SQLException ignored) {}

@@ -15,7 +15,7 @@ public class AccountDAOImpl implements AccountDAO {
     private static final String SELECT_JOIN_SQL = 
         "SELECT a.*, COALESCE(at.type_name, 'Savings Account') AS account_type_name, b.branch_name, b.ifsc_code, c.full_name AS customer_name " +
         "FROM accounts a " +
-        "LEFT JOIN account_types at ON (a.account_type_id = at.account_type_id OR a.account_type_id = at.type_id) " +
+        "LEFT JOIN account_types at ON a.account_type_id = at.type_id " +
         "LEFT JOIN branches b ON a.branch_id = b.branch_id " +
         "LEFT JOIN customers c ON a.customer_id = c.customer_id ";
 
