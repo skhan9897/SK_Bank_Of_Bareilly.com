@@ -33,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public boolean updateProfile(Customer customer) throws BankException {
         try {
-            return customerDAO.update(customer);
+            return customerDAO.updateProfile(customer);
         } catch (Exception e) {
             throw new BankException("Error updating customer profile", e);
         }

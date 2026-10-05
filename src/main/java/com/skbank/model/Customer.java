@@ -22,8 +22,8 @@ public class Customer implements Serializable {
     private String aadhaarNumber;
     private String panNumber;
     private String profileImage;
-    private KycStatus kycStatus;
-    private UserStatus status;
+    private KycStatus kycStatus = KycStatus.VERIFIED;
+    private UserStatus status = UserStatus.ACTIVE;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 

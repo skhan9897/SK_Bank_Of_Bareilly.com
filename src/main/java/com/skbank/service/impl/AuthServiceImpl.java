@@ -79,16 +79,22 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Customer registerCustomer(Customer customer, String username, String plainPassword, Long branchId, Long accountTypeId) throws BankException {
         // Validation
+        if (customer.getFullName() == null || customer.getFullName().trim().isEmpty()) {
+            throw new BankException("Full name is required");
+        }
+        if (customer.getDateOfBirth() == null) {
+            throw new BankException("Date of birth is required");
+        }
         if (!ValidationUtil.isValidMobile(customer.getMobile())) {
             throw new BankException("Invalid 10-digit mobile number");
         }
-        if (!ValidationUtil.isValidEmail(customer.getEmail())) {
+        if (customer.getEmail() != null && !customer.getEmail().trim().isEmpty() && !ValidationUtil.isValidEmail(customer.getEmail())) {
             throw new BankException("Invalid email address");
         }
-        if (!ValidationUtil.isValidAadhaar(customer.getAadhaarNumber())) {
+        if (customer.getAadhaarNumber() != null && !customer.getAadhaarNumber().trim().isEmpty() && !ValidationUtil.isValidAadhaar(customer.getAadhaarNumber())) {
             throw new BankException("Invalid 12-digit Aadhaar number");
         }
-        if (!ValidationUtil.isValidPan(customer.getPanNumber())) {
+        if (customer.getPanNumber() != null && !customer.getPanNumber().trim().isEmpty() && !ValidationUtil.isValidPan(customer.getPanNumber())) {
             throw new BankException("Invalid PAN number format (e.g., ABCDE1234F)");
         }
         if (plainPassword == null || plainPassword.length() < 6) {
@@ -109,7 +115,7 @@ public class AuthServiceImpl implements AuthService {
             if (customerDAO.findByMobile(customer.getMobile()) != null) {
                 throw new BankException("Mobile number is already registered");
             }
-            if (customerDAO.findByEmail(customer.getEmail()) != null) {
+            if (customer.getEmail() != null && !customer.getEmail().trim().isEmpty() && customerDAO.findByEmail(customer.getEmail()) != null) {
                 throw new BankException("Email address is already registered");
             }
 

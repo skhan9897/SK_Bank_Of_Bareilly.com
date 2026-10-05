@@ -12,7 +12,7 @@ public class DatabaseConnection {
     private static final Logger LOGGER = Logger.getLogger(DatabaseConnection.class.getName());
 
     private static String driver = "com.mysql.cj.jdbc.Driver";
-    private static String url = "jdbc:mysql://localhost:3306/sk_bank_of_bareilly?useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true&serverTimezone=UTC&characterEncoding=UTF-8";
+    private static String url = "jdbc:mysql://localhost:3306/SK_Bank_Of_Bareilly_DB?useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true&serverTimezone=UTC&characterEncoding=UTF-8";
     private static String username = "root";
     private static String password = "root";
 

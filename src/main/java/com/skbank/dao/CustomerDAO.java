@@ -11,14 +11,12 @@ public interface CustomerDAO {
     Customer findByCustomerNumber(String customerNumber) throws SQLException;
     Customer findByMobile(String mobile) throws SQLException;
     Customer findByEmail(String email) throws SQLException;
-    Customer findByAadhaar(String aadhaar) throws SQLException;
-    Customer findByPan(String pan) throws SQLException;
     String create(Customer customer) throws SQLException;
     String create(Connection conn, Customer customer) throws SQLException;
-    boolean update(Customer customer) throws SQLException;
+    boolean updateProfile(Customer customer) throws SQLException;
+    boolean updateProfileImage(String customerId, String imagePath) throws SQLException;
     boolean updateKycStatus(String customerId, String kycStatus) throws SQLException;
     boolean updateStatus(String customerId, String status) throws SQLException;
-    boolean updateProfileImage(String customerId, String imagePath) throws SQLException;
     List<Customer> findAll(int offset, int limit, String searchQuery) throws SQLException;
     long countAll(String searchQuery) throws SQLException;
 }
