@@ -39,21 +39,12 @@ public class AccountTypeDAOImpl implements AccountTypeDAO {
     @Override
     public List<AccountType> findAllActive() throws SQLException {
         List<AccountType> list = new ArrayList<>();
-        String sql = "SELECT * FROM account_types WHERE status = 'ACTIVE' ORDER BY type_name ASC";
+        String sql = "SELECT * FROM account_types ORDER BY type_id ASC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 list.add(mapAccountType(rs));
-            }
-        } catch (Exception e) {
-            String fallbackSql = "SELECT * FROM account_types ORDER BY type_id ASC";
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement ps = conn.prepareStatement(fallbackSql);
-                 ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(mapAccountType(rs));
-                }
             }
         }
         return list;
@@ -61,7 +52,11 @@ public class AccountTypeDAOImpl implements AccountTypeDAO {
 
     private AccountType mapAccountType(ResultSet rs) throws SQLException {
         AccountType at = new AccountType();
-        at.setAccountTypeId(rs.getLong("type_id"));
+        try {
+            at.setAccountTypeId(rs.getLong("type_id"));
+        } catch (SQLException e) {
+            try { at.setAccountTypeId(rs.getLong("account_type_id")); } catch (SQLException ignored) {}
+        }
         try { at.setTypeCode(rs.getString("type_code")); } catch (SQLException ignored) {}
         try { at.setTypeName(rs.getString("type_name")); } catch (SQLException ignored) {}
         try { at.setDescription(rs.getString("description")); } catch (SQLException ignored) {}

@@ -21,6 +21,9 @@ public class AccountType implements Serializable {
     public Long getAccountTypeId() { return accountTypeId; }
     public void setAccountTypeId(Long accountTypeId) { this.accountTypeId = accountTypeId; }
 
+    public Long getTypeId() { return accountTypeId; }
+    public void setTypeId(Long typeId) { this.accountTypeId = typeId; }
+
     public String getTypeCode() { return typeCode; }
     public void setTypeCode(String typeCode) { this.typeCode = typeCode; }
 

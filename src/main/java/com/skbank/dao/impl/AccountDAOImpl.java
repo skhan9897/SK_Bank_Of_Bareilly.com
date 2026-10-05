@@ -15,7 +15,7 @@ public class AccountDAOImpl implements AccountDAO {
     private static final String SELECT_JOIN_SQL = 
         "SELECT a.*, COALESCE(at.type_name, 'Savings Account') AS account_type_name, b.branch_name, b.ifsc_code, c.full_name AS customer_name " +
         "FROM accounts a " +
-        "LEFT JOIN account_types at ON a.type_id = at.type_id " +
+        "LEFT JOIN account_types at ON a.account_type_id = at.type_id " +
         "LEFT JOIN branches b ON a.branch_id = b.branch_id " +
         "LEFT JOIN customers c ON a.customer_id = c.customer_id ";
 
@@ -82,7 +82,7 @@ public class AccountDAOImpl implements AccountDAO {
 
     @Override
     public Long create(Connection conn, Account account) throws SQLException {
-        String sql = "INSERT INTO accounts (customer_id, type_id, branch_id, account_number, balance, available_balance, status) " +
+        String sql = "INSERT INTO accounts (customer_id, account_type_id, branch_id, account_number, balance, available_balance, status) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, account.getCustomerId());
@@ -192,7 +192,11 @@ public class AccountDAOImpl implements AccountDAO {
         Account a = new Account();
         a.setAccountId(rs.getLong("account_id"));
         a.setCustomerId(rs.getString("customer_id"));
-        a.setAccountTypeId(rs.getLong("type_id"));
+        try {
+            a.setAccountTypeId(rs.getLong("account_type_id"));
+        } catch (SQLException e) {
+            try { a.setAccountTypeId(rs.getLong("type_id")); } catch (SQLException ignored) {}
+        }
         a.setBranchId(rs.getLong("branch_id"));
         a.setAccountNumber(rs.getString("account_number"));
         a.setBalance(rs.getBigDecimal("balance"));
