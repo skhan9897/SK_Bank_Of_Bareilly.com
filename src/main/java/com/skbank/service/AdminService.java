@@ -5,7 +5,6 @@ import com.skbank.exception.BankException;
 import com.skbank.model.*;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +14,7 @@ public interface AdminService {
     // Customer Management
     List<Customer> getAllCustomers(int page, int pageSize, String search) throws BankException;
     long countCustomers(String search) throws BankException;
-    boolean setCustomerStatus(Long customerId, String status) throws BankException;
+    boolean setCustomerStatus(String customerId, String status) throws BankException;
 
     // Account Management
     List<Account> getAllAccounts(int page, int pageSize, String search) throws BankException;

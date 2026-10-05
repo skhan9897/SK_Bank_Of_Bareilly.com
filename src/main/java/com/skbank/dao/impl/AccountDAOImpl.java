@@ -58,12 +58,12 @@ public class AccountDAOImpl implements AccountDAO {
     }
 
     @Override
-    public List<Account> findByCustomerId(Long customerId) throws SQLException {
+    public List<Account> findByCustomerId(String customerId) throws SQLException {
         List<Account> list = new ArrayList<>();
         String sql = SELECT_JOIN_SQL + "WHERE a.customer_id = ? ORDER BY a.account_id ASC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, customerId);
+            ps.setString(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     list.add(mapAccount(rs));
@@ -85,11 +85,10 @@ public class AccountDAOImpl implements AccountDAO {
         String sql = "INSERT INTO accounts (customer_id, account_type_id, branch_id, account_number, balance, available_balance, status, opened_at) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setLong(1, account.getCustomerId());
+            ps.setString(1, account.getCustomerId());
             ps.setLong(2, account.getAccountTypeId());
             ps.setLong(3, account.getBranchId());
             ps.setString(4, account.getAccountNumber());
-            // Ensure 0.00 initial balance per mandatory rule!
             BigDecimal initialBal = account.getBalance() != null ? account.getBalance() : BigDecimal.ZERO;
             ps.setBigDecimal(5, initialBal);
             ps.setBigDecimal(6, initialBal);
@@ -192,7 +191,7 @@ public class AccountDAOImpl implements AccountDAO {
     private Account mapAccount(ResultSet rs) throws SQLException {
         Account a = new Account();
         a.setAccountId(rs.getLong("account_id"));
-        a.setCustomerId(rs.getLong("customer_id"));
+        a.setCustomerId(rs.getString("customer_id"));
         a.setAccountTypeId(rs.getLong("account_type_id"));
         a.setBranchId(rs.getLong("branch_id"));
         a.setAccountNumber(rs.getString("account_number"));

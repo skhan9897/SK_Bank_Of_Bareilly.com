@@ -40,7 +40,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<Account> getCustomerAccounts(Long customerId) throws BankException {
+    public List<Account> getCustomerAccounts(String customerId) throws BankException {
         try {
             return accountDAO.findByCustomerId(customerId);
         } catch (Exception e) {
@@ -86,7 +86,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account createAccount(Long customerId, Long accountTypeId, Long branchId) throws BankException {
+    public Account createAccount(String customerId, Long accountTypeId, Long branchId) throws BankException {
         try {
             Account acc = new Account();
             acc.setCustomerId(customerId);
@@ -111,7 +111,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void verifyAccountOwnership(Long accountId, Long customerId) throws BankException {
+    public void verifyAccountOwnership(Long accountId, String customerId) throws BankException {
         Account acc = getAccountById(accountId);
         if (!acc.getCustomerId().equals(customerId)) {
             throw new UnauthorizedAccessException("Unauthorized: You do not own this account.");

@@ -6,8 +6,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public interface PaymentWalletDAO {
-    PaymentWallet findByCustomerId(Long customerId) throws SQLException;
-    PaymentWallet findForUpdate(Connection conn, Long customerId) throws SQLException;
+    PaymentWallet findByCustomerId(String customerId) throws SQLException;
+    PaymentWallet findForUpdate(Connection conn, String customerId) throws SQLException;
     Long create(Connection conn, PaymentWallet wallet) throws SQLException;
     boolean updateBalance(Connection conn, Long walletId, BigDecimal newBalance) throws SQLException;
 }

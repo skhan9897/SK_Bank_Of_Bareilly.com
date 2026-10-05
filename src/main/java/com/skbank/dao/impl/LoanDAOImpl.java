@@ -46,12 +46,12 @@ public class LoanDAOImpl implements LoanDAO {
     }
 
     @Override
-    public List<Loan> findByCustomerId(Long customerId) throws SQLException {
+    public List<Loan> findByCustomerId(String customerId) throws SQLException {
         List<Loan> list = new ArrayList<>();
         String sql = SELECT_JOIN_SQL + "WHERE l.customer_id = ? ORDER BY l.loan_id DESC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, customerId);
+            ps.setString(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) list.add(mapLoan(rs));
             }
@@ -65,7 +65,7 @@ public class LoanDAOImpl implements LoanDAO {
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setLong(1, loan.getCustomerId());
+            ps.setString(1, loan.getCustomerId());
             ps.setLong(2, loan.getLoanTypeId());
             ps.setString(3, loan.getLoanNumber());
             ps.setBigDecimal(4, loan.getPrincipalAmount());
@@ -154,11 +154,11 @@ public class LoanDAOImpl implements LoanDAO {
     }
 
     @Override
-    public int countActiveLoansByCustomerId(Long customerId) throws SQLException {
+    public int countActiveLoansByCustomerId(String customerId) throws SQLException {
         String sql = "SELECT COUNT(*) FROM loans WHERE customer_id = ? AND status = 'APPROVED'";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, customerId);
+            ps.setString(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return rs.getInt(1);
             }
@@ -167,11 +167,11 @@ public class LoanDAOImpl implements LoanDAO {
     }
 
     @Override
-    public BigDecimal getTotalOutstandingByCustomerId(Long customerId) throws SQLException {
+    public BigDecimal getTotalOutstandingByCustomerId(String customerId) throws SQLException {
         String sql = "SELECT SUM(outstanding_amount) FROM loans WHERE customer_id = ? AND status = 'APPROVED'";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, customerId);
+            ps.setString(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     BigDecimal val = rs.getBigDecimal(1);
@@ -250,7 +250,7 @@ public class LoanDAOImpl implements LoanDAO {
     private Loan mapLoan(ResultSet rs) throws SQLException {
         Loan l = new Loan();
         l.setLoanId(rs.getLong("loan_id"));
-        l.setCustomerId(rs.getLong("customer_id"));
+        l.setCustomerId(rs.getString("customer_id"));
         l.setLoanTypeId(rs.getLong("loan_type_id"));
         l.setLoanNumber(rs.getString("loan_number"));
         l.setPrincipalAmount(rs.getBigDecimal("principal_amount"));

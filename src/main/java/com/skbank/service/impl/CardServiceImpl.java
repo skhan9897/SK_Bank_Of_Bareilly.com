@@ -18,7 +18,7 @@ public class CardServiceImpl implements CardService {
     private final CardTransactionDAO cardTransactionDAO = new CardTransactionDAOImpl();
 
     @Override
-    public List<Card> getCustomerCards(Long customerId) throws BankException {
+    public List<Card> getCustomerCards(String customerId) throws BankException {
         try {
             return cardDAO.findByCustomerId(customerId);
         } catch (Exception e) {
@@ -38,7 +38,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public boolean toggleCardStatus(Long cardId, Long customerId) throws BankException {
+    public boolean toggleCardStatus(Long cardId, String customerId) throws BankException {
         try {
             Card card = getCardById(cardId);
             if (!card.getCustomerId().equals(customerId)) {

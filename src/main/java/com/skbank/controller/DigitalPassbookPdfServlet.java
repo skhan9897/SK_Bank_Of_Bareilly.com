@@ -31,18 +31,14 @@ public class DigitalPassbookPdfServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("AUTHENTICATED_USER") : null;
 
-        Long customerIdParam = null;
         String custIdStr = request.getParameter("customerId");
-        if (custIdStr != null && !custIdStr.trim().isEmpty()) {
-            try { customerIdParam = Long.parseLong(custIdStr.trim()); } catch (NumberFormatException ignored) {}
-        }
 
         try {
             DigitalPassbookDTO passbook;
             if (user != null) {
                 passbook = passbookService.getPassbookByUserId(user.getId());
-            } else if (customerIdParam != null) {
-                passbook = passbookService.getPassbookByCustomerId(customerIdParam);
+            } else if (custIdStr != null && !custIdStr.trim().isEmpty()) {
+                passbook = passbookService.getPassbookByCustomerId(custIdStr.trim());
             } else {
                 response.sendRedirect(request.getContextPath() + "/login");
                 return;

@@ -9,8 +9,8 @@ import com.skbank.model.PaymentWallet;
 import java.util.List;
 
 public interface PaymentBankService {
-    PaymentWallet getWallet(Long customerId) throws BankException;
-    PaymentTransaction processPayment(Long customerId, PaymentRequestDTO request) throws BankException;
-    List<PaymentTransaction> getPaymentHistory(Long customerId, int page, int pageSize) throws BankException;
+    PaymentWallet getWallet(String customerId) throws BankException;
+    PaymentTransaction processPayment(String customerId, PaymentRequestDTO request) throws BankException;
+    List<PaymentTransaction> getPaymentHistory(String customerId, int page, int pageSize) throws BankException;
     List<PaymentProvider> getProvidersByType(String providerType) throws BankException;
 }

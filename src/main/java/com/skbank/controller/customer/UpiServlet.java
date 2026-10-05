@@ -28,7 +28,7 @@ public class UpiServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
+        String customerId = (String) session.getAttribute("CUSTOMER_ID");
 
         try {
             UpiAccount upi = upiService.getUpiByCustomerId(customerId);
@@ -48,7 +48,7 @@ public class UpiServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
+        String customerId = (String) session.getAttribute("CUSTOMER_ID");
 
         String action = request.getParameter("action");
 

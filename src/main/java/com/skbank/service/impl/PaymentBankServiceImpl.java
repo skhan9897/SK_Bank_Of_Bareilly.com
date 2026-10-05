@@ -8,7 +8,6 @@ import com.skbank.exception.BankException;
 import com.skbank.exception.InsufficientBalanceException;
 import com.skbank.model.*;
 import com.skbank.service.PaymentBankService;
-import com.skbank.service.provider.DemoPaymentProvider;
 import com.skbank.util.DatabaseConnection;
 import com.skbank.util.SystemSettingsUtil;
 import com.skbank.util.ValidationUtil;
@@ -32,7 +31,7 @@ public class PaymentBankServiceImpl implements PaymentBankService {
     private final Gson gson = new Gson();
 
     @Override
-    public PaymentWallet getWallet(Long customerId) throws BankException {
+    public PaymentWallet getWallet(String customerId) throws BankException {
         try {
             PaymentWallet w = walletDAO.findByCustomerId(customerId);
             if (w == null) {
@@ -54,7 +53,7 @@ public class PaymentBankServiceImpl implements PaymentBankService {
     }
 
     @Override
-    public PaymentTransaction processPayment(Long customerId, PaymentRequestDTO request) throws BankException {
+    public PaymentTransaction processPayment(String customerId, PaymentRequestDTO request) throws BankException {
         // 1. Check Idempotency (Double Payment Protection!)
         if (request.getIdempotencyKey() != null && !request.getIdempotencyKey().trim().isEmpty()) {
             try {
@@ -100,13 +99,6 @@ public class PaymentBankServiceImpl implements PaymentBankService {
 
             // Generate Ref
             String ref = "SKPAY" + System.currentTimeMillis() + UUID.randomUUID().toString().substring(0, 3).toUpperCase();
-
-            // Execute Provider Demo Processing
-            if (type == PaymentType.RECHARGE) {
-                DemoPaymentProvider.processRecharge(request.getOperator(), request.getMobileNumber(), amount);
-            } else if (type == PaymentType.FASTAG) {
-                DemoPaymentProvider.processFastagRecharge(request.getVehicleNumber(), amount);
-            }
 
             // Create PaymentTransaction
             PaymentTransaction pt = new PaymentTransaction();
@@ -167,7 +159,7 @@ public class PaymentBankServiceImpl implements PaymentBankService {
     }
 
     @Override
-    public List<PaymentTransaction> getPaymentHistory(Long customerId, int page, int pageSize) throws BankException {
+    public List<PaymentTransaction> getPaymentHistory(String customerId, int page, int pageSize) throws BankException {
         try {
             int offset = (page - 1) * pageSize;
             return paymentTxnDAO.findByCustomerId(customerId, offset, pageSize);
@@ -181,7 +173,7 @@ public class PaymentBankServiceImpl implements PaymentBankService {
         try {
             return providerDAO.findByType(providerType);
         } catch (Exception e) {
-            throw new BankException("Error fetching payment providers", e);
+            throw new BankException("Error fetching providers", e);
         }
     }
 }

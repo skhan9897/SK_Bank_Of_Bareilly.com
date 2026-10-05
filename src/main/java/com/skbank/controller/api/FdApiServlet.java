@@ -36,7 +36,7 @@ public class FdApiServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Long customerId = (Long) request.getAttribute("API_CUSTOMER_ID");
+        String customerId = (String) request.getAttribute("API_CUSTOMER_ID");
         String path = request.getServletPath();
 
         try {
@@ -63,7 +63,7 @@ public class FdApiServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Long customerId = (Long) request.getAttribute("API_CUSTOMER_ID");
+        String customerId = (String) request.getAttribute("API_CUSTOMER_ID");
 
         try {
             BufferedReader reader = request.getReader();

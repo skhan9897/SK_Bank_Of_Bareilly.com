@@ -24,7 +24,7 @@ public class BeneficiaryServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
+        String customerId = (String) session.getAttribute("CUSTOMER_ID");
 
         String action = request.getParameter("action");
         if ("delete".equalsIgnoreCase(action)) {
@@ -53,7 +53,7 @@ public class BeneficiaryServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
+        String customerId = (String) session.getAttribute("CUSTOMER_ID");
 
         try {
             Beneficiary b = new Beneficiary();

@@ -29,7 +29,7 @@ public class BillPaymentServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
+        String customerId = (String) session.getAttribute("CUSTOMER_ID");
 
         try {
             List<Account> accounts = accountService.getCustomerAccounts(customerId);
@@ -49,7 +49,7 @@ public class BillPaymentServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
+        String customerId = (String) session.getAttribute("CUSTOMER_ID");
 
         try {
             Long accountId = Long.parseLong(request.getParameter("accountId"));

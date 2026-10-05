@@ -15,7 +15,7 @@ public class DatabaseInitializer {
     private static final Logger LOGGER = Logger.getLogger(DatabaseInitializer.class.getName());
 
     public static void initializeDatabaseIfMissing() {
-        LOGGER.info("Sanitizing and ensuring full database schema & AUTO_INCREMENT compatibility across all tables...");
+        LOGGER.info("Sanitizing and ensuring full database schema compatibility across all tables...");
         try (Connection conn = DatabaseConnection.getConnection()) {
             conn.createStatement().execute("SET FOREIGN_KEY_CHECKS = 0;");
 
@@ -29,8 +29,7 @@ public class DatabaseInitializer {
             ensureKycTable(conn);
             ensureNotificationsTable(conn);
 
-            ensureAutoIncrementPrimaryKeys(conn);
-            ensureCustomerTriggers(conn);
+            ensureVarcharCustomerKeys(conn);
 
             // Universal Column Sanitizer to fix ANY legacy NOT NULL column without defaults
             sanitizeTableColumnsToAllowDefaults(conn, "users");
@@ -41,8 +40,6 @@ public class DatabaseInitializer {
             sanitizeTableColumnsToAllowDefaults(conn, "kyc");
             sanitizeTableColumnsToAllowDefaults(conn, "notifications");
 
-            verifyCustomerAutoIncrementTest(conn);
-
             conn.createStatement().execute("SET FOREIGN_KEY_CHECKS = 1;");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error during database schema initialization", e);
@@ -52,52 +49,36 @@ public class DatabaseInitializer {
         executeFullSchemaImport();
     }
 
-    private static void ensureCustomerTriggers(Connection conn) {
-        String triggerSql = "CREATE TRIGGER IF NOT EXISTS before_customer_insert " +
-                            "BEFORE INSERT ON customers FOR EACH ROW " +
-                            "BEGIN " +
-                            "IF NEW.customer_number IS NULL OR TRIM(NEW.customer_number) = '' THEN " +
-                            "SET NEW.customer_number = CONCAT('SKC', UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 17))); " +
-                            "END IF; " +
-                            "END;";
+    private static void ensureVarcharCustomerKeys(Connection conn) {
+        String[] varcharQueries = new String[] {
+            "ALTER TABLE customers MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
+            "ALTER TABLE accounts MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
+            "ALTER TABLE kyc MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
+            "ALTER TABLE kyc_documents MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
+            "ALTER TABLE beneficiaries MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
+            "ALTER TABLE fixed_deposits MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
+            "ALTER TABLE loans MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
+            "ALTER TABLE cards MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
+            "ALTER TABLE bill_payments MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
+            "ALTER TABLE complaints MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
+            "ALTER TABLE nominees MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
+            "ALTER TABLE payment_wallets MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
+            "ALTER TABLE payment_transactions MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;"
+        };
+
         try (Statement stmt = conn.createStatement()) {
-            stmt.execute("DROP TRIGGER IF EXISTS before_customer_insert;");
-            stmt.execute(triggerSql);
-            LOGGER.info("Trigger 'before_customer_insert' configured successfully.");
-        } catch (Exception e) {
-            LOGGER.log(Level.FINE, "Trigger notice: " + e.getMessage());
-        }
-    }
-
-    private static void verifyCustomerAutoIncrementTest(Connection conn) {
-        String testCustomerNumber = "TEST-CUSTOMER-AUTOINC";
-        // Clean up any old test record first
-        try (Statement stmt = conn.createStatement()) {
-            stmt.execute("DELETE FROM customers WHERE customer_number = '" + testCustomerNumber + "'");
-        } catch (Exception ignored) {}
-
-        long testUserId = 999999;
-        String insertTestSql = "INSERT INTO customers (user_id, customer_number, full_name, date_of_birth, gender, mobile, email, address, city, state, pincode, aadhaar_number, pan_number, profile_image, kyc_status, status, created_at, updated_at) " +
-                               "VALUES (?, ?, 'Registration Test', '1995-01-01', 'MALE', '9999999999', 'registration-test@example.com', 'Test Address', 'Bareilly', 'Uttar Pradesh', '243001', '123456789012', 'ABCDE1234F', NULL, 'VERIFIED', 'ACTIVE', NOW(), NOW())";
-
-        try (PreparedStatement ps = conn.prepareStatement(insertTestSql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setLong(1, testUserId);
-            ps.setString(2, testCustomerNumber);
-            ps.executeUpdate();
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    long generatedId = rs.getLong(1);
-                    LOGGER.info("AUTO_INCREMENT VERIFICATION PASSED: Successfully inserted test customer and retrieved generated customer_id = " + generatedId);
-                } else {
-                    LOGGER.log(Level.SEVERE, "AUTO_INCREMENT VERIFICATION FAILED: Test customer inserted but no generated customer_id key returned!");
+            stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
+            for (String q : varcharQueries) {
+                try {
+                    stmt.execute(q);
+                    LOGGER.info("Successfully executed: " + q);
+                } catch (Exception e) {
+                    LOGGER.log(Level.FINE, "Varchar key modify notice: " + e.getMessage());
                 }
             }
-            // Delete test record
-            try (Statement stmt = conn.createStatement()) {
-                stmt.execute("DELETE FROM customers WHERE customer_number = '" + testCustomerNumber + "'");
-            } catch (Exception ignored) {}
+            stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "AUTO_INCREMENT VERIFICATION FAILED with Exception: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Error modifying VARCHAR customer_id columns", e);
         }
     }
 
@@ -143,39 +124,6 @@ public class DatabaseInitializer {
             }
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Sanitize columns error for " + tableName + ": " + e.getMessage());
-        }
-    }
-
-    private static void ensureAutoIncrementPrimaryKeys(Connection conn) {
-        String[] autoIncQueries = new String[] {
-            "ALTER TABLE users MODIFY COLUMN user_id BIGINT NOT NULL AUTO_INCREMENT;",
-            "ALTER TABLE users MODIFY COLUMN id BIGINT NOT NULL AUTO_INCREMENT;",
-            "ALTER TABLE customers MODIFY COLUMN customer_id BIGINT NOT NULL AUTO_INCREMENT;",
-            "ALTER TABLE accounts MODIFY COLUMN account_id BIGINT NOT NULL AUTO_INCREMENT;",
-            "ALTER TABLE branches MODIFY COLUMN branch_id BIGINT NOT NULL AUTO_INCREMENT;",
-            "ALTER TABLE account_types MODIFY COLUMN account_type_id BIGINT NOT NULL AUTO_INCREMENT;",
-            "ALTER TABLE kyc MODIFY COLUMN kyc_id BIGINT NOT NULL AUTO_INCREMENT;",
-            "ALTER TABLE notifications MODIFY COLUMN notification_id BIGINT NOT NULL AUTO_INCREMENT;"
-        };
-
-        try (Statement stmt = conn.createStatement()) {
-            stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
-            for (String q : autoIncQueries) {
-                try {
-                    stmt.execute(q);
-                    LOGGER.info("Successfully executed: " + q);
-                } catch (Exception e1) {
-                    try {
-                        stmt.execute(q.replace(";", " PRIMARY KEY;"));
-                        LOGGER.info("Successfully executed with PRIMARY KEY: " + q);
-                    } catch (Exception e2) {
-                        LOGGER.log(Level.FINE, "Auto-increment modify notice: " + e2.getMessage());
-                    }
-                }
-            }
-            stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error modifying primary key columns", e);
         }
     }
 
@@ -246,7 +194,7 @@ public class DatabaseInitializer {
 
     private static void ensureCustomersTable(Connection conn) {
         String createDdl = "CREATE TABLE IF NOT EXISTS customers (" +
-                "customer_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "customer_id VARCHAR(20) NOT NULL PRIMARY KEY, " +
                 "user_id BIGINT NOT NULL UNIQUE, " +
                 "customer_number VARCHAR(20) NOT NULL UNIQUE, " +
                 "full_name VARCHAR(100) NOT NULL, " +
@@ -354,7 +302,7 @@ public class DatabaseInitializer {
     private static void ensureAccountsTable(Connection conn) {
         String createDdl = "CREATE TABLE IF NOT EXISTS accounts (" +
                 "account_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                "customer_id BIGINT NOT NULL, " +
+                "customer_id VARCHAR(20) NOT NULL, " +
                 "account_type_id BIGINT NOT NULL, " +
                 "branch_id BIGINT NOT NULL, " +
                 "account_number VARCHAR(20) NOT NULL UNIQUE, " +
@@ -369,14 +317,14 @@ public class DatabaseInitializer {
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
         String[] cols = new String[]{"customer_id", "account_type_id", "branch_id", "account_number", "balance", "available_balance", "status"};
-        String[] alterDdls = new String[]{"BIGINT NOT NULL", "BIGINT NOT NULL", "BIGINT NOT NULL", "VARCHAR(20) NOT NULL UNIQUE", "DECIMAL(18,2) NOT NULL DEFAULT 0.00", "DECIMAL(18,2) NOT NULL DEFAULT 0.00", "VARCHAR(30) NOT NULL DEFAULT 'ACTIVE'"};
+        String[] alterDdls = new String[]{"VARCHAR(20) NOT NULL", "BIGINT NOT NULL", "BIGINT NOT NULL", "VARCHAR(20) NOT NULL UNIQUE", "DECIMAL(18,2) NOT NULL DEFAULT 0.00", "DECIMAL(18,2) NOT NULL DEFAULT 0.00", "VARCHAR(30) NOT NULL DEFAULT 'ACTIVE'"};
         sanitizeAndEnsureTableSchema(conn, "accounts", createDdl, cols, alterDdls);
     }
 
     private static void ensureKycTable(Connection conn) {
         String createDdl = "CREATE TABLE IF NOT EXISTS kyc (" +
                 "kyc_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                "customer_id BIGINT NOT NULL UNIQUE, " +
+                "customer_id VARCHAR(20) NOT NULL UNIQUE, " +
                 "aadhaar_number VARCHAR(20) NOT NULL, " +
                 "pan_number VARCHAR(20) NOT NULL, " +
                 "verification_status VARCHAR(30) NOT NULL DEFAULT 'VERIFIED', " +
@@ -386,7 +334,7 @@ public class DatabaseInitializer {
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
         String[] cols = new String[]{"customer_id", "aadhaar_number", "pan_number", "verification_status"};
-        String[] alterDdls = new String[]{"BIGINT NOT NULL UNIQUE", "VARCHAR(20) NOT NULL", "VARCHAR(20) NOT NULL", "VARCHAR(30) NOT NULL DEFAULT 'VERIFIED'"};
+        String[] alterDdls = new String[]{"VARCHAR(20) NOT NULL UNIQUE", "VARCHAR(20) NOT NULL", "VARCHAR(20) NOT NULL", "VARCHAR(30) NOT NULL DEFAULT 'VERIFIED'"};
         sanitizeAndEnsureTableSchema(conn, "kyc", createDdl, cols, alterDdls);
     }
 

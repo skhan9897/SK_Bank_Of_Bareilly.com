@@ -122,15 +122,15 @@ public class AuthServiceImpl implements AuthService {
             Long userId = userDAO.create(conn, user);
             user.setId(userId);
 
-            // 2. Create Customer
+            // 2. Create Customer with VARCHAR(20) SKC... customer_id
             Random rand = new Random();
             String custNum = "SKC" + (10000000 + rand.nextInt(90000000));
             customer.setUserId(userId);
+            customer.setCustomerId(custNum);
             customer.setCustomerNumber(custNum);
             customer.setKycStatus(KycStatus.VERIFIED);
             customer.setStatus(UserStatus.ACTIVE);
-            Long customerId = customerDAO.create(conn, customer);
-            customer.setCustomerId(customerId);
+            String customerId = customerDAO.create(conn, customer);
 
             // 3. Create Account - MANDATORY RULE: balance = 0.00, available_balance = 0.00
             Account account = new Account();
@@ -218,7 +218,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Customer getCustomerById(Long customerId) throws BankException {
+    public Customer getCustomerById(String customerId) throws BankException {
         try {
             return customerDAO.findById(customerId);
         } catch (SQLException e) {

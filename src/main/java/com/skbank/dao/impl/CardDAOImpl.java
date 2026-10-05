@@ -32,12 +32,12 @@ public class CardDAOImpl implements CardDAO {
     }
 
     @Override
-    public List<Card> findByCustomerId(Long customerId) throws SQLException {
+    public List<Card> findByCustomerId(String customerId) throws SQLException {
         List<Card> list = new ArrayList<>();
         String sql = SELECT_JOIN_SQL + "WHERE cd.customer_id = ? ORDER BY cd.card_id DESC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, customerId);
+            ps.setString(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) list.add(mapCard(rs));
             }
@@ -51,7 +51,7 @@ public class CardDAOImpl implements CardDAO {
                      "VALUES (?, ?, ?, ?, ?, 'ACTIVE', NOW())";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setLong(1, card.getCustomerId());
+            ps.setString(1, card.getCustomerId());
             ps.setLong(2, card.getAccountId());
             ps.setString(3, card.getCardNumber());
             ps.setString(4, card.getCardType().name());
@@ -104,7 +104,7 @@ public class CardDAOImpl implements CardDAO {
     private Card mapCard(ResultSet rs) throws SQLException {
         Card cd = new Card();
         cd.setCardId(rs.getLong("card_id"));
-        cd.setCustomerId(rs.getLong("customer_id"));
+        cd.setCustomerId(rs.getString("customer_id"));
         cd.setAccountId(rs.getLong("account_id"));
         cd.setCardNumber(rs.getString("card_number"));
         cd.setCardType(CardType.valueOf(rs.getString("card_type")));

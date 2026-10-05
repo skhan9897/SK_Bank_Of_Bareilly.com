@@ -25,7 +25,7 @@ public class CardApiServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Long customerId = (Long) request.getAttribute("API_CUSTOMER_ID");
+        String customerId = (String) request.getAttribute("API_CUSTOMER_ID");
 
         try {
             List<Card> cards = cardService.getCustomerCards(customerId);
@@ -40,7 +40,7 @@ public class CardApiServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Long customerId = (Long) request.getAttribute("API_CUSTOMER_ID");
+        String customerId = (String) request.getAttribute("API_CUSTOMER_ID");
         String cardIdStr = request.getParameter("cardId");
 
         try {

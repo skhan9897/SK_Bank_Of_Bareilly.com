@@ -8,7 +8,7 @@ public class Account implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long accountId;
-    private Long customerId;
+    private String customerId;
     private Long accountTypeId;
     private Long branchId;
     private String accountNumber;
@@ -29,8 +29,8 @@ public class Account implements Serializable {
     public Long getAccountId() { return accountId; }
     public void setAccountId(Long accountId) { this.accountId = accountId; }
 
-    public Long getCustomerId() { return customerId; }
-    public void setCustomerId(Long customerId) { this.customerId = customerId; }
+    public String getCustomerId() { return customerId; }
+    public void setCustomerId(String customerId) { this.customerId = customerId; }
 
     public Long getAccountTypeId() { return accountTypeId; }
     public void setAccountTypeId(Long accountTypeId) { this.accountTypeId = accountTypeId; }

@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `branches` (
 
 -- 3. CUSTOMERS TABLE
 CREATE TABLE IF NOT EXISTS `customers` (
-    `customer_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `customer_id` VARCHAR(20) NOT NULL PRIMARY KEY,
     `user_id` BIGINT NOT NULL UNIQUE,
     `customer_number` VARCHAR(20) NOT NULL UNIQUE,
     `full_name` VARCHAR(100) NOT NULL,
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `account_types` (
 -- 5. ACCOUNTS TABLE
 CREATE TABLE IF NOT EXISTS `accounts` (
     `account_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `customer_id` BIGINT NOT NULL,
+    `customer_id` VARCHAR(20) NOT NULL,
     `account_type_id` BIGINT NOT NULL,
     `branch_id` BIGINT NOT NULL,
     `account_number` VARCHAR(20) NOT NULL UNIQUE,
@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 -- 6. BENEFICIARIES TABLE
 CREATE TABLE IF NOT EXISTS `beneficiaries` (
     `beneficiary_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `customer_id` BIGINT NOT NULL,
+    `customer_id` VARCHAR(20) NOT NULL,
     `beneficiary_name` VARCHAR(100) NOT NULL,
     `account_number` VARCHAR(30) NOT NULL,
     `bank_name` VARCHAR(100) NOT NULL DEFAULT 'SK BANK OF BAREILLY',
@@ -159,7 +159,7 @@ CREATE TABLE IF NOT EXISTS `transfer_requests` (
 -- 9. FIXED_DEPOSITS TABLE
 CREATE TABLE IF NOT EXISTS `fixed_deposits` (
     `fd_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `customer_id` BIGINT NOT NULL,
+    `customer_id` VARCHAR(20) NOT NULL,
     `account_id` BIGINT NOT NULL,
     `fd_number` VARCHAR(30) NOT NULL UNIQUE,
     `principal_amount` DECIMAL(18,2) NOT NULL,
@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS `loan_types` (
 -- 11. LOANS TABLE
 CREATE TABLE IF NOT EXISTS `loans` (
     `loan_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `customer_id` BIGINT NOT NULL,
+    `customer_id` VARCHAR(20) NOT NULL,
     `account_id` BIGINT NOT NULL,
     `loan_type_id` BIGINT NOT NULL,
     `loan_number` VARCHAR(30) NOT NULL UNIQUE,
@@ -229,7 +229,7 @@ CREATE TABLE IF NOT EXISTS `loan_payments` (
 -- 13. CARDS TABLE
 CREATE TABLE IF NOT EXISTS `cards` (
     `card_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `customer_id` BIGINT NOT NULL,
+    `customer_id` VARCHAR(20) NOT NULL,
     `account_id` BIGINT NOT NULL,
     `card_number` VARCHAR(20) NOT NULL UNIQUE,
     `card_type` VARCHAR(20) NOT NULL,
@@ -260,7 +260,7 @@ CREATE TABLE IF NOT EXISTS `card_transactions` (
 -- 15. BILL_PAYMENTS TABLE
 CREATE TABLE IF NOT EXISTS `bill_payments` (
     `bill_payment_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `customer_id` BIGINT NOT NULL,
+    `customer_id` VARCHAR(20) NOT NULL,
     `account_id` BIGINT NOT NULL,
     `biller_category` VARCHAR(50) NOT NULL,
     `biller_name` VARCHAR(100) NOT NULL,
@@ -276,7 +276,7 @@ CREATE TABLE IF NOT EXISTS `bill_payments` (
 -- 16. KYC_DOCUMENTS TABLE
 CREATE TABLE IF NOT EXISTS `kyc_documents` (
     `kyc_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `customer_id` BIGINT NOT NULL UNIQUE,
+    `customer_id` VARCHAR(20) NOT NULL UNIQUE,
     `aadhaar_number` VARCHAR(20) NOT NULL,
     `pan_number` VARCHAR(20) NOT NULL,
     `verification_status` VARCHAR(30) NOT NULL DEFAULT 'VERIFIED',
@@ -304,7 +304,7 @@ CREATE TABLE IF NOT EXISTS `notifications` (
 -- 18. COMPLAINTS TABLE
 CREATE TABLE IF NOT EXISTS `complaints` (
     `complaint_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `customer_id` BIGINT NOT NULL,
+    `customer_id` VARCHAR(20) NOT NULL,
     `complaint_number` VARCHAR(50) NOT NULL UNIQUE,
     `subject` VARCHAR(150) NOT NULL,
     `category` VARCHAR(50) NOT NULL DEFAULT 'GENERAL',
@@ -397,7 +397,7 @@ CREATE TABLE IF NOT EXISTS `otp_verifications` (
 -- 25. NOMINEES TABLE
 CREATE TABLE IF NOT EXISTS `nominees` (
     `nominee_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `customer_id` BIGINT NOT NULL,
+    `customer_id` VARCHAR(20) NOT NULL,
     `account_id` BIGINT NOT NULL,
     `nominee_name` VARCHAR(100) NOT NULL,
     `relationship` VARCHAR(50) NOT NULL,
@@ -423,7 +423,7 @@ CREATE TABLE IF NOT EXISTS `system_settings` (
 -- 27. PAYMENT BANK TABLES
 CREATE TABLE IF NOT EXISTS `payment_wallets` (
     `wallet_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `customer_id` BIGINT NOT NULL UNIQUE,
+    `customer_id` VARCHAR(20) NOT NULL UNIQUE,
     `wallet_number` VARCHAR(30) NOT NULL UNIQUE,
     `balance` DECIMAL(18,2) NOT NULL DEFAULT 0.00,
     `status` VARCHAR(30) NOT NULL DEFAULT 'ACTIVE',
@@ -434,7 +434,7 @@ CREATE TABLE IF NOT EXISTS `payment_wallets` (
 
 CREATE TABLE IF NOT EXISTS `payment_transactions` (
     `payment_transaction_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `customer_id` BIGINT NOT NULL,
+    `customer_id` VARCHAR(20) NOT NULL,
     `source_account_id` BIGINT NULL,
     `payment_type` VARCHAR(50) NOT NULL,
     `provider_code` VARCHAR(50) NULL,
@@ -451,7 +451,7 @@ CREATE TABLE IF NOT EXISTS `payment_transactions` (
 
 CREATE TABLE IF NOT EXISTS `recharge_transactions` (
     `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `customer_id` BIGINT NOT NULL,
+    `customer_id` VARCHAR(20) NOT NULL,
     `mobile_number` VARCHAR(15) NOT NULL,
     `operator` VARCHAR(50) NOT NULL,
     `circle` VARCHAR(50) NULL,
@@ -465,7 +465,7 @@ CREATE TABLE IF NOT EXISTS `recharge_transactions` (
 
 CREATE TABLE IF NOT EXISTS `fastag_accounts` (
     `fastag_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `customer_id` BIGINT NOT NULL,
+    `customer_id` VARCHAR(20) NOT NULL,
     `vehicle_number` VARCHAR(20) NOT NULL UNIQUE,
     `tag_id` VARCHAR(50) NOT NULL UNIQUE,
     `issuer_bank` VARCHAR(100) NOT NULL DEFAULT 'SK BANK OF BAREILLY',

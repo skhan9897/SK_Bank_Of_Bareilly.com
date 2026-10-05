@@ -36,18 +36,12 @@ public class ProfileImageServlet extends HttpServlet {
         User user = (User) session.getAttribute("AUTHENTICATED_USER");
         UserRole role = (UserRole) session.getAttribute("ROLE");
 
-        Long requestedCustId = null;
-        String idParam = request.getParameter("id");
-        if (idParam != null && !idParam.trim().isEmpty()) {
-            try {
-                requestedCustId = Long.parseLong(idParam);
-            } catch (NumberFormatException ignored) {}
-        }
+        String requestedCustId = request.getParameter("id");
 
         // Customer can only view own image, admin can view any customer image
         if (role == UserRole.CUSTOMER) {
-            Long sessionCustId = (Long) session.getAttribute("CUSTOMER_ID");
-            if (requestedCustId == null) {
+            String sessionCustId = (String) session.getAttribute("CUSTOMER_ID");
+            if (requestedCustId == null || requestedCustId.trim().isEmpty()) {
                 requestedCustId = sessionCustId;
             } else if (!requestedCustId.equals(sessionCustId)) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
@@ -55,15 +49,14 @@ public class ProfileImageServlet extends HttpServlet {
             }
         }
 
-        if (requestedCustId == null) {
+        if (requestedCustId == null || requestedCustId.trim().isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing customer ID");
             return;
         }
 
         try {
-            Customer cust = customerService.getCustomerById(requestedCustId);
+            Customer cust = customerService.getCustomerById(requestedCustId.trim());
             if (cust == null || cust.getProfileImage() == null || cust.getProfileImage().trim().isEmpty()) {
-                // Stream default avatar or 404
                 response.sendRedirect(request.getContextPath() + "/assets/images/default-avatar.svg");
                 return;
             }

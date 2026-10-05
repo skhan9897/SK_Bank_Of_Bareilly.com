@@ -8,7 +8,7 @@ public class Card implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long cardId;
-    private Long customerId;
+    private String customerId;
     private Long accountId;
     private String cardNumber; // stored or shown as XXXX XXXX XXXX 1234
     private CardType cardType;
@@ -25,8 +25,8 @@ public class Card implements Serializable {
     public Long getCardId() { return cardId; }
     public void setCardId(Long cardId) { this.cardId = cardId; }
 
-    public Long getCustomerId() { return customerId; }
-    public void setCustomerId(Long customerId) { this.customerId = customerId; }
+    public String getCustomerId() { return customerId; }
+    public void setCustomerId(String customerId) { this.customerId = customerId; }
 
     public Long getAccountId() { return accountId; }
     public void setAccountId(Long accountId) { this.accountId = accountId; }

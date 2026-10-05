@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface FixedDepositDAO {
     FixedDeposit findById(Long fdId) throws SQLException;
-    List<FixedDeposit> findByCustomerId(Long customerId) throws SQLException;
+    List<FixedDeposit> findByCustomerId(String customerId) throws SQLException;
     Long create(Connection conn, FixedDeposit fd) throws SQLException;
     Long create(FixedDeposit fd) throws SQLException;
     boolean updateStatus(Long fdId, String status) throws SQLException;
-    BigDecimal getTotalFdInvestmentByCustomerId(Long customerId) throws SQLException;
+    BigDecimal getTotalFdInvestmentByCustomerId(String customerId) throws SQLException;
     long countActiveFds() throws SQLException;
     List<FixedDeposit> findAllAdmin(int offset, int limit) throws SQLException;
     long countAllAdmin() throws SQLException;

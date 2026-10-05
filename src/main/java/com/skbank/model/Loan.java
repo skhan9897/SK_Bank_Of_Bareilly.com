@@ -8,7 +8,7 @@ public class Loan implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long loanId;
-    private Long customerId;
+    private String customerId;
     private Long loanTypeId;
     private String loanNumber;
     private BigDecimal principalAmount = BigDecimal.ZERO;
@@ -29,8 +29,8 @@ public class Loan implements Serializable {
     public Long getLoanId() { return loanId; }
     public void setLoanId(Long loanId) { this.loanId = loanId; }
 
-    public Long getCustomerId() { return customerId; }
-    public void setCustomerId(Long customerId) { this.customerId = customerId; }
+    public String getCustomerId() { return customerId; }
+    public void setCustomerId(String customerId) { this.customerId = customerId; }
 
     public Long getLoanTypeId() { return loanTypeId; }
     public void setLoanTypeId(Long loanTypeId) { this.loanTypeId = loanTypeId; }

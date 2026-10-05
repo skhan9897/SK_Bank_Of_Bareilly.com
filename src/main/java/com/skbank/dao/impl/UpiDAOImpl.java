@@ -11,11 +11,13 @@ import java.util.List;
 public class UpiDAOImpl implements UpiDAO {
 
     private static final String SELECT_JOIN_SQL = 
-        "SELECT u.*, a.account_number FROM upi_accounts u JOIN accounts a ON u.account_id = a.account_id ";
+        "SELECT u.*, a.account_number " +
+        "FROM upi_accounts u " +
+        "JOIN accounts a ON u.account_id = a.account_id ";
 
     @Override
     public UpiAccount findByUpiAddress(String upiAddress) throws SQLException {
-        String sql = SELECT_JOIN_SQL + "WHERE u.upi_address = ?";
+        String sql = SELECT_JOIN_SQL + "WHERE u.upi_address = ? AND u.status = 'ACTIVE' LIMIT 1";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, upiAddress);
@@ -27,11 +29,11 @@ public class UpiDAOImpl implements UpiDAO {
     }
 
     @Override
-    public UpiAccount findByCustomerId(Long customerId) throws SQLException {
+    public UpiAccount findByCustomerId(String customerId) throws SQLException {
         String sql = SELECT_JOIN_SQL + "WHERE u.customer_id = ? AND u.status = 'ACTIVE' LIMIT 1";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, customerId);
+            ps.setString(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return mapUpi(rs);
             }
@@ -45,7 +47,7 @@ public class UpiDAOImpl implements UpiDAO {
                      "VALUES (?, ?, ?, ?, 'ACTIVE', NOW(), NOW())";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setLong(1, u.getCustomerId());
+            ps.setString(1, u.getCustomerId());
             ps.setLong(2, u.getAccountId());
             ps.setString(3, u.getUpiAddress());
             ps.setString(4, u.getUpiPinHash());
@@ -91,12 +93,12 @@ public class UpiDAOImpl implements UpiDAO {
     }
 
     @Override
-    public List<UpiAccount> findAllByCustomerId(Long customerId) throws SQLException {
+    public List<UpiAccount> findAllByCustomerId(String customerId) throws SQLException {
         List<UpiAccount> list = new ArrayList<>();
         String sql = SELECT_JOIN_SQL + "WHERE u.customer_id = ? ORDER BY u.created_at DESC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, customerId);
+            ps.setString(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     list.add(mapUpi(rs));
@@ -109,7 +111,7 @@ public class UpiDAOImpl implements UpiDAO {
     private UpiAccount mapUpi(ResultSet rs) throws SQLException {
         UpiAccount u = new UpiAccount();
         u.setUpiAccountId(rs.getLong("upi_account_id"));
-        u.setCustomerId(rs.getLong("customer_id"));
+        u.setCustomerId(rs.getString("customer_id"));
         u.setAccountId(rs.getLong("account_id"));
         u.setUpiAddress(rs.getString("upi_address"));
         u.setUpiPinHash(rs.getString("upi_pin_hash"));

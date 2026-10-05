@@ -28,7 +28,7 @@ public class AccountServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
+        String customerId = (String) session.getAttribute("CUSTOMER_ID");
 
         String path = request.getServletPath();
 

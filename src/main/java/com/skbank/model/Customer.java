@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 public class Customer implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Long customerId;
+    private String customerId;
     private Long userId;
     private String customerNumber;
     private String fullName;
@@ -29,8 +29,8 @@ public class Customer implements Serializable {
 
     public Customer() {}
 
-    public Long getCustomerId() { return customerId; }
-    public void setCustomerId(Long customerId) { this.customerId = customerId; }
+    public String getCustomerId() { return customerId; }
+    public void setCustomerId(String customerId) { this.customerId = customerId; }
 
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }

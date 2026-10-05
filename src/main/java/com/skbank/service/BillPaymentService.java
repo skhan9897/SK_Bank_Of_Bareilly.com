@@ -7,6 +7,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface BillPaymentService {
-    BillPayment processBillPayment(Long customerId, Long accountId, String billerType, String billerName, String consumerNumber, BigDecimal amount) throws BankException;
-    List<BillPayment> getCustomerBillPayments(Long customerId) throws BankException;
+    BillPayment processBillPayment(String customerId, Long accountId, String billerType, String billerName, String consumerNumber, BigDecimal amount) throws BankException;
+    List<BillPayment> getCustomerBillPayments(String customerId) throws BankException;
 }

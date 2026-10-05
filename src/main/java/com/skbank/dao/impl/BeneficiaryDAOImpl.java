@@ -24,12 +24,12 @@ public class BeneficiaryDAOImpl implements BeneficiaryDAO {
     }
 
     @Override
-    public List<Beneficiary> findByCustomerId(Long customerId) throws SQLException {
+    public List<Beneficiary> findByCustomerId(String customerId) throws SQLException {
         List<Beneficiary> list = new ArrayList<>();
         String sql = "SELECT * FROM beneficiaries WHERE customer_id = ? AND status = 'ACTIVE' ORDER BY created_at DESC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, customerId);
+            ps.setString(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     list.add(mapBeneficiary(rs));
@@ -45,7 +45,7 @@ public class BeneficiaryDAOImpl implements BeneficiaryDAO {
                      "VALUES (?, ?, ?, ?, ?, ?, 'ACTIVE', NOW())";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setLong(1, b.getCustomerId());
+            ps.setString(1, b.getCustomerId());
             ps.setString(2, b.getBeneficiaryName());
             ps.setString(3, b.getAccountNumber());
             ps.setString(4, b.getIfscCode());
@@ -60,12 +60,12 @@ public class BeneficiaryDAOImpl implements BeneficiaryDAO {
     }
 
     @Override
-    public boolean delete(Long beneficiaryId, Long customerId) throws SQLException {
+    public boolean delete(Long beneficiaryId, String customerId) throws SQLException {
         String sql = "DELETE FROM beneficiaries WHERE beneficiary_id = ? AND customer_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, beneficiaryId);
-            ps.setLong(2, customerId);
+            ps.setString(2, customerId);
             return ps.executeUpdate() > 0;
         }
     }
@@ -73,7 +73,7 @@ public class BeneficiaryDAOImpl implements BeneficiaryDAO {
     private Beneficiary mapBeneficiary(ResultSet rs) throws SQLException {
         Beneficiary b = new Beneficiary();
         b.setBeneficiaryId(rs.getLong("beneficiary_id"));
-        b.setCustomerId(rs.getLong("customer_id"));
+        b.setCustomerId(rs.getString("customer_id"));
         b.setBeneficiaryName(rs.getString("beneficiary_name"));
         b.setAccountNumber(rs.getString("account_number"));
         b.setIfscCode(rs.getString("ifsc_code"));

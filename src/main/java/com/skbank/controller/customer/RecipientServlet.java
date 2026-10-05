@@ -32,7 +32,7 @@ public class RecipientServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         HttpSession session = request.getSession(false);
-        Long senderCustomerId = (Long) session.getAttribute("CUSTOMER_ID");
+        String senderCustomerId = (String) session.getAttribute("CUSTOMER_ID");
 
         String path = request.getServletPath();
         RecipientLookupDTO result;

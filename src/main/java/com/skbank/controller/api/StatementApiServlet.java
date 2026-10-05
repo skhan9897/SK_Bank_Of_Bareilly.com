@@ -33,7 +33,7 @@ public class StatementApiServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Long customerId = (Long) request.getAttribute("API_CUSTOMER_ID");
+        String customerId = (String) request.getAttribute("API_CUSTOMER_ID");
 
         try {
             Long accountId = Long.parseLong(request.getParameter("accountId"));

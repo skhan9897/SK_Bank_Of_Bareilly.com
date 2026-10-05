@@ -28,7 +28,7 @@ public class RecipientApiServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Long senderCustomerId = (Long) request.getAttribute("API_CUSTOMER_ID");
+        String senderCustomerId = (String) request.getAttribute("API_CUSTOMER_ID");
         String path = request.getServletPath();
 
         try {

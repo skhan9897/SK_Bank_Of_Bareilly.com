@@ -10,11 +10,11 @@ import java.sql.*;
 public class PaymentWalletDAOImpl implements PaymentWalletDAO {
 
     @Override
-    public PaymentWallet findByCustomerId(Long customerId) throws SQLException {
+    public PaymentWallet findByCustomerId(String customerId) throws SQLException {
         String sql = "SELECT * FROM payment_wallets WHERE customer_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, customerId);
+            ps.setString(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return mapWallet(rs);
             }
@@ -23,10 +23,10 @@ public class PaymentWalletDAOImpl implements PaymentWalletDAO {
     }
 
     @Override
-    public PaymentWallet findForUpdate(Connection conn, Long customerId) throws SQLException {
+    public PaymentWallet findForUpdate(Connection conn, String customerId) throws SQLException {
         String sql = "SELECT * FROM payment_wallets WHERE customer_id = ? FOR UPDATE";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, customerId);
+            ps.setString(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return mapWallet(rs);
             }
@@ -39,7 +39,7 @@ public class PaymentWalletDAOImpl implements PaymentWalletDAO {
         String sql = "INSERT INTO payment_wallets (customer_id, wallet_number, balance, status, created_at, updated_at) " +
                      "VALUES (?, ?, ?, 'ACTIVE', NOW(), NOW())";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setLong(1, w.getCustomerId());
+            ps.setString(1, w.getCustomerId());
             ps.setString(2, w.getWalletNumber());
             ps.setBigDecimal(3, w.getBalance() != null ? w.getBalance() : BigDecimal.ZERO);
             ps.executeUpdate();
@@ -63,7 +63,7 @@ public class PaymentWalletDAOImpl implements PaymentWalletDAO {
     private PaymentWallet mapWallet(ResultSet rs) throws SQLException {
         PaymentWallet w = new PaymentWallet();
         w.setWalletId(rs.getLong("wallet_id"));
-        w.setCustomerId(rs.getLong("customer_id"));
+        w.setCustomerId(rs.getString("customer_id"));
         w.setWalletNumber(rs.getString("wallet_number"));
         w.setBalance(rs.getBigDecimal("balance"));
         w.setStatus(rs.getString("status"));

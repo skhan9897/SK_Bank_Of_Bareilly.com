@@ -15,7 +15,6 @@ public class PassbookServiceImpl implements PassbookService {
     private final AccountDAO accountDAO = new AccountDAOImpl();
     private final BranchDAO branchDAO = new BranchDAOImpl();
     private final AccountTypeDAO accountTypeDAO = new AccountTypeDAOImpl();
-    private final KycDAO kycDAO = new KycDAOImpl();
 
     @Override
     public DigitalPassbookDTO getPassbookByUserId(Long userId) throws BankException {
@@ -31,7 +30,7 @@ public class PassbookServiceImpl implements PassbookService {
     }
 
     @Override
-    public DigitalPassbookDTO getPassbookByCustomerId(Long customerId) throws BankException {
+    public DigitalPassbookDTO getPassbookByCustomerId(String customerId) throws BankException {
         try {
             Customer cust = customerDAO.findById(customerId);
             if (cust == null) {

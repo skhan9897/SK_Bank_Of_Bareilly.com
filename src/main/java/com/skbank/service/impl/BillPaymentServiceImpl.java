@@ -19,11 +19,12 @@ public class BillPaymentServiceImpl implements BillPaymentService {
 
     private final BillPaymentDAO billPaymentDAO = new BillPaymentDAOImpl();
     private final AccountDAO accountDAO = new AccountDAOImpl();
+    private final CustomerDAO customerDAO = new CustomerDAOImpl();
     private final TransactionDAO transactionDAO = new TransactionDAOImpl();
     private final NotificationDAO notificationDAO = new NotificationDAOImpl();
 
     @Override
-    public BillPayment processBillPayment(Long customerId, Long accountId, String billerType, String billerName, String consumerNumber, BigDecimal amount) throws BankException {
+    public BillPayment processBillPayment(String customerId, Long accountId, String billerType, String billerName, String consumerNumber, BigDecimal amount) throws BankException {
         if (!ValidationUtil.isValidAmount(amount)) {
             throw new BankException("Payment amount must be greater than zero");
         }
@@ -79,12 +80,15 @@ public class BillPaymentServiceImpl implements BillPaymentService {
             transactionDAO.create(conn, txn);
 
             // Send notification
-            Notification n = new Notification();
-            n.setUserId(customerId);
-            n.setTitle("Bill Payment Successful");
-            n.setMessage("₹" + amount + " paid to " + billerName + " (" + consumerNumber + "). Ref: " + ref);
-            n.setNotificationType("BILL");
-            notificationDAO.create(conn, n);
+            Customer cust = customerDAO.findById(customerId);
+            if (cust != null) {
+                Notification n = new Notification();
+                n.setUserId(cust.getUserId());
+                n.setTitle("Bill Payment Successful");
+                n.setMessage("₹" + amount + " paid to " + billerName + " (" + consumerNumber + "). Ref: " + ref);
+                n.setNotificationType("BILL");
+                notificationDAO.create(conn, n);
+            }
 
             conn.commit();
             return bp;
@@ -101,7 +105,7 @@ public class BillPaymentServiceImpl implements BillPaymentService {
     }
 
     @Override
-    public List<BillPayment> getCustomerBillPayments(Long customerId) throws BankException {
+    public List<BillPayment> getCustomerBillPayments(String customerId) throws BankException {
         try {
             return billPaymentDAO.findByCustomerId(customerId);
         } catch (Exception e) {

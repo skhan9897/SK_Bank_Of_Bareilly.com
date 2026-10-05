@@ -21,7 +21,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
     private final CustomerDAO customerDAO = new CustomerDAOImpl();
 
     @Override
-    public List<Beneficiary> getBeneficiaries(Long customerId) throws BankException {
+    public List<Beneficiary> getBeneficiaries(String customerId) throws BankException {
         try {
             return beneficiaryDAO.findByCustomerId(customerId);
         } catch (Exception e) {
@@ -57,7 +57,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
     }
 
     @Override
-    public boolean deleteBeneficiary(Long beneficiaryId, Long customerId) throws BankException {
+    public boolean deleteBeneficiary(Long beneficiaryId, String customerId) throws BankException {
         try {
             return beneficiaryDAO.delete(beneficiaryId, customerId);
         } catch (Exception e) {

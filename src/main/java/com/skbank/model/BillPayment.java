@@ -8,7 +8,7 @@ public class BillPayment implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long billPaymentId;
-    private Long customerId;
+    private String customerId;
     private Long accountId;
     private String billerType;
     private String billerName;
@@ -26,8 +26,8 @@ public class BillPayment implements Serializable {
     public Long getBillPaymentId() { return billPaymentId; }
     public void setBillPaymentId(Long billPaymentId) { this.billPaymentId = billPaymentId; }
 
-    public Long getCustomerId() { return customerId; }
-    public void setCustomerId(Long customerId) { this.customerId = customerId; }
+    public String getCustomerId() { return customerId; }
+    public void setCustomerId(String customerId) { this.customerId = customerId; }
 
     public Long getAccountId() { return accountId; }
     public void setAccountId(Long accountId) { this.accountId = accountId; }

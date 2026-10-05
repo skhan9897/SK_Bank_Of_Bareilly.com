@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BeneficiaryDAO {
     Beneficiary findById(Long beneficiaryId) throws SQLException;
-    List<Beneficiary> findByCustomerId(Long customerId) throws SQLException;
+    List<Beneficiary> findByCustomerId(String customerId) throws SQLException;
     Long create(Beneficiary beneficiary) throws SQLException;
-    boolean delete(Long beneficiaryId, Long customerId) throws SQLException;
+    boolean delete(Long beneficiaryId, String customerId) throws SQLException;
 }

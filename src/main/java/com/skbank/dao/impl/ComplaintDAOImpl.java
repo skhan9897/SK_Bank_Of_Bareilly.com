@@ -33,12 +33,12 @@ public class ComplaintDAOImpl implements ComplaintDAO {
     }
 
     @Override
-    public List<Complaint> findByCustomerId(Long customerId) throws SQLException {
+    public List<Complaint> findByCustomerId(String customerId) throws SQLException {
         List<Complaint> list = new ArrayList<>();
         String sql = SELECT_JOIN_SQL + "WHERE comp.customer_id = ? ORDER BY comp.updated_at DESC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, customerId);
+            ps.setString(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) list.add(mapComplaint(rs));
             }
@@ -52,7 +52,7 @@ public class ComplaintDAOImpl implements ComplaintDAO {
                      "VALUES (?, ?, ?, ?, ?, NOW(), NOW())";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setLong(1, comp.getCustomerId());
+            ps.setString(1, comp.getCustomerId());
             ps.setString(2, comp.getSubject());
             ps.setString(3, comp.getDescription());
             ps.setString(4, comp.getPriority() != null ? comp.getPriority().name() : ComplaintPriority.MEDIUM.name());
@@ -88,7 +88,6 @@ public class ComplaintDAOImpl implements ComplaintDAO {
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     Long msgId = rs.getLong(1);
-                    // Update complaint updated_at
                     updateStatus(msg.getComplaintId(), "IN_PROGRESS");
                     return msgId;
                 }
@@ -100,7 +99,7 @@ public class ComplaintDAOImpl implements ComplaintDAO {
     @Override
     public List<ComplaintMessage> findMessagesByComplaintId(Long complaintId) throws SQLException {
         List<ComplaintMessage> list = new ArrayList<>();
-        String sql = "SELECT cm.*, u.username, u.role FROM complaint_messages cm JOIN users u ON cm.sender_user_id = u.id WHERE cm.complaint_id = ? ORDER BY cm.created_at ASC";
+        String sql = "SELECT cm.*, u.username, u.role FROM complaint_messages cm JOIN users u ON cm.sender_user_id = u.user_id WHERE cm.complaint_id = ? ORDER BY cm.created_at ASC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, complaintId);
@@ -178,7 +177,7 @@ public class ComplaintDAOImpl implements ComplaintDAO {
     private Complaint mapComplaint(ResultSet rs) throws SQLException {
         Complaint c = new Complaint();
         c.setComplaintId(rs.getLong("complaint_id"));
-        c.setCustomerId(rs.getLong("customer_id"));
+        c.setCustomerId(rs.getString("customer_id"));
         c.setSubject(rs.getString("subject"));
         c.setDescription(rs.getString("description"));
         c.setPriority(ComplaintPriority.valueOf(rs.getString("priority")));

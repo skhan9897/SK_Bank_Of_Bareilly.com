@@ -1,12 +1,11 @@
 package com.skbank.service.impl;
 
 import com.skbank.dao.ComplaintDAO;
+import com.skbank.dao.CustomerDAO;
 import com.skbank.dao.impl.ComplaintDAOImpl;
+import com.skbank.dao.impl.CustomerDAOImpl;
 import com.skbank.exception.BankException;
-import com.skbank.model.Complaint;
-import com.skbank.model.ComplaintMessage;
-import com.skbank.model.ComplaintPriority;
-import com.skbank.model.ComplaintStatus;
+import com.skbank.model.*;
 import com.skbank.service.ComplaintService;
 
 import java.util.List;
@@ -14,9 +13,10 @@ import java.util.List;
 public class ComplaintServiceImpl implements ComplaintService {
 
     private final ComplaintDAO complaintDAO = new ComplaintDAOImpl();
+    private final CustomerDAO customerDAO = new CustomerDAOImpl();
 
     @Override
-    public Complaint createComplaint(Long customerId, String subject, String description, String priority) throws BankException {
+    public Complaint createComplaint(String customerId, String subject, String description, String priority) throws BankException {
         if (subject == null || subject.trim().isEmpty() || description == null || description.trim().isEmpty()) {
             throw new BankException("Subject and description are required");
         }
@@ -31,12 +31,15 @@ public class ComplaintServiceImpl implements ComplaintService {
             Long id = complaintDAO.create(c);
             c.setComplaintId(id);
 
-            // Add initial message
-            ComplaintMessage msg = new ComplaintMessage();
-            msg.setComplaintId(id);
-            msg.setSenderUserId(customerId);
-            msg.setMessage(description);
-            complaintDAO.addMessage(msg);
+            Customer cust = customerDAO.findById(customerId);
+            if (cust != null) {
+                // Add initial message
+                ComplaintMessage msg = new ComplaintMessage();
+                msg.setComplaintId(id);
+                msg.setSenderUserId(cust.getUserId());
+                msg.setMessage(description);
+                complaintDAO.addMessage(msg);
+            }
 
             return c;
         } catch (Exception e) {
@@ -45,7 +48,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     @Override
-    public List<Complaint> getCustomerComplaints(Long customerId) throws BankException {
+    public List<Complaint> getCustomerComplaints(String customerId) throws BankException {
         try {
             return complaintDAO.findByCustomerId(customerId);
         } catch (Exception e) {

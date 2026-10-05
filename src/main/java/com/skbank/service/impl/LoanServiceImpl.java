@@ -22,6 +22,7 @@ public class LoanServiceImpl implements LoanService {
     private final LoanDAO loanDAO = new LoanDAOImpl();
     private final LoanPaymentDAO loanPaymentDAO = new LoanPaymentDAOImpl();
     private final AccountDAO accountDAO = new AccountDAOImpl();
+    private final CustomerDAO customerDAO = new CustomerDAOImpl();
     private final TransactionDAO transactionDAO = new TransactionDAOImpl();
     private final NotificationDAO notificationDAO = new NotificationDAOImpl();
 
@@ -69,7 +70,7 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public Loan applyLoan(Long customerId, Long loanTypeId, BigDecimal principal, int tenureMonths) throws BankException {
+    public Loan applyLoan(String customerId, Long loanTypeId, BigDecimal principal, int tenureMonths) throws BankException {
         if (!ValidationUtil.isValidAmount(principal)) {
             throw new BankException("Loan amount must be greater than zero");
         }
@@ -103,12 +104,15 @@ public class LoanServiceImpl implements LoanService {
             loan.setLoanId(id);
 
             // Send notification
-            Notification n = new Notification();
-            n.setUserId(customerId);
-            n.setTitle("Loan Application Submitted");
-            n.setMessage("Your " + lt.getLoanName() + " application " + loanNum + " for ₹" + principal + " is under review.");
-            n.setNotificationType("LOAN");
-            notificationDAO.create(n);
+            Customer cust = customerDAO.findById(customerId);
+            if (cust != null) {
+                Notification n = new Notification();
+                n.setUserId(cust.getUserId());
+                n.setTitle("Loan Application Submitted");
+                n.setMessage("Your " + lt.getLoanName() + " application " + loanNum + " for ₹" + principal + " is under review.");
+                n.setNotificationType("LOAN");
+                notificationDAO.create(n);
+            }
 
             return loan;
         } catch (Exception e) {
@@ -117,7 +121,7 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public List<Loan> getCustomerLoans(Long customerId) throws BankException {
+    public List<Loan> getCustomerLoans(String customerId) throws BankException {
         try {
             return loanDAO.findByCustomerId(customerId);
         } catch (Exception e) {
@@ -129,7 +133,7 @@ public class LoanServiceImpl implements LoanService {
     public Loan getLoanById(Long loanId) throws BankException {
         try {
             Loan l = loanDAO.findById(loanId);
-            if (l == null) throw new BankException("Loan record not found");
+            if (l == null) throw new BankException("Error fetching loan details");
             return l;
         } catch (Exception e) {
             throw new BankException("Error fetching loan details", e);
@@ -137,7 +141,7 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public LoanPayment payEmi(Long loanId, Long accountId, Long customerId) throws BankException {
+    public LoanPayment payEmi(Long loanId, Long accountId, String customerId) throws BankException {
         Connection conn = null;
         try {
             Loan loan = loanDAO.findById(loanId);
@@ -204,12 +208,15 @@ public class LoanServiceImpl implements LoanService {
             transactionDAO.create(conn, txn);
 
             // Notification
-            Notification n = new Notification();
-            n.setUserId(customerId);
-            n.setTitle("EMI Paid Successfully");
-            n.setMessage("EMI payment of ₹" + emi + " processed for Loan " + loan.getLoanNumber() + ". Outstanding: ₹" + newOutstanding);
-            n.setNotificationType("LOAN");
-            notificationDAO.create(conn, n);
+            Customer cust = customerDAO.findById(customerId);
+            if (cust != null) {
+                Notification n = new Notification();
+                n.setUserId(cust.getUserId());
+                n.setTitle("EMI Paid Successfully");
+                n.setMessage("EMI payment of ₹" + emi + " processed for Loan " + loan.getLoanNumber() + ". Outstanding: ₹" + newOutstanding);
+                n.setNotificationType("LOAN");
+                notificationDAO.create(conn, n);
+            }
 
             conn.commit();
             return lp;

@@ -2,7 +2,6 @@ package com.skbank.dao.impl;
 
 import com.skbank.dao.TransferDAO;
 import com.skbank.model.TransferRequest;
-import com.skbank.model.TransferType;
 import com.skbank.util.DatabaseConnection;
 
 import java.sql.*;
@@ -46,7 +45,7 @@ public class TransferDAOImpl implements TransferDAO {
             ps.setLong(2, tr.getSenderAccountId());
             ps.setLong(3, tr.getReceiverAccountId());
             ps.setBigDecimal(4, tr.getAmount());
-            ps.setString(5, tr.getTransferType().name());
+            ps.setString(5, tr.getTransferType());
             ps.setString(6, tr.getRemarks());
             ps.setString(7, tr.getStatus() != null ? tr.getStatus() : "COMPLETED");
             ps.executeUpdate();
@@ -83,7 +82,7 @@ public class TransferDAOImpl implements TransferDAO {
         tr.setSenderAccountId(rs.getLong("sender_account_id"));
         tr.setReceiverAccountId(rs.getLong("receiver_account_id"));
         tr.setAmount(rs.getBigDecimal("amount"));
-        tr.setTransferType(TransferType.valueOf(rs.getString("transfer_type")));
+        tr.setTransferType(rs.getString("transfer_type"));
         tr.setRemarks(rs.getString("remarks"));
         tr.setStatus(rs.getString("status"));
         tr.setCreatedAt(rs.getTimestamp("created_at"));

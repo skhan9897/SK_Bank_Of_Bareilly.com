@@ -80,7 +80,7 @@ public class AdminAccountServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            Long customerId = Long.parseLong(request.getParameter("customerId"));
+            String customerId = request.getParameter("customerId");
             Long accountTypeId = Long.parseLong(request.getParameter("accountTypeId"));
             Long branchId = Long.parseLong(request.getParameter("branchId"));
 

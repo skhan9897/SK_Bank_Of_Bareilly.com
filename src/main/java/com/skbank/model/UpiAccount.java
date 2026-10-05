@@ -7,7 +7,7 @@ public class UpiAccount implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long upiAccountId;
-    private Long customerId;
+    private String customerId;
     private Long accountId;
     private String upiAddress;
     private String upiPinHash;
@@ -23,8 +23,8 @@ public class UpiAccount implements Serializable {
     public Long getUpiAccountId() { return upiAccountId; }
     public void setUpiAccountId(Long upiAccountId) { this.upiAccountId = upiAccountId; }
 
-    public Long getCustomerId() { return customerId; }
-    public void setCustomerId(Long customerId) { this.customerId = customerId; }
+    public String getCustomerId() { return customerId; }
+    public void setCustomerId(String customerId) { this.customerId = customerId; }
 
     public Long getAccountId() { return accountId; }
     public void setAccountId(Long accountId) { this.accountId = accountId; }

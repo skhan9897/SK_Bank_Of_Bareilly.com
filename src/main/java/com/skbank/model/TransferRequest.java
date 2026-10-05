@@ -12,7 +12,7 @@ public class TransferRequest implements Serializable {
     private Long senderAccountId;
     private Long receiverAccountId;
     private BigDecimal amount = BigDecimal.ZERO;
-    private TransferType transferType;
+    private String transferType;
     private String remarks;
     private String status;
     private Timestamp createdAt;
@@ -35,8 +35,8 @@ public class TransferRequest implements Serializable {
     public BigDecimal getAmount() { return amount; }
     public void setAmount(BigDecimal amount) { this.amount = amount; }
 
-    public TransferType getTransferType() { return transferType; }
-    public void setTransferType(TransferType transferType) { this.transferType = transferType; }
+    public String getTransferType() { return transferType; }
+    public void setTransferType(String transferType) { this.transferType = transferType; }
 
     public String getRemarks() { return remarks; }
     public void setRemarks(String remarks) { this.remarks = remarks; }

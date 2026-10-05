@@ -29,7 +29,7 @@ public class WithdrawServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
+        String customerId = (String) session.getAttribute("CUSTOMER_ID");
 
         String path = request.getServletPath();
 
@@ -52,7 +52,7 @@ public class WithdrawServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
+        String customerId = (String) session.getAttribute("CUSTOMER_ID");
 
         try {
             Long accountId = Long.parseLong(request.getParameter("accountId"));

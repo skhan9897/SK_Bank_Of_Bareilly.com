@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ComplaintDAO {
     Complaint findById(Long complaintId) throws SQLException;
-    List<Complaint> findByCustomerId(Long customerId) throws SQLException;
+    List<Complaint> findByCustomerId(String customerId) throws SQLException;
     Long create(Complaint complaint) throws SQLException;
     boolean updateStatus(Long complaintId, String status) throws SQLException;
     Long addMessage(ComplaintMessage message) throws SQLException;

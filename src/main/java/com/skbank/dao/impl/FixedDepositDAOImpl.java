@@ -31,12 +31,12 @@ public class FixedDepositDAOImpl implements FixedDepositDAO {
     }
 
     @Override
-    public List<FixedDeposit> findByCustomerId(Long customerId) throws SQLException {
+    public List<FixedDeposit> findByCustomerId(String customerId) throws SQLException {
         List<FixedDeposit> list = new ArrayList<>();
         String sql = SELECT_JOIN_SQL + "WHERE fd.customer_id = ? ORDER BY fd.fd_id DESC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, customerId);
+            ps.setString(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) list.add(mapFd(rs));
             }
@@ -56,7 +56,7 @@ public class FixedDepositDAOImpl implements FixedDepositDAO {
         String sql = "INSERT INTO fixed_deposits (customer_id, account_id, fd_number, principal_amount, interest_rate, tenure_months, maturity_amount, start_date, maturity_date, status) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setLong(1, fd.getCustomerId());
+            ps.setString(1, fd.getCustomerId());
             ps.setLong(2, fd.getAccountId());
             ps.setString(3, fd.getFdNumber());
             ps.setBigDecimal(4, fd.getPrincipalAmount());
@@ -86,11 +86,11 @@ public class FixedDepositDAOImpl implements FixedDepositDAO {
     }
 
     @Override
-    public BigDecimal getTotalFdInvestmentByCustomerId(Long customerId) throws SQLException {
+    public BigDecimal getTotalFdInvestmentByCustomerId(String customerId) throws SQLException {
         String sql = "SELECT SUM(principal_amount) FROM fixed_deposits WHERE customer_id = ? AND status = 'ACTIVE'";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, customerId);
+            ps.setString(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     BigDecimal val = rs.getBigDecimal(1);
@@ -141,7 +141,7 @@ public class FixedDepositDAOImpl implements FixedDepositDAO {
     private FixedDeposit mapFd(ResultSet rs) throws SQLException {
         FixedDeposit fd = new FixedDeposit();
         fd.setFdId(rs.getLong("fd_id"));
-        fd.setCustomerId(rs.getLong("customer_id"));
+        fd.setCustomerId(rs.getString("customer_id"));
         fd.setAccountId(rs.getLong("account_id"));
         fd.setFdNumber(rs.getString("fd_number"));
         fd.setPrincipalAmount(rs.getBigDecimal("principal_amount"));

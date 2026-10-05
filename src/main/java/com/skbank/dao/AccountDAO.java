@@ -10,7 +10,7 @@ public interface AccountDAO {
     Account findById(Long accountId) throws SQLException;
     Account findByAccountNumber(String accountNumber) throws SQLException;
     Account findForUpdate(Connection conn, Long accountId) throws SQLException;
-    List<Account> findByCustomerId(Long customerId) throws SQLException;
+    List<Account> findByCustomerId(String customerId) throws SQLException;
     Long create(Account account) throws SQLException;
     Long create(Connection conn, Account account) throws SQLException;
     boolean updateBalance(Connection conn, Long accountId, BigDecimal newBalance, BigDecimal newAvailableBalance) throws SQLException;

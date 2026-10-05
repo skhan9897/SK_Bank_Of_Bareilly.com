@@ -69,7 +69,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public boolean setCustomerStatus(Long customerId, String status) throws BankException {
+    public boolean setCustomerStatus(String customerId, String status) throws BankException {
         try {
             Customer cust = customerDAO.findById(customerId);
             if (cust == null) throw new BankException("Customer not found");

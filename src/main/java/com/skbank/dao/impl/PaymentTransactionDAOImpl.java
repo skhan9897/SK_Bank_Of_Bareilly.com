@@ -44,7 +44,7 @@ public class PaymentTransactionDAOImpl implements PaymentTransactionDAO {
         String sql = "INSERT INTO payment_transactions (customer_id, source_account_id, payment_type, provider_code, recipient_identifier, amount, reference_number, idempotency_key, status, remarks, created_at, updated_at) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setLong(1, pt.getCustomerId());
+            ps.setString(1, pt.getCustomerId());
             if (pt.getSourceAccountId() != null) {
                 ps.setLong(2, pt.getSourceAccountId());
             } else {
@@ -67,12 +67,12 @@ public class PaymentTransactionDAOImpl implements PaymentTransactionDAO {
     }
 
     @Override
-    public List<PaymentTransaction> findByCustomerId(Long customerId, int offset, int limit) throws SQLException {
+    public List<PaymentTransaction> findByCustomerId(String customerId, int offset, int limit) throws SQLException {
         List<PaymentTransaction> list = new ArrayList<>();
         String sql = "SELECT * FROM payment_transactions WHERE customer_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, customerId);
+            ps.setString(1, customerId);
             ps.setInt(2, limit);
             ps.setInt(3, offset);
             try (ResultSet rs = ps.executeQuery()) {
@@ -85,7 +85,7 @@ public class PaymentTransactionDAOImpl implements PaymentTransactionDAO {
     private PaymentTransaction mapPaymentTransaction(ResultSet rs) throws SQLException {
         PaymentTransaction pt = new PaymentTransaction();
         pt.setPaymentTransactionId(rs.getLong("payment_transaction_id"));
-        pt.setCustomerId(rs.getLong("customer_id"));
+        pt.setCustomerId(rs.getString("customer_id"));
         long srcAcc = rs.getLong("source_account_id");
         if (!rs.wasNull()) pt.setSourceAccountId(srcAcc);
         pt.setPaymentType(PaymentType.valueOf(rs.getString("payment_type")));

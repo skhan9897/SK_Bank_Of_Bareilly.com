@@ -12,9 +12,9 @@ import java.util.List;
 public interface LoanService {
     EmiCalculatorDTO calculateEmi(BigDecimal principal, BigDecimal annualRate, int tenureMonths);
     List<LoanType> getAllLoanTypes() throws BankException;
-    Loan applyLoan(Long customerId, Long loanTypeId, BigDecimal principal, int tenureMonths) throws BankException;
-    List<Loan> getCustomerLoans(Long customerId) throws BankException;
+    Loan applyLoan(String customerId, Long loanTypeId, BigDecimal principal, int tenureMonths) throws BankException;
+    List<Loan> getCustomerLoans(String customerId) throws BankException;
     Loan getLoanById(Long loanId) throws BankException;
-    LoanPayment payEmi(Long loanId, Long accountId, Long customerId) throws BankException;
+    LoanPayment payEmi(Long loanId, Long accountId, String customerId) throws BankException;
     List<LoanPayment> getLoanPayments(Long loanId) throws BankException;
 }

@@ -15,7 +15,7 @@ public class BillPaymentDAOImpl implements BillPaymentDAO {
         String sql = "INSERT INTO bill_payments (customer_id, account_id, biller_type, biller_name, consumer_number, amount, payment_reference, status, created_at) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, 'SUCCESS', NOW())";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setLong(1, bp.getCustomerId());
+            ps.setString(1, bp.getCustomerId());
             ps.setLong(2, bp.getAccountId());
             ps.setString(3, bp.getBillerType());
             ps.setString(4, bp.getBillerName());
@@ -31,12 +31,12 @@ public class BillPaymentDAOImpl implements BillPaymentDAO {
     }
 
     @Override
-    public List<BillPayment> findByCustomerId(Long customerId) throws SQLException {
+    public List<BillPayment> findByCustomerId(String customerId) throws SQLException {
         List<BillPayment> list = new ArrayList<>();
         String sql = "SELECT bp.*, a.account_number FROM bill_payments bp JOIN accounts a ON bp.account_id = a.account_id WHERE bp.customer_id = ? ORDER BY bp.created_at DESC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, customerId);
+            ps.setString(1, customerId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     list.add(mapBill(rs));
@@ -77,7 +77,7 @@ public class BillPaymentDAOImpl implements BillPaymentDAO {
     private BillPayment mapBill(ResultSet rs) throws SQLException {
         BillPayment bp = new BillPayment();
         bp.setBillPaymentId(rs.getLong("bill_payment_id"));
-        bp.setCustomerId(rs.getLong("customer_id"));
+        bp.setCustomerId(rs.getString("customer_id"));
         bp.setAccountId(rs.getLong("account_id"));
         bp.setBillerType(rs.getString("biller_type"));
         bp.setBillerName(rs.getString("biller_name"));

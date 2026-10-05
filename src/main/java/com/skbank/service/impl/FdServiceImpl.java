@@ -22,11 +22,12 @@ public class FdServiceImpl implements FdService {
 
     private final FixedDepositDAO fdDAO = new FixedDepositDAOImpl();
     private final AccountDAO accountDAO = new AccountDAOImpl();
+    private final CustomerDAO customerDAO = new CustomerDAOImpl();
     private final TransactionDAO transactionDAO = new TransactionDAOImpl();
     private final NotificationDAO notificationDAO = new NotificationDAOImpl();
 
     @Override
-    public FixedDeposit openFd(Long customerId, Long accountId, BigDecimal principal, int tenureMonths) throws BankException {
+    public FixedDeposit openFd(String customerId, Long accountId, BigDecimal principal, int tenureMonths) throws BankException {
         if (!ValidationUtil.isValidAmount(principal) || principal.compareTo(new BigDecimal("1000")) < 0) {
             throw new BankException("Minimum FD amount is ₹1,000");
         }
@@ -101,12 +102,15 @@ public class FdServiceImpl implements FdService {
             transactionDAO.create(conn, txn);
 
             // Notification
-            Notification n = new Notification();
-            n.setUserId(customerId);
-            n.setTitle("Fixed Deposit Opened");
-            n.setMessage("FD " + fdNum + " of ₹" + principal + " created successfully. Maturity Amount: ₹" + maturityAmount);
-            n.setNotificationType("FD");
-            notificationDAO.create(conn, n);
+            Customer cust = customerDAO.findById(customerId);
+            if (cust != null) {
+                Notification n = new Notification();
+                n.setUserId(cust.getUserId());
+                n.setTitle("Fixed Deposit Opened");
+                n.setMessage("FD " + fdNum + " of ₹" + principal + " created successfully. Maturity Amount: ₹" + maturityAmount);
+                n.setNotificationType("FD");
+                notificationDAO.create(conn, n);
+            }
 
             conn.commit();
             return fd;
@@ -123,7 +127,7 @@ public class FdServiceImpl implements FdService {
     }
 
     @Override
-    public List<FixedDeposit> getCustomerFds(Long customerId) throws BankException {
+    public List<FixedDeposit> getCustomerFds(String customerId) throws BankException {
         try {
             return fdDAO.findByCustomerId(customerId);
         } catch (Exception e) {

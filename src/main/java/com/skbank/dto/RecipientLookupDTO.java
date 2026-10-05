@@ -16,7 +16,7 @@ public class RecipientLookupDTO implements Serializable {
     private String ifscCode;
     private String status;
     private Long accountId;
-    private Long customerId;
+    private String customerId;
     private boolean ownAccount;
 
     public RecipientLookupDTO() {}
@@ -54,8 +54,8 @@ public class RecipientLookupDTO implements Serializable {
     public Long getAccountId() { return accountId; }
     public void setAccountId(Long accountId) { this.accountId = accountId; }
 
-    public Long getCustomerId() { return customerId; }
-    public void setCustomerId(Long customerId) { this.customerId = customerId; }
+    public String getCustomerId() { return customerId; }
+    public void setCustomerId(String customerId) { this.customerId = customerId; }
 
     public boolean isOwnAccount() { return ownAccount; }
     public void setOwnAccount(boolean ownAccount) { this.ownAccount = ownAccount; }

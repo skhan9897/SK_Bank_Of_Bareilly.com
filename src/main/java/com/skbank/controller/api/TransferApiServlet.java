@@ -26,7 +26,7 @@ public class TransferApiServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Long senderCustomerId = (Long) request.getAttribute("API_CUSTOMER_ID");
+        String senderCustomerId = (String) request.getAttribute("API_CUSTOMER_ID");
 
         try {
             BufferedReader reader = request.getReader();

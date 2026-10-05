@@ -9,7 +9,6 @@ import com.skbank.exception.InsufficientBalanceException;
 import com.skbank.model.*;
 import com.skbank.service.TransferService;
 import com.skbank.util.DatabaseConnection;
-import com.skbank.util.SystemSettingsUtil;
 import com.skbank.util.ValidationUtil;
 
 import java.math.BigDecimal;
@@ -22,23 +21,23 @@ public class TransferServiceImpl implements TransferService {
 
     private final AccountDAO accountDAO = new AccountDAOImpl();
     private final CustomerDAO customerDAO = new CustomerDAOImpl();
-    private final UpiDAO upiDAO = new UpiDAOImpl();
     private final BranchDAO branchDAO = new BranchDAOImpl();
     private final TransactionDAO transactionDAO = new TransactionDAOImpl();
     private final TransferDAO transferDAO = new TransferDAOImpl();
     private final NotificationDAO notificationDAO = new NotificationDAOImpl();
+    private final UpiDAO upiDAO = new UpiDAOImpl();
 
     @Override
-    public RecipientLookupDTO lookupByMobile(String mobile, Long senderCustomerId) throws BankException {
+    public RecipientLookupDTO lookupByMobile(String mobile, String senderCustomerId) throws BankException {
         if (!ValidationUtil.isValidMobile(mobile)) {
             throw new BankException("Invalid 10-digit mobile number");
         }
         try {
-            Customer cust = customerDAO.findByMobile(mobile);
+            Customer cust = customerDAO.findByMobile(mobile.trim());
             if (cust == null) {
                 RecipientLookupDTO dto = new RecipientLookupDTO();
                 dto.setSuccess(false);
-                dto.setMessage("Mobile number not registered with SK Bank");
+                dto.setMessage("No registered SK Bank customer found with this mobile number");
                 return dto;
             }
 
@@ -46,7 +45,7 @@ public class TransferServiceImpl implements TransferService {
             if (accounts.isEmpty()) {
                 RecipientLookupDTO dto = new RecipientLookupDTO();
                 dto.setSuccess(false);
-                dto.setMessage("No active account found for this mobile number");
+                dto.setMessage("No active account found for this customer");
                 return dto;
             }
 
@@ -56,7 +55,7 @@ public class TransferServiceImpl implements TransferService {
             RecipientLookupDTO dto = new RecipientLookupDTO();
             dto.setSuccess(true);
             dto.setRecipientName(cust.getFullName());
-            dto.setMaskedMobile("XXXXXX" + mobile.substring(6));
+            dto.setMaskedMobile(cust.getMaskedAadhaar());
             dto.setMaskedAccount(primaryAcc.getMaskedAccountNumber());
             dto.setBankName("SK BANK OF BAREILLY");
             dto.setBranchName(branch != null ? branch.getBranchName() : "Main Branch");
@@ -75,7 +74,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public RecipientLookupDTO lookupByAccount(String accountNumber, Long senderCustomerId) throws BankException {
+    public RecipientLookupDTO lookupByAccount(String accountNumber, String senderCustomerId) throws BankException {
         if (accountNumber == null || accountNumber.trim().isEmpty()) {
             throw new BankException("Account number cannot be empty");
         }
@@ -112,7 +111,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public RecipientLookupDTO lookupByUpi(String upiAddress, Long senderCustomerId) throws BankException {
+    public RecipientLookupDTO lookupByUpi(String upiAddress, String senderCustomerId) throws BankException {
         if (upiAddress == null || upiAddress.trim().isEmpty()) {
             throw new BankException("UPI ID cannot be empty");
         }
@@ -139,7 +138,7 @@ public class TransferServiceImpl implements TransferService {
             dto.setCustomerId(upiAcc.getCustomerId());
             dto.setOwnAccount(upiAcc.getCustomerId().equals(senderCustomerId));
             if (dto.isOwnAccount()) {
-                dto.setMessage("Your own UPI ID detected");
+                dto.setMessage("Your own account detected");
             }
             return dto;
         } catch (Exception e) {
@@ -148,22 +147,17 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public TransferRequest processTransfer(TransferDTO transferDTO, Long senderCustomerId) throws BankException {
+    public TransferRequest processTransfer(TransferDTO transferDTO, String senderCustomerId) throws BankException {
         BigDecimal amount = transferDTO.getAmount();
         if (!ValidationUtil.isValidAmount(amount)) {
             throw new BankException("Transfer amount must be greater than zero");
         }
 
-        BigDecimal maxLimit = SystemSettingsUtil.getSettingAsBigDecimal("MAX_TRANSFER_AMOUNT", new BigDecimal("500000.00"));
-        if (amount.compareTo(maxLimit) > 0) {
-            throw new BankException("Transfer amount exceeds maximum limit of ₹" + maxLimit);
-        }
-
         Long senderAccId = transferDTO.getSenderAccountId();
         Long receiverAccId = transferDTO.getReceiverAccountId();
 
-        if (senderAccId == null || receiverAccId == null) {
-            throw new BankException("Invalid sender or receiver account");
+        if (senderAccId.equals(receiverAccId)) {
+            throw new BankException("Sender and receiver account cannot be the same");
         }
 
         Connection conn = null;
@@ -171,28 +165,21 @@ public class TransferServiceImpl implements TransferService {
             conn = DatabaseConnection.getConnection();
             conn.setAutoCommit(false);
 
-            // Lock accounts in consistent order to prevent deadlocks
-            Account senderAcc;
-            Account receiverAcc;
+            // Lock accounts in deterministic order to prevent deadlocks
+            Long firstId = Math.min(senderAccId, receiverAccId);
+            Long secondId = Math.max(senderAccId, receiverAccId);
 
-            if (senderAccId < receiverAccId) {
-                senderAcc = accountDAO.findForUpdate(conn, senderAccId);
-                receiverAcc = accountDAO.findForUpdate(conn, receiverAccId);
-            } else if (senderAccId > receiverAccId) {
-                receiverAcc = accountDAO.findForUpdate(conn, receiverAccId);
-                senderAcc = accountDAO.findForUpdate(conn, senderAccId);
-            } else {
-                // Same account self transfer - just lock once
-                senderAcc = accountDAO.findForUpdate(conn, senderAccId);
-                receiverAcc = senderAcc;
+            Account firstLock = accountDAO.findForUpdate(conn, firstId);
+            Account secondLock = accountDAO.findForUpdate(conn, secondId);
+
+            Account senderAcc = (firstId.equals(senderAccId)) ? firstLock : secondLock;
+            Account receiverAcc = (firstId.equals(receiverAccId)) ? firstLock : secondLock;
+
+            if (senderAcc == null || !senderAcc.getCustomerId().equals(senderCustomerId)) {
+                throw new BankException("Invalid sender account");
             }
-
-            if (senderAcc == null) throw new BankException("Sender account not found");
-            if (receiverAcc == null) throw new BankException("Receiver account not found");
-
-            // Verify sender ownership
-            if (!senderAcc.getCustomerId().equals(senderCustomerId)) {
-                throw new BankException("Unauthorized: You can only transfer money from your own account");
+            if (receiverAcc == null) {
+                throw new BankException("Receiver account not found");
             }
 
             if (senderAcc.getStatus() != AccountStatus.ACTIVE) {
@@ -203,53 +190,48 @@ public class TransferServiceImpl implements TransferService {
             }
 
             if (senderAcc.getAvailableBalance().compareTo(amount) < 0) {
-                throw new InsufficientBalanceException("Insufficient available balance. Available: ₹" + senderAcc.getAvailableBalance());
+                throw new InsufficientBalanceException("Insufficient balance. Available: ₹" + senderAcc.getAvailableBalance());
             }
 
-            boolean isSelf = senderAcc.getCustomerId().equals(receiverAcc.getCustomerId());
-            TransferType tType = isSelf ? TransferType.SELF : TransferType.valueOf(transferDTO.getTransferType() != null ? transferDTO.getTransferType() : "ACCOUNT");
-
-            // Perform debit & credit
+            // 1. Debit Sender
             BigDecimal senderBefore = senderAcc.getBalance();
             BigDecimal senderAfter = senderBefore.subtract(amount);
-
-            BigDecimal receiverBefore = receiverAcc.getBalance();
-            BigDecimal receiverAfter = isSelf && senderAccId.equals(receiverAccId) ? senderAfter : receiverBefore.add(amount);
-
             accountDAO.updateBalance(conn, senderAccId, senderAfter, senderAfter);
-            if (!senderAccId.equals(receiverAccId)) {
-                accountDAO.updateBalance(conn, receiverAccId, receiverAfter, receiverAfter);
-            }
 
-            String ref = "SKTXN" + System.currentTimeMillis() + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+            // 2. Credit Receiver
+            BigDecimal receiverBefore = receiverAcc.getBalance();
+            BigDecimal receiverAfter = receiverBefore.add(amount);
+            accountDAO.updateBalance(conn, receiverAccId, receiverAfter, receiverAfter);
 
-            // 1. Debit Transaction for Sender
+            // Generate Ref
+            String ref = "SKTR" + System.currentTimeMillis() + UUID.randomUUID().toString().substring(0, 3).toUpperCase();
+            String tTypeStr = transferDTO.getTransferType() != null ? transferDTO.getTransferType() : "ACCOUNT_TRANSFER";
+
+            // Record Debit Transaction
             Transaction debitTxn = new Transaction();
             debitTxn.setTransactionReference(ref + "-D");
             debitTxn.setAccountId(senderAccId);
+            debitTxn.setRelatedAccountId(receiverAccId);
             debitTxn.setTransactionType(TransactionType.TRANSFER);
             debitTxn.setAmount(amount);
             debitTxn.setBalanceBefore(senderBefore);
             debitTxn.setBalanceAfter(senderAfter);
-            debitTxn.setRelatedAccountId(receiverAccId);
-            debitTxn.setDescription("Transfer to " + (transferDTO.getRecipientName() != null ? transferDTO.getRecipientName() : receiverAcc.getMaskedAccountNumber()) + " (" + tType.name() + ")");
+            debitTxn.setDescription("Transfer to " + receiverAcc.getMaskedAccountNumber() + " (" + tTypeStr + ")");
             debitTxn.setStatus(TransactionStatus.SUCCESS);
             transactionDAO.create(conn, debitTxn);
 
-            // 2. Credit Transaction for Receiver (if different account)
-            if (!senderAccId.equals(receiverAccId)) {
-                Transaction creditTxn = new Transaction();
-                creditTxn.setTransactionReference(ref + "-C");
-                creditTxn.setAccountId(receiverAccId);
-                creditTxn.setTransactionType(TransactionType.TRANSFER);
-                creditTxn.setAmount(amount);
-                creditTxn.setBalanceBefore(receiverBefore);
-                creditTxn.setBalanceAfter(receiverAfter);
-                creditTxn.setRelatedAccountId(senderAccId);
-                creditTxn.setDescription("Received from " + senderAcc.getMaskedAccountNumber() + " (" + tType.name() + ")");
-                creditTxn.setStatus(TransactionStatus.SUCCESS);
-                transactionDAO.create(conn, creditTxn);
-            }
+            // Record Credit Transaction
+            Transaction creditTxn = new Transaction();
+            creditTxn.setTransactionReference(ref + "-C");
+            creditTxn.setAccountId(receiverAccId);
+            creditTxn.setRelatedAccountId(senderAccId);
+            creditTxn.setTransactionType(TransactionType.TRANSFER);
+            creditTxn.setAmount(amount);
+            creditTxn.setBalanceBefore(receiverBefore);
+            creditTxn.setBalanceAfter(receiverAfter);
+            creditTxn.setDescription("Transfer from " + senderAcc.getMaskedAccountNumber() + " (" + tTypeStr + ")");
+            creditTxn.setStatus(TransactionStatus.SUCCESS);
+            transactionDAO.create(conn, creditTxn);
 
             // 3. Create TransferRequest entry
             TransferRequest tr = new TransferRequest();
@@ -257,19 +239,22 @@ public class TransferServiceImpl implements TransferService {
             tr.setSenderAccountId(senderAccId);
             tr.setReceiverAccountId(receiverAccId);
             tr.setAmount(amount);
-            tr.setTransferType(tType);
+            tr.setTransferType(tTypeStr);
             tr.setRemarks(transferDTO.getRemarks());
             tr.setStatus("COMPLETED");
             Long trId = transferDAO.create(conn, tr);
             tr.setTransferId(trId);
 
             // 4. Send Notifications
-            Notification notifSender = new Notification();
-            notifSender.setUserId(senderAcc.getCustomerId());
-            notifSender.setTitle("Money Transferred");
-            notifSender.setMessage("₹" + amount + " transferred to " + receiverAcc.getMaskedAccountNumber() + ". Ref: " + ref);
-            notifSender.setNotificationType("TRANSFER");
-            notificationDAO.create(conn, notifSender);
+            Customer senderCust = customerDAO.findById(senderAcc.getCustomerId());
+            if (senderCust != null) {
+                Notification notifSender = new Notification();
+                notifSender.setUserId(senderCust.getUserId());
+                notifSender.setTitle("Money Transferred");
+                notifSender.setMessage("₹" + amount + " transferred to " + receiverAcc.getMaskedAccountNumber() + ". Ref: " + ref);
+                notifSender.setNotificationType("TRANSFER");
+                notificationDAO.create(conn, notifSender);
+            }
 
             if (!senderAcc.getCustomerId().equals(receiverAcc.getCustomerId())) {
                 Customer receiverCust = customerDAO.findById(receiverAcc.getCustomerId());

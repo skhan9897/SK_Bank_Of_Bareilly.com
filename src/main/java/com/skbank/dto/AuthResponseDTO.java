@@ -8,7 +8,7 @@ public class AuthResponseDTO implements Serializable {
     private boolean requiresOtp;
     private String token;
     private Long userId;
-    private Long customerId;
+    private String customerId;
     private String customerNumber;
     private String customerName;
     private String role;
@@ -25,8 +25,8 @@ public class AuthResponseDTO implements Serializable {
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
 
-    public Long getCustomerId() { return customerId; }
-    public void setCustomerId(Long customerId) { this.customerId = customerId; }
+    public String getCustomerId() { return customerId; }
+    public void setCustomerId(String customerId) { this.customerId = customerId; }
 
     public String getCustomerNumber() { return customerNumber; }
     public void setCustomerNumber(String customerNumber) { this.customerNumber = customerNumber; }

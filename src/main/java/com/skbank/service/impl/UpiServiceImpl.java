@@ -12,7 +12,7 @@ public class UpiServiceImpl implements UpiService {
     private final UpiDAO upiDAO = new UpiDAOImpl();
 
     @Override
-    public UpiAccount getUpiByCustomerId(Long customerId) throws BankException {
+    public UpiAccount getUpiByCustomerId(String customerId) throws BankException {
         try {
             return upiDAO.findByCustomerId(customerId);
         } catch (Exception e) {
@@ -21,7 +21,7 @@ public class UpiServiceImpl implements UpiService {
     }
 
     @Override
-    public UpiAccount createUpiAccount(Long customerId, Long accountId, String desiredUpiAddress, String plainPin) throws BankException {
+    public UpiAccount createUpiAccount(String customerId, Long accountId, String desiredUpiAddress, String plainPin) throws BankException {
         if (desiredUpiAddress == null || !desiredUpiAddress.contains("@skbank")) {
             throw new BankException("UPI address must end with @skbank");
         }
@@ -59,7 +59,7 @@ public class UpiServiceImpl implements UpiService {
     }
 
     @Override
-    public boolean changeUpiPin(Long customerId, String oldPin, String newPin) throws BankException {
+    public boolean changeUpiPin(String customerId, String oldPin, String newPin) throws BankException {
         if (newPin == null || !newPin.matches("^\\d{4,6}$")) {
             throw new BankException("New UPI PIN must be 4 or 6 digits");
         }
@@ -79,7 +79,7 @@ public class UpiServiceImpl implements UpiService {
     }
 
     @Override
-    public boolean changeUpiAddress(Long customerId, String newUpiAddress) throws BankException {
+    public boolean changeUpiAddress(String customerId, String newUpiAddress) throws BankException {
         if (newUpiAddress == null || !newUpiAddress.contains("@skbank")) {
             throw new BankException("UPI address must end with @skbank");
         }
@@ -97,7 +97,7 @@ public class UpiServiceImpl implements UpiService {
     }
 
     @Override
-    public boolean disableUpi(Long customerId) throws BankException {
+    public boolean disableUpi(String customerId) throws BankException {
         try {
             UpiAccount upi = upiDAO.findByCustomerId(customerId);
             if (upi == null) throw new BankException("UPI account not found");
