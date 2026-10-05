@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a71f9876-05f1-4f73-8380-b66a0d6aa89d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/impl/KycDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/dao/impl/KycDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/DatabaseInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/util/DatabaseInitializer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
