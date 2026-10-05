@@ -11,22 +11,16 @@ public class KycDAOImpl implements KycDAO {
 
     @Override
     public Kyc findByCustomerId(String customerId) throws SQLException {
-        String sql = "SELECT * FROM customer_kyc WHERE customer_id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, customerId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return mapKyc(rs);
-            }
-        } catch (SQLException e) {
-            String fallbackSql = "SELECT * FROM kyc WHERE customer_id = ?";
+        String[] tables = new String[]{"customer_kyc", "kyc_documents", "kyc"};
+        for (String table : tables) {
+            String sql = "SELECT * FROM " + table + " WHERE customer_id = ?";
             try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement ps = conn.prepareStatement(fallbackSql)) {
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setString(1, customerId);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) return mapKyc(rs);
                 }
-            }
+            } catch (SQLException ignored) {}
         }
         return null;
     }
@@ -40,21 +34,13 @@ public class KycDAOImpl implements KycDAO {
 
     @Override
     public Long create(Connection conn, Kyc kyc) throws SQLException {
-        String sql = "INSERT INTO customer_kyc (customer_id, aadhaar_number, pan_number, verification_status, verified_at, created_at) " +
-                     "VALUES (?, ?, ?, ?, NOW(), NOW())";
-        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, kyc.getCustomerId());
-            ps.setString(2, kyc.getAadhaarNumber());
-            ps.setString(3, kyc.getPanNumber());
-            ps.setString(4, kyc.getVerificationStatus() != null ? kyc.getVerificationStatus().name() : KycStatus.VERIFIED.name());
-            ps.executeUpdate();
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) return rs.getLong(1);
-            }
-        } catch (SQLException e) {
-            String fallbackSql = "INSERT INTO kyc (customer_id, aadhaar_number, pan_number, verification_status, verified_at, created_at) " +
-                                 "VALUES (?, ?, ?, ?, NOW(), NOW())";
-            try (PreparedStatement ps = conn.prepareStatement(fallbackSql, Statement.RETURN_GENERATED_KEYS)) {
+        String[] tables = new String[]{"customer_kyc", "kyc_documents", "kyc"};
+        SQLException lastEx = null;
+
+        for (String table : tables) {
+            String sql = "INSERT INTO " + table + " (customer_id, aadhaar_number, pan_number, verification_status, verified_at, created_at) " +
+                         "VALUES (?, ?, ?, ?, NOW(), NOW())";
+            try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, kyc.getCustomerId());
                 ps.setString(2, kyc.getAadhaarNumber());
                 ps.setString(3, kyc.getPanNumber());
@@ -63,28 +49,33 @@ public class KycDAOImpl implements KycDAO {
                 try (ResultSet rs = ps.getGeneratedKeys()) {
                     if (rs.next()) return rs.getLong(1);
                 }
+                return 1L;
+            } catch (SQLException e) {
+                lastEx = e;
+                if (e.getMessage() != null && e.getMessage().toLowerCase().contains("doesn't exist")) {
+                    continue; // Try next table name
+                }
+                throw e; // Standard SQL error (e.g. duplicate key or constraint)
             }
         }
-        return 1L;
+
+        if (lastEx != null) throw lastEx;
+        throw new SQLException("Failed to insert KYC record into customer_kyc table.");
     }
 
     @Override
     public boolean updateVerificationStatus(String customerId, String status) throws SQLException {
-        String sql = "UPDATE customer_kyc SET verification_status = ?, verified_at = NOW() WHERE customer_id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, status);
-            ps.setString(2, customerId);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            String fallbackSql = "UPDATE kyc SET verification_status = ?, verified_at = NOW() WHERE customer_id = ?";
+        String[] tables = new String[]{"customer_kyc", "kyc_documents", "kyc"};
+        for (String table : tables) {
+            String sql = "UPDATE " + table + " SET verification_status = ?, verified_at = NOW() WHERE customer_id = ?";
             try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement ps = conn.prepareStatement(fallbackSql)) {
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setString(1, status);
                 ps.setString(2, customerId);
-                return ps.executeUpdate() > 0;
-            }
+                if (ps.executeUpdate() > 0) return true;
+            } catch (SQLException ignored) {}
         }
+        return false;
     }
 
     private Kyc mapKyc(ResultSet rs) throws SQLException {
