@@ -29,8 +29,7 @@ public class DatabaseInitializer {
             ensureKycTable(conn);
             ensureNotificationsTable(conn);
 
-            ensureVarcharCustomerKeys(conn);
-            ensureCanonicalAccountTypesFK(conn);
+            ensureStandardSchemaAndForeignKeys(conn);
 
             // Universal Column Sanitizer to fix ANY legacy NOT NULL column without defaults
             sanitizeTableColumnsToAllowDefaults(conn, "users");
@@ -38,7 +37,7 @@ public class DatabaseInitializer {
             sanitizeTableColumnsToAllowDefaults(conn, "accounts");
             sanitizeTableColumnsToAllowDefaults(conn, "branches");
             sanitizeTableColumnsToAllowDefaults(conn, "account_types");
-            sanitizeTableColumnsToAllowDefaults(conn, "kyc");
+            sanitizeTableColumnsToAllowDefaults(conn, "customer_kyc");
             sanitizeTableColumnsToAllowDefaults(conn, "notifications");
 
             conn.createStatement().execute("SET FOREIGN_KEY_CHECKS = 1;");
@@ -50,76 +49,86 @@ public class DatabaseInitializer {
         executeFullSchemaImport();
     }
 
-    private static void ensureCanonicalAccountTypesFK(Connection conn) {
+    private static void ensureStandardSchemaAndForeignKeys(Connection conn) {
         try (Statement stmt = conn.createStatement()) {
             stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
-            
-            // 1. Ensure account_types primary key column is type_id
+
+            // 1. Ensure customers.customer_id is BIGINT AUTO_INCREMENT
             try {
-                stmt.execute("ALTER TABLE account_types MODIFY COLUMN type_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY;");
+                stmt.execute("ALTER TABLE customers MODIFY COLUMN customer_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY;");
             } catch (Exception e1) {
                 try {
-                    stmt.execute("ALTER TABLE account_types MODIFY COLUMN type_id BIGINT NOT NULL AUTO_INCREMENT;");
+                    stmt.execute("ALTER TABLE customers MODIFY COLUMN customer_id BIGINT NOT NULL AUTO_INCREMENT;");
                 } catch (Exception ignored) {}
             }
 
-            // 2. Drop obsolete accounts_ibfk_2 foreign key if present
+            // 2. Ensure account_types primary key column is account_type_id
+            try {
+                stmt.execute("ALTER TABLE account_types CHANGE COLUMN type_id account_type_id BIGINT NOT NULL AUTO_INCREMENT;");
+            } catch (Exception e1) {
+                try {
+                    stmt.execute("ALTER TABLE account_types MODIFY COLUMN account_type_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY;");
+                } catch (Exception ignored) {}
+            }
+
+            // 3. Ensure accounts table uses account_type_id
+            try {
+                stmt.execute("ALTER TABLE accounts CHANGE COLUMN type_id account_type_id BIGINT NOT NULL;");
+            } catch (Exception e1) {
+                try {
+                    stmt.execute("ALTER TABLE accounts MODIFY COLUMN account_type_id BIGINT NOT NULL;");
+                } catch (Exception ignored) {}
+            }
+
+            // 4. Ensure customer_id foreign keys across all dependent tables are BIGINT NOT NULL
+            String[] bigintQueries = new String[] {
+                "ALTER TABLE accounts MODIFY COLUMN customer_id BIGINT NOT NULL;",
+                "ALTER TABLE beneficiaries MODIFY COLUMN customer_id BIGINT NOT NULL;",
+                "ALTER TABLE fixed_deposits MODIFY COLUMN customer_id BIGINT NOT NULL;",
+                "ALTER TABLE loans MODIFY COLUMN customer_id BIGINT NOT NULL;",
+                "ALTER TABLE cards MODIFY COLUMN customer_id BIGINT NOT NULL;",
+                "ALTER TABLE bill_payments MODIFY COLUMN customer_id BIGINT NOT NULL;",
+                "ALTER TABLE complaints MODIFY COLUMN customer_id BIGINT NOT NULL;",
+                "ALTER TABLE nominees MODIFY COLUMN customer_id BIGINT NOT NULL;",
+                "ALTER TABLE payment_wallets MODIFY COLUMN customer_id BIGINT NOT NULL;",
+                "ALTER TABLE payment_transactions MODIFY COLUMN customer_id BIGINT NOT NULL;"
+            };
+            for (String q : bigintQueries) {
+                try { stmt.execute(q); } catch (Exception ignored) {}
+            }
+
+            // 5. Ensure customer_kyc table exists and has BIGINT customer_id
+            try {
+                stmt.execute("CREATE TABLE IF NOT EXISTS customer_kyc (" +
+                        "customer_kyc_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                        "customer_id BIGINT NOT NULL UNIQUE, " +
+                        "aadhaar_number VARCHAR(20) NOT NULL, " +
+                        "pan_number VARCHAR(20) NOT NULL, " +
+                        "verification_status VARCHAR(30) NOT NULL DEFAULT 'VERIFIED', " +
+                        "verified_at DATETIME NULL, " +
+                        "created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
+                        "updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, " +
+                        "FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE" +
+                        ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+            } catch (Exception ignored) {}
+
+            try {
+                stmt.execute("CREATE OR REPLACE VIEW kyc AS SELECT customer_kyc_id AS kyc_id, customer_id, aadhaar_number, pan_number, verification_status, verified_at, created_at, updated_at FROM customer_kyc;");
+            } catch (Exception ignored) {}
+
+            // 6. Ensure canonical foreign key constraints
             try {
                 stmt.execute("ALTER TABLE accounts DROP FOREIGN KEY accounts_ibfk_2;");
             } catch (Exception ignored) {}
 
-            // 3. Ensure accounts.type_id column exists
             try {
-                stmt.execute("ALTER TABLE accounts ADD COLUMN type_id BIGINT NOT NULL;");
-            } catch (Exception ignored) {}
-
-            // 4. Copy existing account_type_id data to type_id if type_id is null/0
-            try {
-                stmt.execute("UPDATE accounts SET type_id = account_type_id WHERE type_id = 0 OR type_id IS NULL;");
-            } catch (Exception ignored) {}
-
-            // 5. Add canonical foreign key constraint from accounts.type_id to account_types.type_id
-            try {
-                stmt.execute("ALTER TABLE accounts ADD CONSTRAINT fk_accounts_account_type FOREIGN KEY (type_id) REFERENCES account_types(type_id);");
+                stmt.execute("ALTER TABLE accounts ADD CONSTRAINT fk_accounts_account_type FOREIGN KEY (account_type_id) REFERENCES account_types(account_type_id);");
             } catch (Exception ignored) {}
 
             stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
-            LOGGER.info("Canonical account_types FK migration (accounts.type_id -> account_types.type_id) executed successfully.");
+            LOGGER.info("Standard database schema and foreign keys configured successfully.");
         } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Account types FK migration notice: " + e.getMessage());
-        }
-    }
-
-    private static void ensureVarcharCustomerKeys(Connection conn) {
-        String[] varcharQueries = new String[] {
-            "ALTER TABLE customers MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
-            "ALTER TABLE accounts MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
-            "ALTER TABLE kyc MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
-            "ALTER TABLE kyc_documents MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
-            "ALTER TABLE beneficiaries MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
-            "ALTER TABLE fixed_deposits MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
-            "ALTER TABLE loans MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
-            "ALTER TABLE cards MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
-            "ALTER TABLE bill_payments MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
-            "ALTER TABLE complaints MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
-            "ALTER TABLE nominees MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
-            "ALTER TABLE payment_wallets MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;",
-            "ALTER TABLE payment_transactions MODIFY COLUMN customer_id VARCHAR(20) NOT NULL;"
-        };
-
-        try (Statement stmt = conn.createStatement()) {
-            stmt.execute("SET FOREIGN_KEY_CHECKS = 0;");
-            for (String q : varcharQueries) {
-                try {
-                    stmt.execute(q);
-                    LOGGER.info("Successfully executed: " + q);
-                } catch (Exception e) {
-                    LOGGER.log(Level.FINE, "Varchar key modify notice: " + e.getMessage());
-                }
-            }
-            stmt.execute("SET FOREIGN_KEY_CHECKS = 1;");
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error modifying VARCHAR customer_id columns", e);
+            LOGGER.log(Level.WARNING, "Schema alignment notice: " + e.getMessage());
         }
     }
 
@@ -235,7 +244,7 @@ public class DatabaseInitializer {
 
     private static void ensureCustomersTable(Connection conn) {
         String createDdl = "CREATE TABLE IF NOT EXISTS customers (" +
-                "customer_id VARCHAR(20) NOT NULL PRIMARY KEY, " +
+                "customer_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "user_id BIGINT NOT NULL UNIQUE, " +
                 "customer_number VARCHAR(20) NOT NULL UNIQUE, " +
                 "full_name VARCHAR(100) NOT NULL, " +
@@ -315,7 +324,7 @@ public class DatabaseInitializer {
 
     private static void ensureAccountTypesTable(Connection conn) {
         String createDdl = "CREATE TABLE IF NOT EXISTS account_types (" +
-                "type_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "account_type_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "type_code VARCHAR(30) NOT NULL UNIQUE, " +
                 "type_name VARCHAR(50) NOT NULL, " +
                 "description VARCHAR(255) NULL, " +
@@ -331,7 +340,7 @@ public class DatabaseInitializer {
 
         // Seed default account types
         try (Statement stmt = conn.createStatement()) {
-            stmt.execute("INSERT IGNORE INTO account_types (type_id, type_code, type_name, description, minimum_balance, interest_rate) VALUES " +
+            stmt.execute("INSERT IGNORE INTO account_types (account_type_id, type_code, type_name, description, minimum_balance, interest_rate) VALUES " +
                     "(1, 'SAVINGS', 'Savings Account', 'Standard personal savings account with interest', 1000.00, 4.00), " +
                     "(2, 'CURRENT', 'Current Account', 'Business account for high volume transactions', 5000.00, 0.00), " +
                     "(3, 'SALARY', 'Corporate Salary Account', 'Zero-balance salary account with premium benefits', 0.00, 4.50), " +
@@ -343,8 +352,8 @@ public class DatabaseInitializer {
     private static void ensureAccountsTable(Connection conn) {
         String createDdl = "CREATE TABLE IF NOT EXISTS accounts (" +
                 "account_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                "customer_id VARCHAR(20) NOT NULL, " +
-                "type_id BIGINT NOT NULL, " +
+                "customer_id BIGINT NOT NULL, " +
+                "account_type_id BIGINT NOT NULL, " +
                 "branch_id BIGINT NOT NULL, " +
                 "account_number VARCHAR(20) NOT NULL UNIQUE, " +
                 "balance DECIMAL(18,2) NOT NULL DEFAULT 0.00, " +
@@ -353,30 +362,35 @@ public class DatabaseInitializer {
                 "opened_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
                 "closed_at DATETIME NULL, " +
                 "FOREIGN KEY (customer_id) REFERENCES customers(customer_id), " +
-                "FOREIGN KEY (type_id) REFERENCES account_types(type_id), " +
+                "FOREIGN KEY (account_type_id) REFERENCES account_types(account_type_id), " +
                 "FOREIGN KEY (branch_id) REFERENCES branches(branch_id)" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
-        String[] cols = new String[]{"customer_id", "type_id", "branch_id", "account_number", "balance", "available_balance", "status"};
-        String[] alterDdls = new String[]{"VARCHAR(20) NOT NULL", "BIGINT NOT NULL", "BIGINT NOT NULL", "VARCHAR(20) NOT NULL UNIQUE", "DECIMAL(18,2) NOT NULL DEFAULT 0.00", "DECIMAL(18,2) NOT NULL DEFAULT 0.00", "VARCHAR(30) NOT NULL DEFAULT 'ACTIVE'"};
+        String[] cols = new String[]{"customer_id", "account_type_id", "branch_id", "account_number", "balance", "available_balance", "status"};
+        String[] alterDdls = new String[]{"BIGINT NOT NULL", "BIGINT NOT NULL", "BIGINT NOT NULL", "VARCHAR(20) NOT NULL UNIQUE", "DECIMAL(18,2) NOT NULL DEFAULT 0.00", "DECIMAL(18,2) NOT NULL DEFAULT 0.00", "VARCHAR(30) NOT NULL DEFAULT 'ACTIVE'"};
         sanitizeAndEnsureTableSchema(conn, "accounts", createDdl, cols, alterDdls);
     }
 
     private static void ensureKycTable(Connection conn) {
-        String createDdl = "CREATE TABLE IF NOT EXISTS kyc (" +
-                "kyc_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                "customer_id VARCHAR(20) NOT NULL UNIQUE, " +
+        String createDdl = "CREATE TABLE IF NOT EXISTS customer_kyc (" +
+                "customer_kyc_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "customer_id BIGINT NOT NULL UNIQUE, " +
                 "aadhaar_number VARCHAR(20) NOT NULL, " +
                 "pan_number VARCHAR(20) NOT NULL, " +
                 "verification_status VARCHAR(30) NOT NULL DEFAULT 'VERIFIED', " +
                 "verified_at DATETIME NULL, " +
                 "created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
+                "updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, " +
                 "FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
         String[] cols = new String[]{"customer_id", "aadhaar_number", "pan_number", "verification_status"};
-        String[] alterDdls = new String[]{"VARCHAR(20) NOT NULL UNIQUE", "VARCHAR(20) NOT NULL", "VARCHAR(20) NOT NULL", "VARCHAR(30) NOT NULL DEFAULT 'VERIFIED'"};
-        sanitizeAndEnsureTableSchema(conn, "kyc", createDdl, cols, alterDdls);
+        String[] alterDdls = new String[]{"BIGINT NOT NULL UNIQUE", "VARCHAR(20) NOT NULL", "VARCHAR(20) NOT NULL", "VARCHAR(30) NOT NULL DEFAULT 'VERIFIED'"};
+        sanitizeAndEnsureTableSchema(conn, "customer_kyc", createDdl, cols, alterDdls);
+
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("CREATE OR REPLACE VIEW kyc AS SELECT customer_kyc_id AS kyc_id, customer_id, aadhaar_number, pan_number, verification_status, verified_at, created_at, updated_at FROM customer_kyc;");
+        } catch (Exception ignored) {}
     }
 
     private static void ensureNotificationsTable(Connection conn) {
