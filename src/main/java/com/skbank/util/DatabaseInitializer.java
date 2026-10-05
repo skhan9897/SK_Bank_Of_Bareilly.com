@@ -37,7 +37,7 @@ public class DatabaseInitializer {
             sanitizeTableColumnsToAllowDefaults(conn, "accounts");
             sanitizeTableColumnsToAllowDefaults(conn, "branches");
             sanitizeTableColumnsToAllowDefaults(conn, "account_types");
-            sanitizeTableColumnsToAllowDefaults(conn, "customer_kyc");
+            sanitizeTableColumnsToAllowDefaults(conn, "kyc_documents");
             sanitizeTableColumnsToAllowDefaults(conn, "notifications");
 
             conn.createStatement().execute("SET FOREIGN_KEY_CHECKS = 1;");
@@ -97,10 +97,10 @@ public class DatabaseInitializer {
                 try { stmt.execute(q); } catch (Exception ignored) {}
             }
 
-            // 5. Ensure customer_kyc table exists and has BIGINT customer_id
+            // 5. Ensure kyc_documents table exists
             try {
-                stmt.execute("CREATE TABLE IF NOT EXISTS customer_kyc (" +
-                        "customer_kyc_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                stmt.execute("CREATE TABLE IF NOT EXISTS kyc_documents (" +
+                        "kyc_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                         "customer_id BIGINT NOT NULL UNIQUE, " +
                         "aadhaar_number VARCHAR(20) NOT NULL, " +
                         "pan_number VARCHAR(20) NOT NULL, " +
@@ -113,7 +113,8 @@ public class DatabaseInitializer {
             } catch (Exception ignored) {}
 
             try {
-                stmt.execute("CREATE OR REPLACE VIEW kyc AS SELECT customer_kyc_id AS kyc_id, customer_id, aadhaar_number, pan_number, verification_status, verified_at, created_at, updated_at FROM customer_kyc;");
+                stmt.execute("CREATE OR REPLACE VIEW kyc AS SELECT kyc_id, customer_id, aadhaar_number, pan_number, verification_status, verified_at, created_at, updated_at FROM kyc_documents;");
+                stmt.execute("CREATE OR REPLACE VIEW customer_kyc AS SELECT kyc_id AS customer_kyc_id, customer_id, aadhaar_number, pan_number, verification_status, verified_at, created_at, updated_at FROM kyc_documents;");
             } catch (Exception ignored) {}
 
             // 6. Ensure canonical foreign key constraints
@@ -372,9 +373,9 @@ public class DatabaseInitializer {
     }
 
     private static void ensureKycTable(Connection conn) {
-        String createDdl = "CREATE TABLE IF NOT EXISTS customer_kyc (" +
-                "customer_kyc_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                "customer_id BIGINT NOT NULL UNIQUE, " +
+        String createDdl = "CREATE TABLE IF NOT EXISTS kyc_documents (" +
+                "kyc_id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "customer_id VARCHAR(20) NOT NULL UNIQUE, " +
                 "aadhaar_number VARCHAR(20) NOT NULL, " +
                 "pan_number VARCHAR(20) NOT NULL, " +
                 "verification_status VARCHAR(30) NOT NULL DEFAULT 'VERIFIED', " +
@@ -385,11 +386,12 @@ public class DatabaseInitializer {
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
         String[] cols = new String[]{"customer_id", "aadhaar_number", "pan_number", "verification_status"};
-        String[] alterDdls = new String[]{"BIGINT NOT NULL UNIQUE", "VARCHAR(20) NOT NULL", "VARCHAR(20) NOT NULL", "VARCHAR(30) NOT NULL DEFAULT 'VERIFIED'"};
-        sanitizeAndEnsureTableSchema(conn, "customer_kyc", createDdl, cols, alterDdls);
+        String[] alterDdls = new String[]{"VARCHAR(20) NOT NULL UNIQUE", "VARCHAR(20) NOT NULL", "VARCHAR(20) NOT NULL", "VARCHAR(30) NOT NULL DEFAULT 'VERIFIED'"};
+        sanitizeAndEnsureTableSchema(conn, "kyc_documents", createDdl, cols, alterDdls);
 
         try (Statement stmt = conn.createStatement()) {
-            stmt.execute("CREATE OR REPLACE VIEW kyc AS SELECT customer_kyc_id AS kyc_id, customer_id, aadhaar_number, pan_number, verification_status, verified_at, created_at, updated_at FROM customer_kyc;");
+            stmt.execute("CREATE OR REPLACE VIEW kyc AS SELECT kyc_id, customer_id, aadhaar_number, pan_number, verification_status, verified_at, created_at, updated_at FROM kyc_documents;");
+            stmt.execute("CREATE OR REPLACE VIEW customer_kyc AS SELECT kyc_id AS customer_kyc_id, customer_id, aadhaar_number, pan_number, verification_status, verified_at, created_at, updated_at FROM kyc_documents;");
         } catch (Exception ignored) {}
     }
 
