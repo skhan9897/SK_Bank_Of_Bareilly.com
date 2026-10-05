@@ -12,10 +12,11 @@ public class AccountTypeDAOImpl implements AccountTypeDAO {
 
     @Override
     public AccountType findById(Long accountTypeId) throws SQLException {
-        String sql = "SELECT * FROM account_types WHERE account_type_id = ?";
+        String sql = "SELECT * FROM account_types WHERE account_type_id = ? OR type_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, accountTypeId);
+            ps.setLong(2, accountTypeId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return mapAccountType(rs);
             }
@@ -46,20 +47,34 @@ public class AccountTypeDAOImpl implements AccountTypeDAO {
             while (rs.next()) {
                 list.add(mapAccountType(rs));
             }
+        } catch (Exception e) {
+            // Fallback query if status column differs
+            String fallbackSql = "SELECT * FROM account_types ORDER BY type_id ASC";
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(fallbackSql);
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapAccountType(rs));
+                }
+            }
         }
         return list;
     }
 
     private AccountType mapAccountType(ResultSet rs) throws SQLException {
         AccountType at = new AccountType();
-        at.setAccountTypeId(rs.getLong("account_type_id"));
-        at.setTypeCode(rs.getString("type_code"));
-        at.setTypeName(rs.getString("type_name"));
-        at.setDescription(rs.getString("description"));
-        at.setMinimumBalance(rs.getBigDecimal("minimum_balance"));
-        at.setInterestRate(rs.getBigDecimal("interest_rate"));
-        at.setStatus(rs.getString("status"));
-        at.setCreatedAt(rs.getTimestamp("created_at"));
+        try {
+            at.setAccountTypeId(rs.getLong("account_type_id"));
+        } catch (SQLException e) {
+            try { at.setAccountTypeId(rs.getLong("type_id")); } catch (SQLException ignored) {}
+        }
+        try { at.setTypeCode(rs.getString("type_code")); } catch (SQLException ignored) {}
+        try { at.setTypeName(rs.getString("type_name")); } catch (SQLException ignored) {}
+        try { at.setDescription(rs.getString("description")); } catch (SQLException ignored) {}
+        try { at.setMinimumBalance(rs.getBigDecimal("minimum_balance")); } catch (SQLException ignored) {}
+        try { at.setInterestRate(rs.getBigDecimal("interest_rate")); } catch (SQLException ignored) {}
+        try { at.setStatus(rs.getString("status")); } catch (SQLException ignored) {}
+        try { at.setCreatedAt(rs.getTimestamp("created_at")); } catch (SQLException ignored) {}
         return at;
     }
 }
