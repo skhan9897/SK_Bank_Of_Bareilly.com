@@ -5,13 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a71f9876-05f1-4f73-8380-b66a0d6aa89d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/CustomerDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/dao/CustomerDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/impl/CustomerDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/dao/impl/CustomerDAOImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/model/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/model/Customer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/BeneficiaryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/BeneficiaryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/impl/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/impl/AuthServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/impl/CustomerServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/impl/CustomerServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/util/DatabaseConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/dao/impl/AccountTypeDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/dao/impl/AccountTypeDAOImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/register.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/auth/register.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

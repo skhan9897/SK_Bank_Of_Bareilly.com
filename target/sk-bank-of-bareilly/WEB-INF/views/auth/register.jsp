@@ -235,20 +235,18 @@
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold small text-navy">Account Type *</label>
                                     <select name="accountTypeId" id="regAccountTypeId" class="form-select form-select-lg" required>
-                                        <c:choose>
-                                            <c:when test="${not empty accountTypes}">
-                                                <c:forEach items="${accountTypes}" var="at">
+                                        <option value="1" selected>Savings Account</option>
+                                        <option value="2">Current Account</option>
+                                        <option value="3">Corporate Salary Account</option>
+                                        <option value="4">Basic Savings Account (BSBD)</option>
+                                        <option value="5">Senior Citizen Savings Account</option>
+                                        <c:if test="${not empty accountTypes}">
+                                            <c:forEach items="${accountTypes}" var="at">
+                                                <c:if test="${not empty at.typeName && at.accountTypeId > 5}">
                                                     <option value="${at.accountTypeId}">${at.typeName}</option>
-                                                </c:forEach>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <option value="1">Savings Account</option>
-                                                <option value="2">Current Account</option>
-                                                <option value="3">Corporate Salary Account</option>
-                                                <option value="4">Basic Savings Account (BSBD)</option>
-                                                <option value="5">Senior Citizen Savings Account</option>
-                                            </c:otherwise>
-                                        </c:choose>
+                                                </c:if>
+                                            </c:forEach>
+                                        </c:if>
                                     </select>
                                 </div>
 
