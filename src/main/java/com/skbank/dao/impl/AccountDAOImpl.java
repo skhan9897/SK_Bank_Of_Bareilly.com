@@ -82,8 +82,8 @@ public class AccountDAOImpl implements AccountDAO {
 
     @Override
     public Long create(Connection conn, Account account) throws SQLException {
-        String sql = "INSERT INTO accounts (customer_id, account_type_id, branch_id, account_number, balance, available_balance, status, opened_at) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+        String sql = "INSERT INTO accounts (customer_id, account_type_id, branch_id, account_number, balance, available_balance, status) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, account.getCustomerId());
             ps.setLong(2, account.getAccountTypeId());
@@ -198,8 +198,16 @@ public class AccountDAOImpl implements AccountDAO {
         a.setBalance(rs.getBigDecimal("balance"));
         a.setAvailableBalance(rs.getBigDecimal("available_balance"));
         a.setStatus(AccountStatus.valueOf(rs.getString("status")));
-        a.setOpenedAt(rs.getTimestamp("opened_at"));
-        a.setClosedAt(rs.getTimestamp("closed_at"));
+
+        try {
+            a.setOpenedAt(rs.getTimestamp("opened_at"));
+        } catch (SQLException e1) {
+            try { a.setOpenedAt(rs.getTimestamp("created_at")); } catch (SQLException ignored) {}
+        }
+
+        try {
+            a.setClosedAt(rs.getTimestamp("closed_at"));
+        } catch (SQLException ignored) {}
 
         try { a.setAccountTypeName(rs.getString("account_type_name")); } catch (SQLException ignored) {}
         try { a.setBranchName(rs.getString("branch_name")); } catch (SQLException ignored) {}
