@@ -21,7 +21,7 @@ public class CsrfFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        // Generate token for session if not already generated
+        // Generate token for session if session exists
         if (httpRequest.getSession(false) != null) {
             CsrfUtil.getToken(httpRequest.getSession(false));
         }
@@ -32,6 +32,12 @@ public class CsrfFilter implements Filter {
         // Validate token on POST, PUT, DELETE for customer and admin forms
         if (("POST".equals(method) || "PUT".equals(method) || "DELETE".equals(method)) &&
             (path.startsWith("/customer/") || path.startsWith("/admin/"))) {
+
+            // Allow public login, registration, and OTP verification forms without CSRF requirement
+            if (path.equals("/admin/login") || path.equals("/login") || path.equals("/register") || path.startsWith("/verify-otp") || path.startsWith("/api/")) {
+                chain.doFilter(request, response);
+                return;
+            }
 
             if (!CsrfUtil.isValidToken(httpRequest)) {
                 httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "CSRF Token Validation Failed.");

@@ -67,7 +67,16 @@ public class ProfileImageServlet extends HttpServlet {
                 return;
             }
 
-            File file = new File(cust.getProfileImage());
+            String imgPath = cust.getProfileImage().trim();
+            File file = new File(imgPath);
+
+            if (!file.isAbsolute() || !file.exists()) {
+                String webappRoot = getServletContext().getRealPath("/");
+                if (webappRoot != null) {
+                    file = new File(webappRoot, imgPath);
+                }
+            }
+
             if (!file.exists() || !file.canRead()) {
                 response.sendRedirect(request.getContextPath() + "/assets/images/default-avatar.svg");
                 return;
@@ -89,7 +98,7 @@ public class ProfileImageServlet extends HttpServlet {
                 }
             }
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error loading profile image");
+            response.sendRedirect(request.getContextPath() + "/assets/images/default-avatar.svg");
         }
     }
 }

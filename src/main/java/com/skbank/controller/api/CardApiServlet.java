@@ -6,6 +6,7 @@ import com.skbank.model.Card;
 import com.skbank.service.CardService;
 import com.skbank.service.impl.CardServiceImpl;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -21,11 +22,15 @@ public class CardApiServlet extends HttpServlet {
     private final CardService cardService = new CardServiceImpl();
     private final Gson gson = new Gson();
 
+    private static class CardTogglePayload {
+        Long cardId;
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String customerId = (String) request.getAttribute("API_CUSTOMER_ID");
+        Long customerId = (Long) request.getAttribute("API_CUSTOMER_ID");
 
         try {
             List<Card> cards = cardService.getCustomerCards(customerId);
@@ -40,12 +45,14 @@ public class CardApiServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String customerId = (String) request.getAttribute("API_CUSTOMER_ID");
-        String cardIdStr = request.getParameter("cardId");
+        Long customerId = (Long) request.getAttribute("API_CUSTOMER_ID");
 
         try {
-            Long cardId = Long.parseLong(cardIdStr);
-            boolean ok = cardService.toggleCardStatus(cardId, customerId);
+            BufferedReader reader = request.getReader();
+            CardTogglePayload p = gson.fromJson(reader, CardTogglePayload.class);
+
+            boolean ok = cardService.toggleCardStatus(p.cardId, customerId);
+
             response.getWriter().write(gson.toJson(ApiResponse.success("Card status toggled", ok)));
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

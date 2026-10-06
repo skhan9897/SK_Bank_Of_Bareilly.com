@@ -56,6 +56,7 @@ com\skbank\model\Transaction.class
 com\skbank\controller\api\BeneficiaryApiServlet.class
 com\skbank\controller\api\PaymentBankApiServlet.class
 com\skbank\controller\api\WithdrawApiServlet.class
+com\skbank\controller\api\CardApiServlet$CardTogglePayload.class
 com\skbank\service\impl\UpiServiceImpl.class
 com\skbank\service\impl\PaymentBankServiceImpl.class
 com\skbank\controller\admin\AdminWithdrawalServlet.class

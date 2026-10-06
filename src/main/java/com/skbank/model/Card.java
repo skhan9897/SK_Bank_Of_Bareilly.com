@@ -8,11 +8,12 @@ public class Card implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long cardId;
-    private String customerId;
+    private Long customerId;
     private Long accountId;
-    private String cardNumber; // stored or shown as XXXX XXXX XXXX 1234
-    private CardType cardType;
+    private String cardNumber;
+    private CardType cardType = CardType.DEBIT;
     private Date expiryDate;
+    private String cvv;
     private CardStatus cardStatus = CardStatus.ACTIVE;
     private Timestamp createdAt;
 
@@ -25,8 +26,8 @@ public class Card implements Serializable {
     public Long getCardId() { return cardId; }
     public void setCardId(Long cardId) { this.cardId = cardId; }
 
-    public String getCustomerId() { return customerId; }
-    public void setCustomerId(String customerId) { this.customerId = customerId; }
+    public Long getCustomerId() { return customerId; }
+    public void setCustomerId(Long customerId) { this.customerId = customerId; }
 
     public Long getAccountId() { return accountId; }
     public void setAccountId(Long accountId) { this.accountId = accountId; }
@@ -39,6 +40,9 @@ public class Card implements Serializable {
 
     public Date getExpiryDate() { return expiryDate; }
     public void setExpiryDate(Date expiryDate) { this.expiryDate = expiryDate; }
+
+    public String getCvv() { return cvv; }
+    public void setCvv(String cvv) { this.cvv = cvv; }
 
     public CardStatus getCardStatus() { return cardStatus; }
     public void setCardStatus(CardStatus cardStatus) { this.cardStatus = cardStatus; }
@@ -54,11 +58,8 @@ public class Card implements Serializable {
 
     public String getMaskedCardNumber() {
         if (cardNumber != null && cardNumber.length() >= 4) {
-            String digits = cardNumber.replaceAll("\\s+", "");
-            if (digits.length() >= 4) {
-                return "XXXX XXXX XXXX " + digits.substring(digits.length() - 4);
-            }
+            return "XXXX-XXXX-XXXX-" + cardNumber.substring(cardNumber.length() - 4);
         }
-        return "XXXX XXXX XXXX 1234";
+        return "XXXX-XXXX-XXXX-0000";
     }
 }

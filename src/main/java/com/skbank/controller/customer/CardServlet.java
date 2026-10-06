@@ -6,6 +6,7 @@ import com.skbank.service.CardService;
 import com.skbank.service.impl.CardServiceImpl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class CardServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        String customerId = (String) session.getAttribute("CUSTOMER_ID");
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
 
         String action = request.getParameter("action");
         if ("toggle".equalsIgnoreCase(action)) {
@@ -43,17 +44,21 @@ public class CardServlet extends HttpServlet {
 
         try {
             List<Card> cards = cardService.getCustomerCards(customerId);
-            Map<Long, List<CardTransaction>> transactionsMap = new HashMap<>();
+            if (cards == null) cards = new ArrayList<>();
 
+            Map<Long, List<CardTransaction>> transactionsMap = new HashMap<>();
             for (Card c : cards) {
-                transactionsMap.put(c.getCardId(), cardService.getCardTransactions(c.getCardId()));
+                if (c != null && c.getCardId() != null) {
+                    transactionsMap.put(c.getCardId(), cardService.getCardTransactions(c.getCardId()));
+                }
             }
 
             request.setAttribute("cards", cards);
             request.setAttribute("transactionsMap", transactionsMap);
             request.getRequestDispatcher("/WEB-INF/views/customer/cards.jsp").forward(request, response);
         } catch (Exception e) {
-            request.setAttribute("errorMessage", "Error loading cards: " + e.getMessage());
+            request.setAttribute("cards", new ArrayList<Card>());
+            request.setAttribute("errorMessage", "Notice: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/views/customer/cards.jsp").forward(request, response);
         }
     }

@@ -37,8 +37,14 @@ public class AdminLoginServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
+        if (username == null || username.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+            request.setAttribute("errorMessage", "Admin username and password are required");
+            request.getRequestDispatcher("/WEB-INF/views/admin/login.jsp").forward(request, response);
+            return;
+        }
+
         try {
-            User user = authService.authenticateAdmin(username, password);
+            User user = authService.authenticateAdmin(username.trim(), password);
 
             HttpSession session = request.getSession(true);
             session.setAttribute("PENDING_OTP_USER", user);

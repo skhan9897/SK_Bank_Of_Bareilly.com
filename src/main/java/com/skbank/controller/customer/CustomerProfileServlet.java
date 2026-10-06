@@ -64,7 +64,7 @@ public class CustomerProfileServlet extends HttpServlet {
                     }
 
                     String ext = contentType.endsWith("png") ? ".png" : ".jpg";
-                    String filename = "customer_" + UUID.randomUUID().toString() + ext;
+                    String filename = "cust_" + UUID.randomUUID().toString() + ext;
 
                     String uploadDir = getServletContext().getRealPath("/") + "uploads/profile";
                     File dir = new File(uploadDir);
@@ -73,7 +73,7 @@ public class CustomerProfileServlet extends HttpServlet {
                     String filePath = uploadDir + File.separator + filename;
                     filePart.write(filePath);
 
-                    customerService.updateProfileImage(customerId, filePath);
+                    customerService.updateProfileImage(customerId, "uploads/profile/" + filename);
                 }
                 response.sendRedirect(request.getContextPath() + "/customer/profile?msg=Profile image updated successfully.");
             } else {

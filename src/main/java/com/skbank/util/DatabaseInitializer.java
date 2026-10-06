@@ -1,6 +1,8 @@
 package com.skbank.util;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,7 +16,8 @@ public class DatabaseInitializer {
         try (Connection conn = DatabaseConnection.getConnection()) {
             if (conn != null && !conn.isClosed()) {
                 ensureColumnsExist(conn);
-                LOGGER.info("Database schema verification completed successfully.");
+                ensureSeedAdminsExist(conn);
+                LOGGER.info("Database schema verification and admin seeding completed successfully.");
             }
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Database schema initialization notice: " + e.getMessage());
@@ -51,6 +54,53 @@ public class DatabaseInitializer {
                 stmt.executeUpdate(sql);
             } catch (Exception ignored) {
                 // Ignore if column already exists
+            }
+        }
+    }
+
+    private static void ensureSeedAdminsExist(Connection conn) {
+        String[][] seedAdmins = new String[][] {
+            {"admin", "admin123"},
+            {"superadmin", "admin123"},
+            {"SKBOB9897", "BOB9897"}
+        };
+
+        for (String[] adminData : seedAdmins) {
+            String username = adminData[0];
+            String plainPassword = adminData[1];
+
+            try {
+                String checkSql = "SELECT user_id FROM users WHERE username = ?";
+                try (PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
+                    psCheck.setString(1, username);
+                    try (ResultSet rs = psCheck.executeQuery()) {
+                        if (!rs.next()) {
+                            // Seed User
+                            String hash = PasswordUtil.hashPassword(plainPassword);
+                            String insertUserSql = "INSERT INTO users (username, password_hash, role, status) VALUES (?, ?, 'ADMIN', 'ACTIVE')";
+                            try (PreparedStatement psUser = conn.prepareStatement(insertUserSql, Statement.RETURN_GENERATED_KEYS)) {
+                                psUser.setString(1, username);
+                                psUser.setString(2, hash);
+                                psUser.executeUpdate();
+                                try (ResultSet rsKeys = psUser.getGeneratedKeys()) {
+                                    if (rsKeys.next()) {
+                                        Long userId = rsKeys.getLong(1);
+                                        // Seed Admin
+                                        String insertAdminSql = "INSERT INTO admins (user_id, full_name, status) VALUES (?, ?, 'ACTIVE')";
+                                        try (PreparedStatement psAdmin = conn.prepareStatement(insertAdminSql)) {
+                                            psAdmin.setLong(1, userId);
+                                            psAdmin.setString(2, "Administrator (" + username + ")");
+                                            psAdmin.executeUpdate();
+                                        } catch (Exception ignored) {}
+                                    }
+                                }
+                            }
+                            LOGGER.info("Seeded default admin user: " + username);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                LOGGER.log(Level.FINE, "Admin seed notice for " + username + ": " + e.getMessage());
             }
         }
     }

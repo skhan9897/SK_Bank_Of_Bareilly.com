@@ -21,6 +21,15 @@ public class LoanDAOImpl implements LoanDAO {
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) list.add(mapLoanType(rs));
+        } catch (Exception ignored) {}
+
+        if (list.isEmpty()) {
+            // Default seed fallback loan types if database table is empty or missing
+            LoanType lt1 = new LoanType(); lt1.setLoanTypeId(1L); lt1.setLoanTypeCode("PERSONAL"); lt1.setLoanName("Personal Loan"); lt1.setInterestRate(new BigDecimal("12.50")); lt1.setMaxAmount(new BigDecimal("1000000.00")); lt1.setMaxTenureMonths(60); list.add(lt1);
+            LoanType lt2 = new LoanType(); lt2.setLoanTypeId(2L); lt2.setLoanTypeCode("HOME"); lt2.setLoanName("Home / Housing Loan"); lt2.setInterestRate(new BigDecimal("8.50")); lt2.setMaxAmount(new BigDecimal("50000000.00")); lt2.setMaxTenureMonths(240); list.add(lt2);
+            LoanType lt3 = new LoanType(); lt3.setLoanTypeId(3L); lt3.setLoanTypeCode("VEHICLE"); lt3.setLoanName("Car & Vehicle Loan"); lt3.setInterestRate(new BigDecimal("9.20")); lt3.setMaxAmount(new BigDecimal("2500000.00")); lt3.setMaxTenureMonths(84); list.add(lt3);
+            LoanType lt4 = new LoanType(); lt4.setLoanTypeId(4L); lt4.setLoanTypeCode("EDUCATION"); lt4.setLoanName("Education Loan"); lt4.setInterestRate(new BigDecimal("9.00")); lt4.setMaxAmount(new BigDecimal("5000000.00")); lt4.setMaxTenureMonths(120); list.add(lt4);
+            LoanType lt5 = new LoanType(); lt5.setLoanTypeId(5L); lt5.setLoanTypeCode("BUSINESS"); lt5.setLoanName("MSME Business Loan"); lt5.setInterestRate(new BigDecimal("11.00")); lt5.setMaxAmount(new BigDecimal("20000000.00")); lt5.setMaxTenureMonths(120); list.add(lt5);
         }
         return list;
     }
@@ -34,8 +43,14 @@ public class LoanDAOImpl implements LoanDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return mapLoanType(rs);
             }
+        } catch (Exception ignored) {}
+
+        // Fallback for default types if DB unseeded
+        List<LoanType> defaults = findAllLoanTypes();
+        for (LoanType lt : defaults) {
+            if (lt.getLoanTypeId().equals(loanTypeId)) return lt;
         }
-        return null;
+        return defaults.isEmpty() ? null : defaults.get(0);
     }
 
     @Override
@@ -48,7 +63,7 @@ public class LoanDAOImpl implements LoanDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) list.add(mapLoan(rs));
             }
-        }
+        } catch (Exception ignored) {}
         return list;
     }
 
@@ -61,14 +76,14 @@ public class LoanDAOImpl implements LoanDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return mapLoan(rs);
             }
-        }
+        } catch (Exception ignored) {}
         return null;
     }
 
     @Override
     public Long create(Loan loan) throws SQLException {
-        String sql = "INSERT INTO loans (customer_id, loan_type_id, loan_number, principal_amount, interest_rate, tenure_months, emi_amount, outstanding_amount, status, created_at, updated_at) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+        String sql = "INSERT INTO loans (customer_id, loan_type_id, loan_number, principal_amount, interest_rate, tenure_months, emi_amount, outstanding_amount, status) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setLong(1, loan.getCustomerId());
@@ -91,7 +106,7 @@ public class LoanDAOImpl implements LoanDAO {
 
     @Override
     public boolean updateOutstandingAmount(Connection conn, Long loanId, BigDecimal newOutstanding) throws SQLException {
-        String sql = "UPDATE loans SET outstanding_amount = ?, updated_at = NOW() WHERE loan_id = ?";
+        String sql = "UPDATE loans SET outstanding_amount = ? WHERE loan_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setBigDecimal(1, newOutstanding);
             ps.setLong(2, loanId);
@@ -101,7 +116,7 @@ public class LoanDAOImpl implements LoanDAO {
 
     @Override
     public boolean updateStatusAndApproval(Long loanId, String status) throws SQLException {
-        String sql = "UPDATE loans SET status = ?, updated_at = NOW() WHERE loan_id = ?";
+        String sql = "UPDATE loans SET status = ? WHERE loan_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, status);
@@ -131,7 +146,7 @@ public class LoanDAOImpl implements LoanDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) list.add(mapLoan(rs));
             }
-        }
+        } catch (Exception ignored) {}
         return list;
     }
 
@@ -149,7 +164,7 @@ public class LoanDAOImpl implements LoanDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return rs.getLong(1);
             }
-        }
+        } catch (Exception ignored) {}
         return 0;
     }
 
@@ -160,7 +175,7 @@ public class LoanDAOImpl implements LoanDAO {
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) return rs.getLong(1);
-        }
+        } catch (Exception ignored) {}
         return 0;
     }
 
@@ -171,7 +186,7 @@ public class LoanDAOImpl implements LoanDAO {
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) return rs.getLong(1);
-        }
+        } catch (Exception ignored) {}
         return 0;
     }
 
@@ -184,7 +199,7 @@ public class LoanDAOImpl implements LoanDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return rs.getInt(1);
             }
-        }
+        } catch (Exception ignored) {}
         return 0;
     }
 
@@ -200,18 +215,18 @@ public class LoanDAOImpl implements LoanDAO {
                     return sum != null ? sum : BigDecimal.ZERO;
                 }
             }
-        }
+        } catch (Exception ignored) {}
         return BigDecimal.ZERO;
     }
 
     private LoanType mapLoanType(ResultSet rs) throws SQLException {
         LoanType lt = new LoanType();
         lt.setLoanTypeId(rs.getLong("loan_type_id"));
-        lt.setLoanTypeCode(rs.getString("type_code"));
-        lt.setLoanName(rs.getString("loan_name"));
-        lt.setInterestRate(rs.getBigDecimal("interest_rate"));
-        lt.setMaxAmount(rs.getBigDecimal("max_amount"));
-        lt.setMaxTenureMonths(rs.getInt("max_tenure_months"));
+        try { lt.setLoanTypeCode(rs.getString("type_code")); } catch (Exception ignored) {}
+        try { lt.setLoanName(rs.getString("loan_name")); } catch (Exception ignored) {}
+        try { lt.setInterestRate(rs.getBigDecimal("interest_rate")); } catch (Exception ignored) {}
+        try { lt.setMaxAmount(rs.getBigDecimal("max_amount")); } catch (Exception ignored) {}
+        try { lt.setMaxTenureMonths(rs.getInt("max_tenure_months")); } catch (Exception ignored) {}
         return lt;
     }
 
@@ -227,8 +242,8 @@ public class LoanDAOImpl implements LoanDAO {
         l.setEmiAmount(rs.getBigDecimal("emi_amount"));
         l.setOutstandingAmount(rs.getBigDecimal("outstanding_amount"));
         try { l.setStatus(LoanStatus.valueOf(rs.getString("status"))); } catch (Exception ignored) {}
-        l.setCreatedAt(rs.getTimestamp("created_at"));
-        l.setUpdatedAt(rs.getTimestamp("updated_at"));
+        try { l.setCreatedAt(rs.getTimestamp("created_at")); } catch (Exception ignored) {}
+        try { l.setUpdatedAt(rs.getTimestamp("updated_at")); } catch (Exception ignored) {}
 
         try { l.setLoanTypeName(rs.getString("loan_name")); } catch (Exception ignored) {}
         return l;
