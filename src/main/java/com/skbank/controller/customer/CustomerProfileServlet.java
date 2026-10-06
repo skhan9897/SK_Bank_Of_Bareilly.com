@@ -1,11 +1,19 @@
 package com.skbank.controller.customer;
 
+import com.skbank.dto.DigitalPassbookDTO;
+import com.skbank.model.Account;
 import com.skbank.model.Customer;
+import com.skbank.model.Kyc;
+import com.skbank.service.AccountService;
 import com.skbank.service.CustomerService;
+import com.skbank.service.PassbookService;
+import com.skbank.service.impl.AccountServiceImpl;
 import com.skbank.service.impl.CustomerServiceImpl;
+import com.skbank.service.impl.PassbookServiceImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -22,6 +30,8 @@ public class CustomerProfileServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private final CustomerService customerService = new CustomerServiceImpl();
+    private final AccountService accountService = new AccountServiceImpl();
+    private final PassbookService passbookService = new PassbookServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -32,7 +42,15 @@ public class CustomerProfileServlet extends HttpServlet {
 
         try {
             Customer customer = customerService.getCustomerById(customerId);
+            List<Account> accounts = accountService.getCustomerAccounts(customerId);
+            Kyc kyc = customerService.getKycByCustomerId(customerId);
+            DigitalPassbookDTO passbook = passbookService.getPassbookByCustomerId(customerId);
+
             request.setAttribute("customer", customer);
+            request.setAttribute("accounts", accounts);
+            request.setAttribute("kyc", kyc);
+            request.setAttribute("passbook", passbook);
+
             request.getRequestDispatcher("/WEB-INF/views/customer/profile.jsp").forward(request, response);
         } catch (Exception e) {
             request.setAttribute("errorMessage", "Error loading profile: " + e.getMessage());
@@ -93,6 +111,8 @@ public class CustomerProfileServlet extends HttpServlet {
         } catch (Exception e) {
             try {
                 request.setAttribute("customer", customerService.getCustomerById(customerId));
+                request.setAttribute("accounts", accountService.getCustomerAccounts(customerId));
+                request.setAttribute("passbook", passbookService.getPassbookByCustomerId(customerId));
             } catch (Exception ignored) {}
             request.setAttribute("errorMessage", "Profile update failed: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/views/customer/profile.jsp").forward(request, response);
