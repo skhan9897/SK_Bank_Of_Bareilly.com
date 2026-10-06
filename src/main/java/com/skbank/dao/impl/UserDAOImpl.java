@@ -49,7 +49,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public Long create(Connection conn, User user) throws SQLException {
-        String sql = "INSERT INTO users (username, password_hash, role, status, created_at, updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())";
+        String sql = "INSERT INTO users (username, password_hash, role, status) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPasswordHash());
@@ -67,7 +67,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean updatePassword(Long userId, String newPasswordHash) throws SQLException {
-        String sql = "UPDATE users SET password_hash = ?, updated_at = NOW() WHERE user_id = ?";
+        String sql = "UPDATE users SET password_hash = ? WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, newPasswordHash);
@@ -78,7 +78,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean updateStatus(Long userId, String status) throws SQLException {
-        String sql = "UPDATE users SET status = ?, updated_at = NOW() WHERE user_id = ?";
+        String sql = "UPDATE users SET status = ? WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, status);
@@ -116,10 +116,10 @@ public class UserDAOImpl implements UserDAO {
         user.setRole(UserRole.valueOf(rs.getString("role")));
         user.setStatus(UserStatus.valueOf(rs.getString("status")));
         user.setFailedLoginAttempts(rs.getInt("failed_login_attempts"));
-        user.setAccountLockedUntil(rs.getTimestamp("account_locked_until"));
-        user.setLastLogin(rs.getTimestamp("last_login_at"));
-        user.setCreatedAt(rs.getTimestamp("created_at"));
-        user.setUpdatedAt(rs.getTimestamp("updated_at"));
+        try { user.setAccountLockedUntil(rs.getTimestamp("account_locked_until")); } catch (Exception ignored) {}
+        try { user.setLastLogin(rs.getTimestamp("last_login_at")); } catch (Exception ignored) {}
+        try { user.setCreatedAt(rs.getTimestamp("created_at")); } catch (Exception ignored) {}
+        try { user.setUpdatedAt(rs.getTimestamp("updated_at")); } catch (Exception ignored) {}
         return user;
     }
 }

@@ -38,8 +38,8 @@ public class TransferDAOImpl implements TransferDAO {
 
     @Override
     public Long create(Connection conn, TransferRequest tr) throws SQLException {
-        String sql = "INSERT INTO transfer_requests (reference_number, sender_account_id, receiver_account_id, amount, transfer_type, remarks, status, created_at, completed_at) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+        String sql = "INSERT INTO transfer_requests (reference_number, sender_account_id, receiver_account_id, amount, transfer_type, remarks, status) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, tr.getReferenceNumber());
             ps.setLong(2, tr.getSenderAccountId());
@@ -59,7 +59,7 @@ public class TransferDAOImpl implements TransferDAO {
     @Override
     public List<TransferRequest> findByAccountId(Long accountId, int offset, int limit) throws SQLException {
         List<TransferRequest> list = new ArrayList<>();
-        String sql = "SELECT * FROM transfer_requests WHERE sender_account_id = ? OR receiver_account_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM transfer_requests WHERE sender_account_id = ? OR receiver_account_id = ? ORDER BY transfer_id DESC LIMIT ? OFFSET ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, accountId);
@@ -85,8 +85,8 @@ public class TransferDAOImpl implements TransferDAO {
         tr.setTransferType(rs.getString("transfer_type"));
         tr.setRemarks(rs.getString("remarks"));
         tr.setStatus(rs.getString("status"));
-        tr.setCreatedAt(rs.getTimestamp("created_at"));
-        tr.setCompletedAt(rs.getTimestamp("completed_at"));
+        try { tr.setCreatedAt(rs.getTimestamp("created_at")); } catch (Exception ignored) {}
+        try { tr.setCompletedAt(rs.getTimestamp("completed_at")); } catch (Exception ignored) {}
         return tr;
     }
 }

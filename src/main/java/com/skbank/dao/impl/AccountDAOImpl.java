@@ -73,8 +73,8 @@ public class AccountDAOImpl implements AccountDAO {
 
     @Override
     public Long create(Connection conn, Account account) throws SQLException {
-        String sql = "INSERT INTO accounts (customer_id, account_type_id, branch_id, account_number, balance, available_balance, status, opened_at, created_at, updated_at) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), NOW())";
+        String sql = "INSERT INTO accounts (customer_id, account_type_id, branch_id, account_number, balance, available_balance, status) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setLong(1, account.getCustomerId());
@@ -99,7 +99,7 @@ public class AccountDAOImpl implements AccountDAO {
 
     @Override
     public boolean updateBalance(Connection conn, Long accountId, BigDecimal newBalance, BigDecimal newAvailableBalance) throws SQLException {
-        String sql = "UPDATE accounts SET balance = ?, available_balance = ?, updated_at = NOW() WHERE account_id = ?";
+        String sql = "UPDATE accounts SET balance = ?, available_balance = ? WHERE account_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setBigDecimal(1, newBalance);
             ps.setBigDecimal(2, newAvailableBalance);
@@ -110,7 +110,7 @@ public class AccountDAOImpl implements AccountDAO {
 
     @Override
     public boolean updateStatus(Long accountId, String status) throws SQLException {
-        String sql = "UPDATE accounts SET status = ?, updated_at = NOW() WHERE account_id = ?";
+        String sql = "UPDATE accounts SET status = ? WHERE account_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, status);
@@ -186,9 +186,9 @@ public class AccountDAOImpl implements AccountDAO {
         a.setBalance(rs.getBigDecimal("balance"));
         a.setAvailableBalance(rs.getBigDecimal("available_balance"));
         try { a.setStatus(AccountStatus.valueOf(rs.getString("status"))); } catch (Exception ignored) {}
-        a.setOpenedAt(rs.getTimestamp("opened_at"));
-        a.setCreatedAt(rs.getTimestamp("created_at"));
-        a.setUpdatedAt(rs.getTimestamp("updated_at"));
+        try { a.setOpenedAt(rs.getTimestamp("opened_at")); } catch (Exception ignored) {}
+        try { a.setCreatedAt(rs.getTimestamp("created_at")); } catch (Exception ignored) {}
+        try { a.setUpdatedAt(rs.getTimestamp("updated_at")); } catch (Exception ignored) {}
 
         try { a.setAccountTypeName(rs.getString("type_name")); } catch (Exception ignored) {}
         try { a.setAccountTypeCode(rs.getString("type_code")); } catch (Exception ignored) {}

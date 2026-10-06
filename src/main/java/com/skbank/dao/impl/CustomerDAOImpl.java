@@ -87,8 +87,9 @@ public class CustomerDAOImpl implements CustomerDAO {
     @Override
     public Long create(Connection conn, Customer customer) throws SQLException {
         // DO NOT INCLUDE customer_id IN INSERT STATEMENT (MySQL AUTO_INCREMENT customer_id)
-        String sql = "INSERT INTO customers (user_id, customer_number, full_name, date_of_birth, gender, mobile, email, address, city, state, pincode, aadhaar_number, pan_number, profile_image, kyc_status, status, created_at, updated_at) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+        // Omit created_at, updated_at to rely on DEFAULT CURRENT_TIMESTAMP and avoid unknown column errors if schema differs
+        String sql = "INSERT INTO customers (user_id, customer_number, full_name, date_of_birth, gender, mobile, email, address, city, state, pincode, aadhaar_number, pan_number, profile_image, kyc_status, status) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setLong(1, customer.getUserId());
@@ -122,7 +123,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public boolean updateProfile(Customer c) throws SQLException {
-        String sql = "UPDATE customers SET full_name = ?, mobile = ?, email = ?, address = ?, city = ?, state = ?, pincode = ?, updated_at = NOW() WHERE customer_id = ?";
+        String sql = "UPDATE customers SET full_name = ?, mobile = ?, email = ?, address = ?, city = ?, state = ?, pincode = ? WHERE customer_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, c.getFullName());
@@ -139,7 +140,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public boolean updateProfileImage(Long customerId, String imagePath) throws SQLException {
-        String sql = "UPDATE customers SET profile_image = ?, updated_at = NOW() WHERE customer_id = ?";
+        String sql = "UPDATE customers SET profile_image = ? WHERE customer_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, imagePath);
@@ -150,7 +151,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public boolean updateKycStatus(Long customerId, String kycStatus) throws SQLException {
-        String sql = "UPDATE customers SET kyc_status = ?, updated_at = NOW() WHERE customer_id = ?";
+        String sql = "UPDATE customers SET kyc_status = ? WHERE customer_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, kycStatus);
@@ -161,7 +162,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public boolean updateStatus(Long customerId, String status) throws SQLException {
-        String sql = "UPDATE customers SET status = ?, updated_at = NOW() WHERE customer_id = ?";
+        String sql = "UPDATE customers SET status = ? WHERE customer_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, status);
@@ -240,8 +241,8 @@ public class CustomerDAOImpl implements CustomerDAO {
         c.setProfileImage(rs.getString("profile_image"));
         try { c.setKycStatus(KycStatus.valueOf(rs.getString("kyc_status"))); } catch (Exception ignored) {}
         try { c.setStatus(UserStatus.valueOf(rs.getString("status"))); } catch (Exception ignored) {}
-        c.setCreatedAt(rs.getTimestamp("created_at"));
-        c.setUpdatedAt(rs.getTimestamp("updated_at"));
+        try { c.setCreatedAt(rs.getTimestamp("created_at")); } catch (Exception ignored) {}
+        try { c.setUpdatedAt(rs.getTimestamp("updated_at")); } catch (Exception ignored) {}
         return c;
     }
 }
