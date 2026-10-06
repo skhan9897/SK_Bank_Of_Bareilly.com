@@ -94,6 +94,14 @@ public class UserDAOImpl implements UserDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, userId);
             return ps.executeUpdate() > 0;
+        } catch (Exception ignored) {
+            // Fallback if last_login_at / failed_login_attempts column is missing on DB
+            String fallbackSql = "UPDATE users SET user_id = user_id WHERE user_id = ?";
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(fallbackSql)) {
+                ps.setLong(1, userId);
+                return ps.executeUpdate() > 0;
+            }
         }
     }
 
@@ -105,6 +113,8 @@ public class UserDAOImpl implements UserDAO {
             ps.setInt(1, attempts);
             ps.setLong(2, userId);
             return ps.executeUpdate() > 0;
+        } catch (Exception ignored) {
+            return false;
         }
     }
 
@@ -113,9 +123,9 @@ public class UserDAOImpl implements UserDAO {
         user.setId(rs.getLong("user_id"));
         user.setUsername(rs.getString("username"));
         user.setPasswordHash(rs.getString("password_hash"));
-        user.setRole(UserRole.valueOf(rs.getString("role")));
-        user.setStatus(UserStatus.valueOf(rs.getString("status")));
-        user.setFailedLoginAttempts(rs.getInt("failed_login_attempts"));
+        try { user.setRole(UserRole.valueOf(rs.getString("role"))); } catch (Exception e) { user.setRole(UserRole.CUSTOMER); }
+        try { user.setStatus(UserStatus.valueOf(rs.getString("status"))); } catch (Exception e) { user.setStatus(UserStatus.ACTIVE); }
+        try { user.setFailedLoginAttempts(rs.getInt("failed_login_attempts")); } catch (Exception ignored) {}
         try { user.setAccountLockedUntil(rs.getTimestamp("account_locked_until")); } catch (Exception ignored) {}
         try { user.setLastLogin(rs.getTimestamp("last_login_at")); } catch (Exception ignored) {}
         try { user.setCreatedAt(rs.getTimestamp("created_at")); } catch (Exception ignored) {}

@@ -23,6 +23,9 @@ public class DatabaseInitializer {
 
     private static void ensureColumnsExist(Connection conn) {
         String[] alterStatements = new String[] {
+            "ALTER TABLE users ADD COLUMN failed_login_attempts INT NOT NULL DEFAULT 0",
+            "ALTER TABLE users ADD COLUMN account_locked_until DATETIME NULL",
+            "ALTER TABLE users ADD COLUMN last_login_at DATETIME NULL",
             "ALTER TABLE users ADD COLUMN created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP",
             "ALTER TABLE users ADD COLUMN updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
             "ALTER TABLE customers ADD COLUMN created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP",
