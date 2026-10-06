@@ -68,7 +68,19 @@ public class AdminDepositServlet extends HttpServlet {
 
             Transaction txn = adminService.processAdminDeposit(targetAccount.getAccountId(), amount, remarks, adminUserId);
 
-            response.sendRedirect(request.getContextPath() + "/admin/deposits?msg=Deposit of ₹" + amount + " to account " + targetAccount.getAccountNumber() + " successful. Ref: " + txn.getTransactionReference());
+            // Re-fetch updated account for accurate balance
+            Account updatedAccount = accountDAO.findById(targetAccount.getAccountId());
+            Customer cust = customerDAO.findById(targetAccount.getCustomerId());
+
+            request.setAttribute("depositSuccess", true);
+            request.setAttribute("txn", txn);
+            request.setAttribute("account", updatedAccount != null ? updatedAccount : targetAccount);
+            request.setAttribute("customer", cust);
+
+            List<Account> accounts = adminService.getAllAccounts(1, 200, null);
+            request.setAttribute("accounts", accounts);
+
+            request.getRequestDispatcher("/WEB-INF/views/admin/deposits.jsp").forward(request, response);
         } catch (Exception e) {
             try {
                 List<Account> accounts = adminService.getAllAccounts(1, 200, null);

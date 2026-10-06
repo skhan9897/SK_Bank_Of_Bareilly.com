@@ -68,7 +68,19 @@ public class AdminWithdrawalServlet extends HttpServlet {
 
             Transaction txn = adminService.processAdminWithdrawal(targetAccount.getAccountId(), amount, reason, adminUserId);
 
-            response.sendRedirect(request.getContextPath() + "/admin/withdrawals?msg=Withdrawal of ₹" + amount + " from account " + targetAccount.getAccountNumber() + " processed. Ref: " + txn.getTransactionReference());
+            // Re-fetch updated account for accurate balance
+            Account updatedAccount = accountDAO.findById(targetAccount.getAccountId());
+            Customer cust = customerDAO.findById(targetAccount.getCustomerId());
+
+            request.setAttribute("withdrawalSuccess", true);
+            request.setAttribute("txn", txn);
+            request.setAttribute("account", updatedAccount != null ? updatedAccount : targetAccount);
+            request.setAttribute("customer", cust);
+
+            List<Account> accounts = adminService.getAllAccounts(1, 200, null);
+            request.setAttribute("accounts", accounts);
+
+            request.getRequestDispatcher("/WEB-INF/views/admin/withdrawals.jsp").forward(request, response);
         } catch (Exception e) {
             try {
                 List<Account> accounts = adminService.getAllAccounts(1, 200, null);
