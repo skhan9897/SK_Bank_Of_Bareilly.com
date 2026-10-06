@@ -14,7 +14,7 @@ public class AccountDAOImpl implements AccountDAO {
 
     @Override
     public Account findById(Long accountId) throws SQLException {
-        String sql = "SELECT a.*, at.type_name, at.type_code FROM accounts a LEFT JOIN account_types at ON a.account_type_id = at.account_type_id WHERE a.account_id = ?";
+        String sql = "SELECT * FROM accounts WHERE account_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, accountId);
@@ -27,7 +27,7 @@ public class AccountDAOImpl implements AccountDAO {
 
     @Override
     public Account findByAccountNumber(String accountNumber) throws SQLException {
-        String sql = "SELECT a.*, at.type_name, at.type_code FROM accounts a LEFT JOIN account_types at ON a.account_type_id = at.account_type_id WHERE a.account_number = ?";
+        String sql = "SELECT * FROM accounts WHERE account_number = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, accountNumber);
@@ -40,7 +40,7 @@ public class AccountDAOImpl implements AccountDAO {
 
     @Override
     public Account findForUpdate(Connection conn, Long accountId) throws SQLException {
-        String sql = "SELECT a.*, at.type_name, at.type_code FROM accounts a LEFT JOIN account_types at ON a.account_type_id = at.account_type_id WHERE a.account_id = ? FOR UPDATE";
+        String sql = "SELECT * FROM accounts WHERE account_id = ? FOR UPDATE";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, accountId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -53,7 +53,7 @@ public class AccountDAOImpl implements AccountDAO {
     @Override
     public List<Account> findByCustomerId(Long customerId) throws SQLException {
         List<Account> list = new ArrayList<>();
-        String sql = "SELECT a.*, at.type_name, at.type_code FROM accounts a LEFT JOIN account_types at ON a.account_type_id = at.account_type_id WHERE a.customer_id = ? ORDER BY a.account_id ASC";
+        String sql = "SELECT * FROM accounts WHERE customer_id = ? ORDER BY account_id ASC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, customerId);
@@ -122,11 +122,11 @@ public class AccountDAOImpl implements AccountDAO {
     @Override
     public List<Account> findAll(int offset, int limit, String searchQuery) throws SQLException {
         List<Account> list = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT a.*, at.type_name, at.type_code FROM accounts a LEFT JOIN account_types at ON a.account_type_id = at.account_type_id ");
+        StringBuilder sql = new StringBuilder("SELECT * FROM accounts ");
         if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-            sql.append("WHERE a.account_number LIKE ? ");
+            sql.append("WHERE account_number LIKE ? ");
         }
-        sql.append("ORDER BY a.account_id DESC LIMIT ? OFFSET ?");
+        sql.append("ORDER BY account_id DESC LIMIT ? OFFSET ?");
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql.toString())) {
