@@ -8,6 +8,25 @@
 <!-- Include html2pdf library for PDF download -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
+<style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #printableReceiptCard, #printableReceiptCard * {
+            visibility: visible;
+        }
+        #printableReceiptCard {
+            position: absolute;
+            left: 5%;
+            top: 5%;
+            width: 90% !important;
+            box-shadow: none !important;
+            border: 2px solid #198754 !important;
+        }
+    }
+</style>
+
 <div class="dashboard-wrapper">
     <%@ include file="/WEB-INF/views/common/admin-sidebar.jsp" %>
 
@@ -17,7 +36,7 @@
         <%@ include file="/WEB-INF/views/common/alerts.jsp" %>
 
         <div class="row justify-content-center">
-            <div class="col-md-7">
+            <div class="col-md-8 col-lg-7">
 
                 <c:choose>
                     <c:when test="${depositSuccess}">
@@ -30,12 +49,12 @@
 
                         <!-- 2. OFFICIAL CASH DEPOSIT RECEIPT CARD (SHOWN AFTER 2 SECONDS) -->
                         <div id="depositReceiptContainer" class="d-none">
-                            <div class="sk-card p-4 shadow border-top border-4 border-success mb-3" id="printableReceiptCard">
+                            <div class="sk-card p-4 shadow-lg border-top border-4 border-success mb-4 bg-white" id="printableReceiptCard" style="background-color: #ffffff; box-sizing: border-box; width: 100%; max-width: 720px; margin: 0 auto;">
                                 <div class="text-center border-bottom pb-3 mb-3">
                                     <img src="${pageContext.request.contextPath}/assets/images/sk-bank-logo-final-transparent.png?v=20261004" alt="Logo" width="70" class="mb-2" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/assets/images/sk-bank-logo-transparent.png';">
                                     <h4 class="fw-bold text-navy mb-0">SK BANK OF BAREILLY</h4>
-                                    <p class="text-muted small mb-1">Official Counter Cash Deposit Voucher / Receipt</p>
-                                    <span class="badge bg-success px-3 py-2 fs-6"><i class="fa-solid fa-circle-check me-1"></i> CASH DEPOSIT SUCCESSFUL</span>
+                                    <p class="text-muted small mb-2">Official Counter Cash Deposit Voucher / Receipt</p>
+                                    <span class="badge bg-success px-4 py-2 fs-6"><i class="fa-solid fa-circle-check me-1"></i> CASH DEPOSIT SUCCESSFUL</span>
                                 </div>
 
                                 <div class="row g-3 small">
@@ -61,13 +80,13 @@
                                     </div>
                                     <div class="col-6 text-end">
                                         <span class="text-muted d-block">Transaction Type:</span>
-                                        <span class="badge bg-success">DEPOSIT</span>
+                                        <span class="badge bg-success px-3 py-1">DEPOSIT</span>
                                     </div>
                                 </div>
 
                                 <hr class="my-3">
 
-                                <div class="row align-items-center bg-light p-3 rounded">
+                                <div class="row align-items-center bg-light p-3 rounded border my-3">
                                     <div class="col-6">
                                         <span class="text-muted small d-block">Deposited Amount</span>
                                         <h3 class="fw-bold text-success mb-0">₹<fmt:formatNumber value="${txn.amount}" pattern="#,##0.00"/></h3>
@@ -78,21 +97,21 @@
                                     </div>
                                 </div>
 
-                                <div class="mt-4 pt-3 border-top text-center text-muted super-small">
-                                    <p class="mb-0">This is a computer generated official banking receipt and does not require a physical signature.</p>
-                                    <p class="mb-0">SK BANK OF BAREILLY | Trust • Growth • Together</p>
+                                <div class="mt-4 pt-3 border-top text-center text-muted small" style="font-size: 0.8rem; line-height: 1.4;">
+                                    <p class="mb-1">This is a computer generated official banking receipt and does not require a physical signature.</p>
+                                    <p class="mb-0 text-navy fw-bold">SK BANK OF BAREILLY | Trust • Growth • Together</p>
                                 </div>
                             </div>
 
                             <!-- ACTION BUTTONS: PRINT & PDF -->
                             <div class="d-flex gap-2">
-                                <button type="button" onclick="printReceipt()" class="btn btn-navy flex-fill py-2 fw-bold" style="background-color: #071F49; color: #fff;">
+                                <button type="button" onclick="printReceipt()" class="btn btn-navy flex-fill py-2.5 fw-bold" style="background-color: #071F49; color: #fff;">
                                     <i class="fa-solid fa-print me-1"></i> Print Receipt
                                 </button>
-                                <button type="button" onclick="downloadPdfReceipt()" class="btn btn-gold flex-fill py-2 fw-bold">
+                                <button type="button" onclick="downloadPdfReceipt()" class="btn btn-gold flex-fill py-2.5 fw-bold">
                                     <i class="fa-solid fa-file-pdf me-1"></i> Download PDF
                                 </button>
-                                <a href="${pageContext.request.contextPath}/admin/deposits" class="btn btn-outline-secondary py-2 fw-bold">
+                                <a href="${pageContext.request.contextPath}/admin/deposits" class="btn btn-outline-secondary py-2.5 fw-bold">
                                     <i class="fa-solid fa-plus me-1"></i> New Deposit
                                 </a>
                             </div>
@@ -116,11 +135,12 @@
                             function downloadPdfReceipt() {
                                 var element = document.getElementById('printableReceiptCard');
                                 var opt = {
-                                  margin:       0.5,
+                                  margin:       [0.3, 0.3, 0.3, 0.3],
                                   filename:     'SK_Bank_Deposit_Receipt_' + '${txn.transactionReference}' + '.pdf',
                                   image:        { type: 'jpeg', quality: 0.98 },
-                                  html2canvas:  { scale: 2 },
-                                  jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                                  html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+                                  jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+                                  pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
                                 };
                                 html2pdf().set(opt).from(element).save();
                             }
