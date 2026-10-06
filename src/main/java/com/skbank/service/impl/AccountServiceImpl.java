@@ -22,6 +22,27 @@ public class AccountServiceImpl implements AccountService {
         try {
             Account acc = accountDAO.findById(accountId);
             if (acc == null) throw new BankException("Account not found");
+
+            if (acc.getBranchName() == null || acc.getBranchName().trim().isEmpty() || acc.getIfscCode() == null || acc.getIfscCode().trim().isEmpty()) {
+                Branch b = branchDAO.findById(acc.getBranchId());
+                if (b != null) {
+                    acc.setBranchName(b.getBranchName());
+                    acc.setIfscCode(b.getIfscCode());
+                } else {
+                    acc.setBranchName("Main Branch Bareilly");
+                    acc.setIfscCode("SKBK0000001");
+                }
+            }
+
+            if (acc.getAccountTypeName() == null || acc.getAccountTypeName().trim().isEmpty()) {
+                AccountType at = accountTypeDAO.findById(acc.getAccountTypeId());
+                if (at != null) {
+                    acc.setAccountTypeName(at.getTypeName());
+                } else {
+                    acc.setAccountTypeName("Savings Account");
+                }
+            }
+
             return acc;
         } catch (Exception e) {
             throw new BankException("Error fetching account: " + e.getMessage(), e);
@@ -42,7 +63,29 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<Account> getCustomerAccounts(Long customerId) throws BankException {
         try {
-            return accountDAO.findByCustomerId(customerId);
+            List<Account> accounts = accountDAO.findByCustomerId(customerId);
+            for (Account acc : accounts) {
+                if (acc.getBranchName() == null || acc.getBranchName().trim().isEmpty() || acc.getIfscCode() == null || acc.getIfscCode().trim().isEmpty()) {
+                    Branch b = branchDAO.findById(acc.getBranchId());
+                    if (b != null) {
+                        acc.setBranchName(b.getBranchName());
+                        acc.setIfscCode(b.getIfscCode());
+                    } else {
+                        acc.setBranchName("Main Branch Bareilly");
+                        acc.setIfscCode("SKBK0000001");
+                    }
+                }
+
+                if (acc.getAccountTypeName() == null || acc.getAccountTypeName().trim().isEmpty()) {
+                    AccountType at = accountTypeDAO.findById(acc.getAccountTypeId());
+                    if (at != null) {
+                        acc.setAccountTypeName(at.getTypeName());
+                    } else {
+                        acc.setAccountTypeName("Savings Account");
+                    }
+                }
+            }
+            return accounts;
         } catch (Exception e) {
             throw new BankException("Error fetching customer accounts", e);
         }

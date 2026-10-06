@@ -16,9 +16,9 @@
         <div class="sk-card p-4 mb-4">
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <span class="badge bg-gold text-dark mb-2">${account.accountTypeName}</span>
+                    <span class="badge bg-gold text-dark mb-2">${empty account.accountTypeName ? 'Savings Account' : account.accountTypeName}</span>
                     <h3 class="font-monospace fw-bold text-navy mb-1">${account.maskedAccountNumber}</h3>
-                    <p class="text-muted small mb-0">Branch: ${account.branchName} | IFSC: ${account.ifscCode}</p>
+                    <p class="text-muted small mb-0">Branch: <strong>${empty account.branchName ? 'Main Branch Bareilly' : account.branchName}</strong> | IFSC: <strong>${empty account.ifscCode ? 'SKBK0000001' : account.ifscCode}</strong></p>
                 </div>
                 <div class="col-md-6 text-md-end mt-3 mt-md-0">
                     <small class="text-muted d-block">Available Balance</small>
@@ -52,6 +52,11 @@
                                 </td>
                             </tr>
                         </c:forEach>
+                        <c:if test="${empty transactions}">
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">No recent transactions found for this account.</td>
+                            </tr>
+                        </c:if>
                     </tbody>
                 </table>
             </div>

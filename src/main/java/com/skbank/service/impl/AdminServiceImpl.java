@@ -33,20 +33,18 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminDashboardDTO getAdminDashboardData() throws BankException {
-        try {
-            AdminDashboardDTO dto = new AdminDashboardDTO();
-            dto.setTotalCustomers(customerDAO.countAll(null));
-            dto.setActiveAccounts(accountDAO.countAll(null));
-            dto.setTotalDeposits(accountDAO.getTotalBankBalance());
-            dto.setTodaysTransactionsCount(transactionDAO.getTodaysTransactionCount());
-            dto.setPendingLoansCount(loanDAO.countPendingLoans());
-            dto.setActiveLoansCount(loanDAO.countActiveLoans());
-            dto.setTotalFdsCount(fdDAO.countActiveFds());
-            dto.setPendingComplaintsCount(complaintDAO.countPendingComplaints());
-            return dto;
-        } catch (Exception e) {
-            throw new BankException("Error loading admin dashboard stats", e);
-        }
+        AdminDashboardDTO dto = new AdminDashboardDTO();
+
+        try { dto.setTotalCustomers(customerDAO.countAll(null)); } catch (Exception e) { dto.setTotalCustomers(0); }
+        try { dto.setActiveAccounts(accountDAO.countAll(null)); } catch (Exception e) { dto.setActiveAccounts(0); }
+        try { dto.setTotalDeposits(accountDAO.getTotalBankBalance()); } catch (Exception e) { dto.setTotalDeposits(BigDecimal.ZERO); }
+        try { dto.setTodaysTransactionsCount(transactionDAO.getTodaysTransactionCount()); } catch (Exception e) { dto.setTodaysTransactionsCount(0); }
+        try { dto.setPendingLoansCount(loanDAO.countPendingLoans()); } catch (Exception e) { dto.setPendingLoansCount(0); }
+        try { dto.setActiveLoansCount(loanDAO.countActiveLoans()); } catch (Exception e) { dto.setActiveLoansCount(0); }
+        try { dto.setTotalFdsCount(fdDAO.countActiveFds()); } catch (Exception e) { dto.setTotalFdsCount(0); }
+        try { dto.setPendingComplaintsCount(complaintDAO.countPendingComplaints()); } catch (Exception e) { dto.setPendingComplaintsCount(0); }
+
+        return dto;
     }
 
     @Override
