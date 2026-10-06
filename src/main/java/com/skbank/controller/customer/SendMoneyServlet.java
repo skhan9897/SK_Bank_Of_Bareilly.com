@@ -28,7 +28,7 @@ public class SendMoneyServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        String customerId = (String) session.getAttribute("CUSTOMER_ID");
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
 
         try {
             List<Account> accounts = accountService.getCustomerAccounts(customerId);

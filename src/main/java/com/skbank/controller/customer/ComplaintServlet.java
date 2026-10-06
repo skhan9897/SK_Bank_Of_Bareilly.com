@@ -25,7 +25,7 @@ public class ComplaintServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        String customerId = (String) session.getAttribute("CUSTOMER_ID");
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
 
         String idStr = request.getParameter("id");
 
@@ -58,7 +58,7 @@ public class ComplaintServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        String customerId = (String) session.getAttribute("CUSTOMER_ID");
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
         Long userId = (Long) session.getAttribute("USER_ID");
 
         String action = request.getParameter("action");

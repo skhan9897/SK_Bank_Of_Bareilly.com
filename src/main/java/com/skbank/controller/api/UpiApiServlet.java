@@ -34,7 +34,7 @@ public class UpiApiServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String customerId = (String) request.getAttribute("API_CUSTOMER_ID");
+        Long customerId = (Long) request.getAttribute("API_CUSTOMER_ID");
 
         try {
             UpiAccount upi = upiService.getUpiByCustomerId(customerId);
@@ -49,7 +49,7 @@ public class UpiApiServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String customerId = (String) request.getAttribute("API_CUSTOMER_ID");
+        Long customerId = (Long) request.getAttribute("API_CUSTOMER_ID");
 
         try {
             BufferedReader reader = request.getReader();

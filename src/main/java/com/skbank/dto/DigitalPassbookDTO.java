@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 public class DigitalPassbookDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String customerId;
+    private Long customerId;
     private String customerNumber;
     private String customerName;
     private Date dateOfBirth;
@@ -37,8 +37,8 @@ public class DigitalPassbookDTO implements Serializable {
 
     public DigitalPassbookDTO() {}
 
-    public String getCustomerId() { return customerId; }
-    public void setCustomerId(String customerId) { this.customerId = customerId; }
+    public Long getCustomerId() { return customerId; }
+    public void setCustomerId(Long customerId) { this.customerId = customerId; }
 
     public String getCustomerNumber() { return customerNumber; }
     public void setCustomerNumber(String customerNumber) { this.customerNumber = customerNumber; }

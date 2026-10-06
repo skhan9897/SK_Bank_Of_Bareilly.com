@@ -31,7 +31,7 @@ public class PaymentBankServiceImpl implements PaymentBankService {
     private final Gson gson = new Gson();
 
     @Override
-    public PaymentWallet getWallet(String customerId) throws BankException {
+    public PaymentWallet getWallet(Long customerId) throws BankException {
         try {
             PaymentWallet w = walletDAO.findByCustomerId(customerId);
             if (w == null) {
@@ -53,7 +53,7 @@ public class PaymentBankServiceImpl implements PaymentBankService {
     }
 
     @Override
-    public PaymentTransaction processPayment(String customerId, PaymentRequestDTO request) throws BankException {
+    public PaymentTransaction processPayment(Long customerId, PaymentRequestDTO request) throws BankException {
         // 1. Check Idempotency (Double Payment Protection!)
         if (request.getIdempotencyKey() != null && !request.getIdempotencyKey().trim().isEmpty()) {
             try {
@@ -159,7 +159,7 @@ public class PaymentBankServiceImpl implements PaymentBankService {
     }
 
     @Override
-    public List<PaymentTransaction> getPaymentHistory(String customerId, int page, int pageSize) throws BankException {
+    public List<PaymentTransaction> getPaymentHistory(Long customerId, int page, int pageSize) throws BankException {
         try {
             int offset = (page - 1) * pageSize;
             return paymentTxnDAO.findByCustomerId(customerId, offset, pageSize);

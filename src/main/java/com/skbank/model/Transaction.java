@@ -17,6 +17,7 @@ public class Transaction implements Serializable {
     private Long relatedAccountId;
     private String description;
     private TransactionStatus status = TransactionStatus.SUCCESS;
+    private Timestamp transactionTime;
     private Timestamp createdAt;
 
     // Additional display info
@@ -55,6 +56,9 @@ public class Transaction implements Serializable {
 
     public TransactionStatus getStatus() { return status; }
     public void setStatus(TransactionStatus status) { this.status = status; }
+
+    public Timestamp getTransactionTime() { return transactionTime != null ? transactionTime : createdAt; }
+    public void setTransactionTime(Timestamp transactionTime) { this.transactionTime = transactionTime; }
 
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }

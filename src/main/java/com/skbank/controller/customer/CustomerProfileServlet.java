@@ -28,7 +28,7 @@ public class CustomerProfileServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        String customerId = (String) session.getAttribute("CUSTOMER_ID");
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
 
         try {
             Customer customer = customerService.getCustomerById(customerId);
@@ -45,7 +45,7 @@ public class CustomerProfileServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        String customerId = (String) session.getAttribute("CUSTOMER_ID");
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
 
         String action = request.getParameter("action");
 

@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebServlet(urlPatterns = {"/customer/withdraw", "/customer/withdraw-success"})
+@WebServlet(urlPatterns = {"/customer/withdraw"})
 public class WithdrawServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -29,18 +29,12 @@ public class WithdrawServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        String customerId = (String) session.getAttribute("CUSTOMER_ID");
-
-        String path = request.getServletPath();
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
 
         try {
-            if ("/customer/withdraw-success".equals(path)) {
-                request.getRequestDispatcher("/WEB-INF/views/customer/withdraw-success.jsp").forward(request, response);
-            } else {
-                List<Account> accounts = accountService.getCustomerAccounts(customerId);
-                request.setAttribute("accounts", accounts);
-                request.getRequestDispatcher("/WEB-INF/views/customer/withdraw.jsp").forward(request, response);
-            }
+            List<Account> accounts = accountService.getCustomerAccounts(customerId);
+            request.setAttribute("accounts", accounts);
+            request.getRequestDispatcher("/WEB-INF/views/customer/withdraw.jsp").forward(request, response);
         } catch (Exception e) {
             request.setAttribute("errorMessage", "Error loading withdrawal form: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/views/customer/withdraw.jsp").forward(request, response);
@@ -52,19 +46,16 @@ public class WithdrawServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        String customerId = (String) session.getAttribute("CUSTOMER_ID");
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
 
         try {
             Long accountId = Long.parseLong(request.getParameter("accountId"));
-            accountService.verifyAccountOwnership(accountId, customerId);
-
             BigDecimal amount = new BigDecimal(request.getParameter("amount"));
-            String description = request.getParameter("description");
+            String reason = request.getParameter("reason");
 
-            Transaction txn = transactionService.processWithdrawal(accountId, amount, description);
+            Transaction txn = transactionService.processWithdrawal(accountId, amount, reason, customerId);
 
-            session.setAttribute("LAST_WITHDRAWAL_TXN", txn);
-            response.sendRedirect(request.getContextPath() + "/customer/withdraw-success");
+            response.sendRedirect(request.getContextPath() + "/customer/accounts?msg=Withdrawal of ₹" + amount + " successful. Ref: " + txn.getTransactionReference());
         } catch (Exception e) {
             try {
                 request.setAttribute("accounts", accountService.getCustomerAccounts(customerId));

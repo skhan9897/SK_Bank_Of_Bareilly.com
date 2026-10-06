@@ -8,7 +8,7 @@ public class Loan implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long loanId;
-    private String customerId;
+    private Long customerId;
     private Long loanTypeId;
     private String loanNumber;
     private BigDecimal principalAmount = BigDecimal.ZERO;
@@ -17,20 +17,19 @@ public class Loan implements Serializable {
     private BigDecimal emiAmount = BigDecimal.ZERO;
     private BigDecimal outstandingAmount = BigDecimal.ZERO;
     private LoanStatus status = LoanStatus.PENDING;
-    private Timestamp appliedAt;
-    private Timestamp approvedAt;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 
-    // Joined fields
+    // Display fields
     private String loanTypeName;
-    private String customerName;
 
     public Loan() {}
 
     public Long getLoanId() { return loanId; }
     public void setLoanId(Long loanId) { this.loanId = loanId; }
 
-    public String getCustomerId() { return customerId; }
-    public void setCustomerId(String customerId) { this.customerId = customerId; }
+    public Long getCustomerId() { return customerId; }
+    public void setCustomerId(Long customerId) { this.customerId = customerId; }
 
     public Long getLoanTypeId() { return loanTypeId; }
     public void setLoanTypeId(Long loanTypeId) { this.loanTypeId = loanTypeId; }
@@ -56,15 +55,12 @@ public class Loan implements Serializable {
     public LoanStatus getStatus() { return status; }
     public void setStatus(LoanStatus status) { this.status = status; }
 
-    public Timestamp getAppliedAt() { return appliedAt; }
-    public void setAppliedAt(Timestamp appliedAt) { this.appliedAt = appliedAt; }
+    public Timestamp getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
 
-    public Timestamp getApprovedAt() { return approvedAt; }
-    public void setApprovedAt(Timestamp approvedAt) { this.approvedAt = approvedAt; }
+    public Timestamp getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Timestamp updatedAt) { this.updatedAt = updatedAt; }
 
     public String getLoanTypeName() { return loanTypeName; }
     public void setLoanTypeName(String loanTypeName) { this.loanTypeName = loanTypeName; }
-
-    public String getCustomerName() { return customerName; }
-    public void setCustomerName(String customerName) { this.customerName = customerName; }
 }

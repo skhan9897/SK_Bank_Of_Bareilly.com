@@ -13,11 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {
-    "/api/customer/recipient/mobile",
-    "/api/customer/recipient/account",
-    "/api/customer/recipient/upi"
-})
+@WebServlet(urlPatterns = {"/api/customer/recipient/lookup"})
 public class RecipientApiServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -28,26 +24,29 @@ public class RecipientApiServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String senderCustomerId = (String) request.getAttribute("API_CUSTOMER_ID");
-        String path = request.getServletPath();
+        Long senderCustomerId = (Long) request.getAttribute("API_CUSTOMER_ID");
+        String mobile = request.getParameter("mobile");
+        String account = request.getParameter("accountNumber");
+        String upi = request.getParameter("upiAddress");
 
         try {
-            RecipientLookupDTO result;
-            if ("/api/customer/recipient/mobile".equals(path)) {
-                String mobile = request.getParameter("mobile");
-                result = transferService.lookupByMobile(mobile, senderCustomerId);
-            } else if ("/api/customer/recipient/account".equals(path)) {
-                String account = request.getParameter("accountNumber");
-                result = transferService.lookupByAccount(account, senderCustomerId);
+            RecipientLookupDTO dto;
+            if (mobile != null && !mobile.trim().isEmpty()) {
+                dto = transferService.lookupByMobile(mobile, senderCustomerId);
+            } else if (account != null && !account.trim().isEmpty()) {
+                dto = transferService.lookupByAccount(account, senderCustomerId);
+            } else if (upi != null && !upi.trim().isEmpty()) {
+                dto = transferService.lookupByUpi(upi, senderCustomerId);
             } else {
-                String upi = request.getParameter("upiAddress");
-                result = transferService.lookupByUpi(upi, senderCustomerId);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write(gson.toJson(ApiResponse.error("Please provide mobile, accountNumber, or upiAddress", "BAD_REQUEST")));
+                return;
             }
 
-            response.getWriter().write(gson.toJson(ApiResponse.success("Recipient lookup complete", result)));
+            response.getWriter().write(gson.toJson(ApiResponse.success("Recipient lookup complete", dto)));
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write(gson.toJson(ApiResponse.error(e.getMessage(), "RECIPIENT_NOT_FOUND")));
+            response.getWriter().write(gson.toJson(ApiResponse.error(e.getMessage(), "LOOKUP_FAILED")));
         }
     }
 }

@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebServlet(urlPatterns = {"/customer/fixed-deposits", "/customer/fd-details"})
+@WebServlet(urlPatterns = {"/customer/fd"})
 public class FixedDepositServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -29,13 +29,13 @@ public class FixedDepositServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        String customerId = (String) session.getAttribute("CUSTOMER_ID");
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
 
-        String path = request.getServletPath();
+        String idStr = request.getParameter("id");
 
         try {
-            if ("/customer/fd-details".equals(path)) {
-                Long fdId = Long.parseLong(request.getParameter("id"));
+            if (idStr != null && !idStr.trim().isEmpty()) {
+                Long fdId = Long.parseLong(idStr);
                 FixedDeposit fd = fdService.getFdById(fdId);
                 if (!fd.getCustomerId().equals(customerId)) {
                     response.sendError(HttpServletResponse.SC_FORBIDDEN);
@@ -44,11 +44,11 @@ public class FixedDepositServlet extends HttpServlet {
                 request.setAttribute("fd", fd);
                 request.getRequestDispatcher("/WEB-INF/views/customer/fd-details.jsp").forward(request, response);
             } else {
-                List<FixedDeposit> fds = fdService.getCustomerFds(customerId);
                 List<Account> accounts = accountService.getCustomerAccounts(customerId);
+                List<FixedDeposit> fds = fdService.getCustomerFds(customerId);
 
-                request.setAttribute("fds", fds);
                 request.setAttribute("accounts", accounts);
+                request.setAttribute("fds", fds);
                 request.getRequestDispatcher("/WEB-INF/views/customer/fixed-deposits.jsp").forward(request, response);
             }
         } catch (Exception e) {
@@ -62,24 +62,22 @@ public class FixedDepositServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        String customerId = (String) session.getAttribute("CUSTOMER_ID");
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
 
         try {
             Long accountId = Long.parseLong(request.getParameter("accountId"));
-            accountService.verifyAccountOwnership(accountId, customerId);
-
-            BigDecimal principal = new BigDecimal(request.getParameter("principalAmount"));
+            BigDecimal principal = new BigDecimal(request.getParameter("amount"));
             int tenureMonths = Integer.parseInt(request.getParameter("tenureMonths"));
 
             FixedDeposit fd = fdService.openFd(customerId, accountId, principal, tenureMonths);
 
-            response.sendRedirect(request.getContextPath() + "/customer/fixed-deposits?msg=Fixed Deposit " + fd.getFdNumber() + " opened successfully!");
+            response.sendRedirect(request.getContextPath() + "/customer/fd?id=" + fd.getFdId() + "&msg=FD opened successfully!");
         } catch (Exception e) {
             try {
-                request.setAttribute("fds", fdService.getCustomerFds(customerId));
                 request.setAttribute("accounts", accountService.getCustomerAccounts(customerId));
+                request.setAttribute("fds", fdService.getCustomerFds(customerId));
             } catch (Exception ignored) {}
-            request.setAttribute("errorMessage", "FD Creation failed: " + e.getMessage());
+            request.setAttribute("errorMessage", "Failed to open FD: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/views/customer/fixed-deposits.jsp").forward(request, response);
         }
     }

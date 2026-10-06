@@ -27,7 +27,7 @@ public class FdServiceImpl implements FdService {
     private final NotificationDAO notificationDAO = new NotificationDAOImpl();
 
     @Override
-    public FixedDeposit openFd(String customerId, Long accountId, BigDecimal principal, int tenureMonths) throws BankException {
+    public FixedDeposit openFd(Long customerId, Long accountId, BigDecimal principal, int tenureMonths) throws BankException {
         if (!ValidationUtil.isValidAmount(principal) || principal.compareTo(new BigDecimal("1000")) < 0) {
             throw new BankException("Minimum FD amount is ₹1,000");
         }
@@ -127,7 +127,7 @@ public class FdServiceImpl implements FdService {
     }
 
     @Override
-    public List<FixedDeposit> getCustomerFds(String customerId) throws BankException {
+    public List<FixedDeposit> getCustomerFds(Long customerId) throws BankException {
         try {
             return fdDAO.findByCustomerId(customerId);
         } catch (Exception e) {

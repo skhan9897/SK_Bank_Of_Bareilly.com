@@ -135,12 +135,11 @@ public class AuthServiceImpl implements AuthService {
             Random rand = new Random();
             String custNum = "SKC" + (10000000 + rand.nextInt(90000000));
             customer.setUserId(userId);
-            customer.setCustomerNumber(custNum); // Set ONLY customer_number (e.g. SKC82644968)
+            customer.setCustomerNumber(custNum);
             customer.setKycStatus(KycStatus.VERIFIED);
             customer.setStatus(UserStatus.ACTIVE);
-
-            Long customerId = customerDAO.create(conn, customer); // Returns generated AUTO_INCREMENT Long customer_id
-            customer.setCustomerId(customerId); // Set generated Long customerId
+            Long customerId = customerDAO.create(conn, customer);
+            customer.setCustomerId(customerId);
 
             // Validate accountTypeId against account_types table
             AccountType selectedType = null;
@@ -173,7 +172,7 @@ public class AuthServiceImpl implements AuthService {
 
             // 3. Create Account - MANDATORY RULE: balance = 0.00, available_balance = 0.00
             Account account = new Account();
-            account.setCustomerId(customerId); // Passes generated Long customerId
+            account.setCustomerId(customerId);
             account.setAccountTypeId(validAccountTypeId);
             account.setBranchId(validBranchId);
             String accNum = "SK" + (1000000000L + (long)(rand.nextDouble() * 9000000000L));
@@ -185,7 +184,7 @@ public class AuthServiceImpl implements AuthService {
 
             // 4. Create KYC
             Kyc kyc = new Kyc();
-            kyc.setCustomerId(customerId); // Passes generated Long customerId
+            kyc.setCustomerId(customerId);
             kyc.setAadhaarNumber(customer.getAadhaarNumber());
             kyc.setPanNumber(customer.getPanNumber());
             kyc.setVerificationStatus(KycStatus.VERIFIED);

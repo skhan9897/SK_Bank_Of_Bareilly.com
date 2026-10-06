@@ -61,7 +61,6 @@ public class KycDAOImpl implements KycDAO {
             }
         }
 
-        // Non-blocking fallback
         LOGGER.info("Customer Aadhaar/PAN saved directly in customer record. Optional KYC table skipped.");
         return 1L;
     }

@@ -8,26 +8,23 @@ public class BillPayment implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long billPaymentId;
-    private String customerId;
+    private Long customerId;
     private Long accountId;
     private String billerType;
     private String billerName;
     private String consumerNumber;
     private BigDecimal amount = BigDecimal.ZERO;
     private String paymentReference;
-    private String status;
+    private String status = "SUCCESS";
     private Timestamp createdAt;
-
-    // Joined fields
-    private String accountNumber;
 
     public BillPayment() {}
 
     public Long getBillPaymentId() { return billPaymentId; }
     public void setBillPaymentId(Long billPaymentId) { this.billPaymentId = billPaymentId; }
 
-    public String getCustomerId() { return customerId; }
-    public void setCustomerId(String customerId) { this.customerId = customerId; }
+    public Long getCustomerId() { return customerId; }
+    public void setCustomerId(Long customerId) { this.customerId = customerId; }
 
     public Long getAccountId() { return accountId; }
     public void setAccountId(Long accountId) { this.accountId = accountId; }
@@ -52,7 +49,4 @@ public class BillPayment implements Serializable {
 
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
-
-    public String getAccountNumber() { return accountNumber; }
-    public void setAccountNumber(String accountNumber) { this.accountNumber = accountNumber; }
 }

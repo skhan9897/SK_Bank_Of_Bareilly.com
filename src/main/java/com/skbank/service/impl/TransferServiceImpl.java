@@ -28,7 +28,7 @@ public class TransferServiceImpl implements TransferService {
     private final UpiDAO upiDAO = new UpiDAOImpl();
 
     @Override
-    public RecipientLookupDTO lookupByMobile(String mobile, String senderCustomerId) throws BankException {
+    public RecipientLookupDTO lookupByMobile(String mobile, Long senderCustomerId) throws BankException {
         if (!ValidationUtil.isValidMobile(mobile)) {
             throw new BankException("Invalid 10-digit mobile number");
         }
@@ -74,7 +74,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public RecipientLookupDTO lookupByAccount(String accountNumber, String senderCustomerId) throws BankException {
+    public RecipientLookupDTO lookupByAccount(String accountNumber, Long senderCustomerId) throws BankException {
         if (accountNumber == null || accountNumber.trim().isEmpty()) {
             throw new BankException("Account number cannot be empty");
         }
@@ -111,7 +111,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public RecipientLookupDTO lookupByUpi(String upiAddress, String senderCustomerId) throws BankException {
+    public RecipientLookupDTO lookupByUpi(String upiAddress, Long senderCustomerId) throws BankException {
         if (upiAddress == null || upiAddress.trim().isEmpty()) {
             throw new BankException("UPI ID cannot be empty");
         }
@@ -147,7 +147,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public TransferRequest processTransfer(TransferDTO transferDTO, String senderCustomerId) throws BankException {
+    public TransferRequest processTransfer(TransferDTO transferDTO, Long senderCustomerId) throws BankException {
         BigDecimal amount = transferDTO.getAmount();
         if (!ValidationUtil.isValidAmount(amount)) {
             throw new BankException("Transfer amount must be greater than zero");

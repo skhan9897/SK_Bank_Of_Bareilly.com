@@ -11,15 +11,23 @@ import java.util.List;
 
 public class FixedDepositDAOImpl implements FixedDepositDAO {
 
-    private static final String SELECT_JOIN_SQL = 
-        "SELECT fd.*, a.account_number, c.full_name AS customer_name " +
-        "FROM fixed_deposits fd " +
-        "JOIN accounts a ON fd.account_id = a.account_id " +
-        "JOIN customers c ON fd.customer_id = c.customer_id ";
+    @Override
+    public List<FixedDeposit> findByCustomerId(Long customerId) throws SQLException {
+        List<FixedDeposit> list = new ArrayList<>();
+        String sql = "SELECT * FROM fixed_deposits WHERE customer_id = ? ORDER BY fd_id DESC";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, customerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) list.add(mapFd(rs));
+            }
+        }
+        return list;
+    }
 
     @Override
     public FixedDeposit findById(Long fdId) throws SQLException {
-        String sql = SELECT_JOIN_SQL + "WHERE fd.fd_id = ?";
+        String sql = "SELECT * FROM fixed_deposits WHERE fd_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, fdId);
@@ -31,32 +39,11 @@ public class FixedDepositDAOImpl implements FixedDepositDAO {
     }
 
     @Override
-    public List<FixedDeposit> findByCustomerId(String customerId) throws SQLException {
-        List<FixedDeposit> list = new ArrayList<>();
-        String sql = SELECT_JOIN_SQL + "WHERE fd.customer_id = ? ORDER BY fd.fd_id DESC";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, customerId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) list.add(mapFd(rs));
-            }
-        }
-        return list;
-    }
-
-    @Override
-    public Long create(FixedDeposit fd) throws SQLException {
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            return create(conn, fd);
-        }
-    }
-
-    @Override
     public Long create(Connection conn, FixedDeposit fd) throws SQLException {
-        String sql = "INSERT INTO fixed_deposits (customer_id, account_id, fd_number, principal_amount, interest_rate, tenure_months, maturity_amount, start_date, maturity_date, status) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO fixed_deposits (customer_id, account_id, fd_number, principal_amount, interest_rate, tenure_months, maturity_amount, start_date, maturity_date, status, created_at) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, fd.getCustomerId());
+            ps.setLong(1, fd.getCustomerId());
             ps.setLong(2, fd.getAccountId());
             ps.setString(3, fd.getFdNumber());
             ps.setBigDecimal(4, fd.getPrincipalAmount());
@@ -66,39 +53,13 @@ public class FixedDepositDAOImpl implements FixedDepositDAO {
             ps.setDate(8, fd.getStartDate());
             ps.setDate(9, fd.getMaturityDate());
             ps.setString(10, fd.getStatus() != null ? fd.getStatus() : "ACTIVE");
+
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) return rs.getLong(1);
             }
         }
         return null;
-    }
-
-    @Override
-    public boolean updateStatus(Long fdId, String status) throws SQLException {
-        String sql = "UPDATE fixed_deposits SET status = ? WHERE fd_id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, status);
-            ps.setLong(2, fdId);
-            return ps.executeUpdate() > 0;
-        }
-    }
-
-    @Override
-    public BigDecimal getTotalFdInvestmentByCustomerId(String customerId) throws SQLException {
-        String sql = "SELECT SUM(principal_amount) FROM fixed_deposits WHERE customer_id = ? AND status = 'ACTIVE'";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, customerId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    BigDecimal val = rs.getBigDecimal(1);
-                    return val != null ? val : BigDecimal.ZERO;
-                }
-            }
-        }
-        return BigDecimal.ZERO;
     }
 
     @Override
@@ -113,9 +74,25 @@ public class FixedDepositDAOImpl implements FixedDepositDAO {
     }
 
     @Override
+    public BigDecimal getTotalFdInvestmentByCustomerId(Long customerId) throws SQLException {
+        String sql = "SELECT SUM(principal_amount) FROM fixed_deposits WHERE customer_id = ? AND status = 'ACTIVE'";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, customerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    BigDecimal sum = rs.getBigDecimal(1);
+                    return sum != null ? sum : BigDecimal.ZERO;
+                }
+            }
+        }
+        return BigDecimal.ZERO;
+    }
+
+    @Override
     public List<FixedDeposit> findAllAdmin(int offset, int limit) throws SQLException {
         List<FixedDeposit> list = new ArrayList<>();
-        String sql = SELECT_JOIN_SQL + "ORDER BY fd.fd_id DESC LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM fixed_deposits ORDER BY fd_id DESC LIMIT ? OFFSET ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, limit);
@@ -141,7 +118,7 @@ public class FixedDepositDAOImpl implements FixedDepositDAO {
     private FixedDeposit mapFd(ResultSet rs) throws SQLException {
         FixedDeposit fd = new FixedDeposit();
         fd.setFdId(rs.getLong("fd_id"));
-        fd.setCustomerId(rs.getString("customer_id"));
+        fd.setCustomerId(rs.getLong("customer_id"));
         fd.setAccountId(rs.getLong("account_id"));
         fd.setFdNumber(rs.getString("fd_number"));
         fd.setPrincipalAmount(rs.getBigDecimal("principal_amount"));
@@ -150,9 +127,8 @@ public class FixedDepositDAOImpl implements FixedDepositDAO {
         fd.setMaturityAmount(rs.getBigDecimal("maturity_amount"));
         fd.setStartDate(rs.getDate("start_date"));
         fd.setMaturityDate(rs.getDate("maturity_date"));
-        fd.setStatus(rs.getString("status"));
-        try { fd.setAccountNumber(rs.getString("account_number")); } catch (SQLException ignored) {}
-        try { fd.setCustomerName(rs.getString("customer_name")); } catch (SQLException ignored) {}
+        try { fd.setStatus(rs.getString("status")); } catch (Exception ignored) {}
+        try { fd.setCreatedAt(rs.getTimestamp("created_at")); } catch (Exception ignored) {}
         return fd;
     }
 }

@@ -34,7 +34,7 @@ public class AdminCustomerServlet extends HttpServlet {
 
         try {
             if ("status".equalsIgnoreCase(action)) {
-                String customerId = request.getParameter("id");
+                Long customerId = Long.parseLong(request.getParameter("id"));
                 String newStatus = request.getParameter("status");
                 adminService.setCustomerStatus(customerId, newStatus);
                 response.sendRedirect(request.getContextPath() + "/admin/customers?msg=Customer status updated to " + newStatus);
@@ -42,7 +42,7 @@ public class AdminCustomerServlet extends HttpServlet {
             }
 
             if ("/admin/customer-details".equals(path)) {
-                String customerId = request.getParameter("id");
+                Long customerId = Long.parseLong(request.getParameter("id"));
                 Customer customer = customerService.getCustomerById(customerId);
                 List<Account> accounts = accountService.getCustomerAccounts(customerId);
 

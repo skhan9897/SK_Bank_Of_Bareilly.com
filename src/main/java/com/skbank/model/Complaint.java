@@ -7,7 +7,7 @@ public class Complaint implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long complaintId;
-    private String customerId;
+    private Long customerId;
     private String subject;
     private String description;
     private ComplaintPriority priority = ComplaintPriority.MEDIUM;
@@ -23,8 +23,8 @@ public class Complaint implements Serializable {
     public Long getComplaintId() { return complaintId; }
     public void setComplaintId(Long complaintId) { this.complaintId = complaintId; }
 
-    public String getCustomerId() { return customerId; }
-    public void setCustomerId(String customerId) { this.customerId = customerId; }
+    public Long getCustomerId() { return customerId; }
+    public void setCustomerId(Long customerId) { this.customerId = customerId; }
 
     public String getSubject() { return subject; }
     public void setSubject(String subject) { this.subject = subject; }

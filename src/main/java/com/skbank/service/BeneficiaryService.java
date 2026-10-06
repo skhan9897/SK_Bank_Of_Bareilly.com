@@ -5,7 +5,7 @@ import com.skbank.model.Beneficiary;
 import java.util.List;
 
 public interface BeneficiaryService {
-    List<Beneficiary> getBeneficiaries(String customerId) throws BankException;
+    List<Beneficiary> getBeneficiaries(Long customerId) throws BankException;
     Beneficiary addBeneficiary(Beneficiary beneficiary) throws BankException;
-    boolean deleteBeneficiary(Long beneficiaryId, String customerId) throws BankException;
+    boolean deleteBeneficiary(Long beneficiaryId, Long customerId) throws BankException;
 }

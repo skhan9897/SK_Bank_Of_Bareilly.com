@@ -29,14 +29,14 @@ public class BillPaymentServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        String customerId = (String) session.getAttribute("CUSTOMER_ID");
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
 
         try {
             List<Account> accounts = accountService.getCustomerAccounts(customerId);
-            List<BillPayment> history = billPaymentService.getCustomerBillPayments(customerId);
+            List<BillPayment> billPayments = billPaymentService.getCustomerBillPayments(customerId);
 
             request.setAttribute("accounts", accounts);
-            request.setAttribute("history", history);
+            request.setAttribute("billPayments", billPayments);
             request.getRequestDispatcher("/WEB-INF/views/customer/bill-payments.jsp").forward(request, response);
         } catch (Exception e) {
             request.setAttribute("errorMessage", "Error loading bill payments: " + e.getMessage());
@@ -49,12 +49,10 @@ public class BillPaymentServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        String customerId = (String) session.getAttribute("CUSTOMER_ID");
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
 
         try {
             Long accountId = Long.parseLong(request.getParameter("accountId"));
-            accountService.verifyAccountOwnership(accountId, customerId);
-
             String billerType = request.getParameter("billerType");
             String billerName = request.getParameter("billerName");
             String consumerNumber = request.getParameter("consumerNumber");
@@ -62,11 +60,11 @@ public class BillPaymentServlet extends HttpServlet {
 
             BillPayment bp = billPaymentService.processBillPayment(customerId, accountId, billerType, billerName, consumerNumber, amount);
 
-            response.sendRedirect(request.getContextPath() + "/customer/bill-payments?msg=Payment of ₹" + amount + " to " + billerName + " completed. Ref: " + bp.getPaymentReference());
+            response.sendRedirect(request.getContextPath() + "/customer/bill-payments?msg=Bill payment of ₹" + amount + " to " + billerName + " successful. Ref: " + bp.getPaymentReference());
         } catch (Exception e) {
             try {
                 request.setAttribute("accounts", accountService.getCustomerAccounts(customerId));
-                request.setAttribute("history", billPaymentService.getCustomerBillPayments(customerId));
+                request.setAttribute("billPayments", billPaymentService.getCustomerBillPayments(customerId));
             } catch (Exception ignored) {}
             request.setAttribute("errorMessage", "Bill payment failed: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/views/customer/bill-payments.jsp").forward(request, response);

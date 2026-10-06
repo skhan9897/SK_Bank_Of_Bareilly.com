@@ -30,7 +30,7 @@ public class ProfileApiServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String customerId = (String) request.getAttribute("API_CUSTOMER_ID");
+        Long customerId = (Long) request.getAttribute("API_CUSTOMER_ID");
 
         try {
             Customer customer = customerService.getCustomerById(customerId);
@@ -45,7 +45,7 @@ public class ProfileApiServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String customerId = (String) request.getAttribute("API_CUSTOMER_ID");
+        Long customerId = (Long) request.getAttribute("API_CUSTOMER_ID");
         String path = request.getServletPath();
 
         try {

@@ -12,6 +12,7 @@ public interface TransactionDAO {
     Long create(Transaction transaction) throws SQLException;
     Long create(Connection conn, Transaction transaction) throws SQLException;
     List<Transaction> findByAccountId(Long accountId, int offset, int limit) throws SQLException;
+    long countByAccountId(Long accountId) throws SQLException;
     List<Transaction> findFiltered(Long accountId, Date startDate, Date endDate, String type, int offset, int limit) throws SQLException;
     long countFiltered(Long accountId, Date startDate, Date endDate, String type) throws SQLException;
     List<Transaction> findAllAdmin(int offset, int limit, String searchQuery, String typeFilter, Date startDate, Date endDate) throws SQLException;

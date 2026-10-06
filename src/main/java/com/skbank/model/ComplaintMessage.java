@@ -9,12 +9,9 @@ public class ComplaintMessage implements Serializable {
     private Long messageId;
     private Long complaintId;
     private Long senderUserId;
+    private String senderUsername;
     private String message;
-    private Timestamp createdAt;
-
-    // Joined field
-    private String senderName;
-    private UserRole senderRole;
+    private Timestamp sentAt;
 
     public ComplaintMessage() {}
 
@@ -27,15 +24,12 @@ public class ComplaintMessage implements Serializable {
     public Long getSenderUserId() { return senderUserId; }
     public void setSenderUserId(Long senderUserId) { this.senderUserId = senderUserId; }
 
+    public String getSenderUsername() { return senderUsername; }
+    public void setSenderUsername(String senderUsername) { this.senderUsername = senderUsername; }
+
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
 
-    public Timestamp getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
-
-    public String getSenderName() { return senderName; }
-    public void setSenderName(String senderName) { this.senderName = senderName; }
-
-    public UserRole getSenderRole() { return senderRole; }
-    public void setSenderRole(UserRole senderRole) { this.senderRole = senderRole; }
+    public Timestamp getSentAt() { return sentAt; }
+    public void setSentAt(Timestamp sentAt) { this.sentAt = sentAt; }
 }

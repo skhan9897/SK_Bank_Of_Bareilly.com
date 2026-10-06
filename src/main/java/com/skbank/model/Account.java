@@ -8,7 +8,7 @@ public class Account implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long accountId;
-    private String customerId;
+    private Long customerId;
     private Long accountTypeId;
     private Long branchId;
     private String accountNumber;
@@ -17,9 +17,12 @@ public class Account implements Serializable {
     private AccountStatus status = AccountStatus.ACTIVE;
     private Timestamp openedAt;
     private Timestamp closedAt;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 
     // Joined fields for easy UI display
     private String accountTypeName;
+    private String accountTypeCode;
     private String branchName;
     private String ifscCode;
     private String customerName;
@@ -29,8 +32,8 @@ public class Account implements Serializable {
     public Long getAccountId() { return accountId; }
     public void setAccountId(Long accountId) { this.accountId = accountId; }
 
-    public String getCustomerId() { return customerId; }
-    public void setCustomerId(String customerId) { this.customerId = customerId; }
+    public Long getCustomerId() { return customerId; }
+    public void setCustomerId(Long customerId) { this.customerId = customerId; }
 
     public Long getAccountTypeId() { return accountTypeId; }
     public void setAccountTypeId(Long accountTypeId) { this.accountTypeId = accountTypeId; }
@@ -56,8 +59,17 @@ public class Account implements Serializable {
     public Timestamp getClosedAt() { return closedAt; }
     public void setClosedAt(Timestamp closedAt) { this.closedAt = closedAt; }
 
+    public Timestamp getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+
+    public Timestamp getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Timestamp updatedAt) { this.updatedAt = updatedAt; }
+
     public String getAccountTypeName() { return accountTypeName; }
     public void setAccountTypeName(String accountTypeName) { this.accountTypeName = accountTypeName; }
+
+    public String getAccountTypeCode() { return accountTypeCode; }
+    public void setAccountTypeCode(String accountTypeCode) { this.accountTypeCode = accountTypeCode; }
 
     public String getBranchName() { return branchName; }
     public void setBranchName(String branchName) { this.branchName = branchName; }

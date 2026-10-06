@@ -11,7 +11,7 @@ public class Customer implements Serializable {
     private Long userId;
     private String customerNumber;
     private String fullName;
-    Date dateOfBirth;
+    private Date dateOfBirth;
     private String gender;
     private String mobile;
     private String email;

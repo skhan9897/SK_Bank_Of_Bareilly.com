@@ -8,7 +8,7 @@ public class PaymentTransaction implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long paymentTransactionId;
-    private String customerId;
+    private Long customerId;
     private Long sourceAccountId;
     private PaymentType paymentType;
     private String providerCode;
@@ -26,8 +26,8 @@ public class PaymentTransaction implements Serializable {
     public Long getPaymentTransactionId() { return paymentTransactionId; }
     public void setPaymentTransactionId(Long paymentTransactionId) { this.paymentTransactionId = paymentTransactionId; }
 
-    public String getCustomerId() { return customerId; }
-    public void setCustomerId(String customerId) { this.customerId = customerId; }
+    public Long getCustomerId() { return customerId; }
+    public void setCustomerId(Long customerId) { this.customerId = customerId; }
 
     public Long getSourceAccountId() { return sourceAccountId; }
     public void setSourceAccountId(Long sourceAccountId) { this.sourceAccountId = sourceAccountId; }

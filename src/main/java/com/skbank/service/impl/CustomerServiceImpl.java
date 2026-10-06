@@ -22,7 +22,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final NotificationDAO notificationDAO = new NotificationDAOImpl();
 
     @Override
-    public Customer getCustomerById(String customerId) throws BankException {
+    public Customer getCustomerById(Long customerId) throws BankException {
         try {
             return customerDAO.findById(customerId);
         } catch (Exception e) {
@@ -40,7 +40,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public boolean updateProfileImage(String customerId, String imagePath) throws BankException {
+    public boolean updateProfileImage(Long customerId, String imagePath) throws BankException {
         try {
             return customerDAO.updateProfileImage(customerId, imagePath);
         } catch (Exception e) {
@@ -49,7 +49,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDashboardDTO getCustomerDashboardData(String customerId, Long userId) throws BankException {
+    public CustomerDashboardDTO getCustomerDashboardData(Long customerId, Long userId) throws BankException {
         try {
             CustomerDashboardDTO dto = new CustomerDashboardDTO();
 
@@ -86,7 +86,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Kyc getKycByCustomerId(String customerId) throws BankException {
+    public Kyc getKycByCustomerId(Long customerId) throws BankException {
         try {
             return kycDAO.findByCustomerId(customerId);
         } catch (Exception e) {

@@ -28,14 +28,14 @@ public class UpiServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        String customerId = (String) session.getAttribute("CUSTOMER_ID");
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
 
         try {
-            UpiAccount upi = upiService.getUpiByCustomerId(customerId);
             List<Account> accounts = accountService.getCustomerAccounts(customerId);
+            List<UpiAccount> upiAccounts = upiService.getCustomerUpiAccounts(customerId);
 
-            request.setAttribute("upi", upi);
             request.setAttribute("accounts", accounts);
+            request.setAttribute("upiAccounts", upiAccounts);
             request.getRequestDispatcher("/WEB-INF/views/customer/upi.jsp").forward(request, response);
         } catch (Exception e) {
             request.setAttribute("errorMessage", "Error loading UPI settings: " + e.getMessage());
@@ -48,36 +48,22 @@ public class UpiServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        String customerId = (String) session.getAttribute("CUSTOMER_ID");
-
-        String action = request.getParameter("action");
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
 
         try {
-            if ("create".equalsIgnoreCase(action)) {
-                Long accountId = Long.parseLong(request.getParameter("accountId"));
-                String upiAddress = request.getParameter("upiAddress");
-                String pin = request.getParameter("upiPin");
+            Long accountId = Long.parseLong(request.getParameter("accountId"));
+            String customHandle = request.getParameter("customHandle");
+            String pin = request.getParameter("upiPin");
 
-                upiService.createUpiAccount(customerId, accountId, upiAddress, pin);
-                response.sendRedirect(request.getContextPath() + "/customer/upi?msg=UPI ID created successfully!");
-            } else if ("changePin".equalsIgnoreCase(action)) {
-                String oldPin = request.getParameter("oldPin");
-                String newPin = request.getParameter("newPin");
+            UpiAccount upiAcc = upiService.registerUpi(customerId, accountId, customHandle, pin);
 
-                upiService.changeUpiPin(customerId, oldPin, newPin);
-                response.sendRedirect(request.getContextPath() + "/customer/upi?msg=UPI PIN changed successfully!");
-            } else if ("disable".equalsIgnoreCase(action)) {
-                upiService.disableUpi(customerId);
-                response.sendRedirect(request.getContextPath() + "/customer/upi?msg=UPI ID disabled.");
-            } else {
-                response.sendRedirect(request.getContextPath() + "/customer/upi");
-            }
+            response.sendRedirect(request.getContextPath() + "/customer/upi?msg=UPI ID " + upiAcc.getUpiAddress() + " created successfully.");
         } catch (Exception e) {
             try {
-                request.setAttribute("upi", upiService.getUpiByCustomerId(customerId));
                 request.setAttribute("accounts", accountService.getCustomerAccounts(customerId));
+                request.setAttribute("upiAccounts", upiService.getCustomerUpiAccounts(customerId));
             } catch (Exception ignored) {}
-            request.setAttribute("errorMessage", "UPI Operation failed: " + e.getMessage());
+            request.setAttribute("errorMessage", "UPI Registration failed: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/views/customer/upi.jsp").forward(request, response);
         }
     }

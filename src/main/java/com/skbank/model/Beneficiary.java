@@ -7,7 +7,7 @@ public class Beneficiary implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long beneficiaryId;
-    private String customerId;
+    private Long customerId;
     private String beneficiaryName;
     private String accountNumber;
     private String ifscCode;
@@ -21,8 +21,8 @@ public class Beneficiary implements Serializable {
     public Long getBeneficiaryId() { return beneficiaryId; }
     public void setBeneficiaryId(Long beneficiaryId) { this.beneficiaryId = beneficiaryId; }
 
-    public String getCustomerId() { return customerId; }
-    public void setCustomerId(String customerId) { this.customerId = customerId; }
+    public Long getCustomerId() { return customerId; }
+    public void setCustomerId(Long customerId) { this.customerId = customerId; }
 
     public String getBeneficiaryName() { return beneficiaryName; }
     public void setBeneficiaryName(String beneficiaryName) { this.beneficiaryName = beneficiaryName; }

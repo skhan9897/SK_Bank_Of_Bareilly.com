@@ -70,7 +70,7 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public Loan applyLoan(String customerId, Long loanTypeId, BigDecimal principal, int tenureMonths) throws BankException {
+    public Loan applyLoan(Long customerId, Long loanTypeId, BigDecimal principal, int tenureMonths) throws BankException {
         if (!ValidationUtil.isValidAmount(principal)) {
             throw new BankException("Loan amount must be greater than zero");
         }
@@ -121,7 +121,7 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public List<Loan> getCustomerLoans(String customerId) throws BankException {
+    public List<Loan> getCustomerLoans(Long customerId) throws BankException {
         try {
             return loanDAO.findByCustomerId(customerId);
         } catch (Exception e) {
@@ -141,7 +141,7 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public LoanPayment payEmi(Long loanId, Long accountId, String customerId) throws BankException {
+    public LoanPayment payEmi(Long loanId, Long accountId, Long customerId) throws BankException {
         Connection conn = null;
         try {
             Loan loan = loanDAO.findById(loanId);

@@ -86,6 +86,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public Long create(Connection conn, Customer customer) throws SQLException {
+        // DO NOT INCLUDE customer_id IN INSERT STATEMENT (MySQL AUTO_INCREMENT customer_id)
         String sql = "INSERT INTO customers (user_id, customer_number, full_name, date_of_birth, gender, mobile, email, address, city, state, pincode, aadhaar_number, pan_number, profile_image, kyc_status, status, created_at, updated_at) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
 
@@ -116,7 +117,7 @@ public class CustomerDAOImpl implements CustomerDAO {
                 }
             }
         }
-        throw new SQLException("Failed to retrieve AUTO_INCREMENT customer_id for new customer.");
+        throw new SQLException("Failed to retrieve generated AUTO_INCREMENT customer_id for new customer.");
     }
 
     @Override

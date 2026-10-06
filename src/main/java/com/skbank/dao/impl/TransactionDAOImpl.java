@@ -12,16 +12,9 @@ import java.util.List;
 
 public class TransactionDAOImpl implements TransactionDAO {
 
-    private static final String SELECT_JOIN_SQL = 
-        "SELECT t.*, a.account_number, ra.account_number AS related_account_number, c.full_name AS customer_name " +
-        "FROM transactions t " +
-        "JOIN accounts a ON t.account_id = a.account_id " +
-        "JOIN customers c ON a.customer_id = c.customer_id " +
-        "LEFT JOIN accounts ra ON t.related_account_id = ra.account_id ";
-
     @Override
     public Transaction findById(Long transactionId) throws SQLException {
-        String sql = SELECT_JOIN_SQL + "WHERE t.transaction_id = ?";
+        String sql = "SELECT * FROM transactions WHERE transaction_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, transactionId);
@@ -34,7 +27,7 @@ public class TransactionDAOImpl implements TransactionDAO {
 
     @Override
     public Transaction findByReference(String reference) throws SQLException {
-        String sql = SELECT_JOIN_SQL + "WHERE t.transaction_reference = ?";
+        String sql = "SELECT * FROM transactions WHERE transaction_reference = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, reference);
@@ -46,30 +39,28 @@ public class TransactionDAOImpl implements TransactionDAO {
     }
 
     @Override
-    public Long create(Transaction transaction) throws SQLException {
+    public Long create(Transaction t) throws SQLException {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            return create(conn, transaction);
+            return create(conn, t);
         }
     }
 
     @Override
-    public Long create(Connection conn, Transaction transaction) throws SQLException {
-        String sql = "INSERT INTO transactions (transaction_reference, account_id, transaction_type, amount, balance_before, balance_after, related_account_id, description, status, created_at) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+    public Long create(Connection conn, Transaction t) throws SQLException {
+        String sql = "INSERT INTO transactions (transaction_reference, account_id, related_account_id, transaction_type, amount, balance_before, balance_after, description, status, transaction_time, created_at) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
         try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, transaction.getTransactionReference());
-            ps.setLong(2, transaction.getAccountId());
-            ps.setString(3, transaction.getTransactionType().name());
-            ps.setBigDecimal(4, transaction.getAmount());
-            ps.setBigDecimal(5, transaction.getBalanceBefore());
-            ps.setBigDecimal(6, transaction.getBalanceAfter());
-            if (transaction.getRelatedAccountId() != null) {
-                ps.setLong(7, transaction.getRelatedAccountId());
-            } else {
-                ps.setNull(7, Types.BIGINT);
-            }
-            ps.setString(8, transaction.getDescription());
-            ps.setString(9, transaction.getStatus() != null ? transaction.getStatus().name() : TransactionStatus.SUCCESS.name());
+            ps.setString(1, t.getTransactionReference());
+            ps.setLong(2, t.getAccountId());
+            if (t.getRelatedAccountId() != null) ps.setLong(3, t.getRelatedAccountId());
+            else ps.setNull(3, Types.BIGINT);
+            ps.setString(4, t.getTransactionType() != null ? t.getTransactionType().name() : TransactionType.TRANSFER.name());
+            ps.setBigDecimal(5, t.getAmount());
+            ps.setBigDecimal(6, t.getBalanceBefore());
+            ps.setBigDecimal(7, t.getBalanceAfter());
+            ps.setString(8, t.getDescription());
+            ps.setString(9, t.getStatus() != null ? t.getStatus().name() : TransactionStatus.SUCCESS.name());
+
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) return rs.getLong(1);
@@ -80,34 +71,54 @@ public class TransactionDAOImpl implements TransactionDAO {
 
     @Override
     public List<Transaction> findByAccountId(Long accountId, int offset, int limit) throws SQLException {
-        return findFiltered(accountId, null, null, null, offset, limit);
+        List<Transaction> list = new ArrayList<>();
+        String sql = "SELECT * FROM transactions WHERE account_id = ? ORDER BY transaction_id DESC LIMIT ? OFFSET ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, accountId);
+            ps.setInt(2, limit);
+            ps.setInt(3, offset);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) list.add(mapTransaction(rs));
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public long countByAccountId(Long accountId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM transactions WHERE account_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, accountId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getLong(1);
+            }
+        }
+        return 0;
     }
 
     @Override
     public List<Transaction> findFiltered(Long accountId, Date startDate, Date endDate, String type, int offset, int limit) throws SQLException {
         List<Transaction> list = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(SELECT_JOIN_SQL).append("WHERE t.account_id = ? ");
-
-        if (startDate != null) sql.append("AND t.created_at >= ? ");
-        if (endDate != null) sql.append("AND t.created_at <= ? ");
-        if (type != null && !type.trim().isEmpty()) sql.append("AND t.transaction_type = ? ");
-
-        sql.append("ORDER BY t.created_at DESC LIMIT ? OFFSET ?");
+        StringBuilder sql = new StringBuilder("SELECT * FROM transactions WHERE account_id = ? ");
+        if (startDate != null) sql.append("AND transaction_time >= ? ");
+        if (endDate != null) sql.append("AND transaction_time <= ? ");
+        if (type != null && !type.trim().isEmpty() && !"ALL".equalsIgnoreCase(type.trim())) sql.append("AND transaction_type = ? ");
+        sql.append("ORDER BY transaction_id DESC LIMIT ? OFFSET ?");
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-            int p = 1;
-            ps.setLong(p++, accountId);
-            if (startDate != null) ps.setDate(p++, startDate);
-            if (endDate != null) ps.setTimestamp(p++, new Timestamp(endDate.getTime() + (24 * 3600 * 1000L - 1)));
-            if (type != null && !type.trim().isEmpty()) ps.setString(p++, type.trim());
-            ps.setInt(p++, limit);
-            ps.setInt(p, offset);
+            int idx = 1;
+            ps.setLong(idx++, accountId);
+            if (startDate != null) ps.setTimestamp(idx++, new Timestamp(startDate.getTime()));
+            if (endDate != null) ps.setTimestamp(idx++, new Timestamp(endDate.getTime() + 86399000L)); // end of day
+            if (type != null && !type.trim().isEmpty() && !"ALL".equalsIgnoreCase(type.trim())) ps.setString(idx++, type.trim());
+            ps.setInt(idx++, limit);
+            ps.setInt(idx, offset);
 
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(mapTransaction(rs));
-                }
+                while (rs.next()) list.add(mapTransaction(rs));
             }
         }
         return list;
@@ -115,19 +126,18 @@ public class TransactionDAOImpl implements TransactionDAO {
 
     @Override
     public long countFiltered(Long accountId, Date startDate, Date endDate, String type) throws SQLException {
-        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM transactions t WHERE t.account_id = ? ");
-
-        if (startDate != null) sql.append("AND t.created_at >= ? ");
-        if (endDate != null) sql.append("AND t.created_at <= ? ");
-        if (type != null && !type.trim().isEmpty()) sql.append("AND t.transaction_type = ? ");
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM transactions WHERE account_id = ? ");
+        if (startDate != null) sql.append("AND transaction_time >= ? ");
+        if (endDate != null) sql.append("AND transaction_time <= ? ");
+        if (type != null && !type.trim().isEmpty() && !"ALL".equalsIgnoreCase(type.trim())) sql.append("AND transaction_type = ? ");
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-            int p = 1;
-            ps.setLong(p++, accountId);
-            if (startDate != null) ps.setDate(p++, startDate);
-            if (endDate != null) ps.setTimestamp(p++, new Timestamp(endDate.getTime() + (24 * 3600 * 1000L - 1)));
-            if (type != null && !type.trim().isEmpty()) ps.setString(p++, type.trim());
+            int idx = 1;
+            ps.setLong(idx++, accountId);
+            if (startDate != null) ps.setTimestamp(idx++, new Timestamp(startDate.getTime()));
+            if (endDate != null) ps.setTimestamp(idx++, new Timestamp(endDate.getTime() + 86399000L));
+            if (type != null && !type.trim().isEmpty() && !"ALL".equalsIgnoreCase(type.trim())) ps.setString(idx++, type.trim());
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return rs.getLong(1);
@@ -139,40 +149,29 @@ public class TransactionDAOImpl implements TransactionDAO {
     @Override
     public List<Transaction> findAllAdmin(int offset, int limit, String searchQuery, String typeFilter, Date startDate, Date endDate) throws SQLException {
         List<Transaction> list = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(SELECT_JOIN_SQL).append("WHERE 1=1 ");
-
-        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-            sql.append("AND (t.transaction_reference LIKE ? OR a.account_number LIKE ? OR c.full_name LIKE ?) ");
-        }
-        if (typeFilter != null && !typeFilter.trim().isEmpty()) {
-            sql.append("AND t.transaction_type = ? ");
-        }
-        if (startDate != null) sql.append("AND t.created_at >= ? ");
-        if (endDate != null) sql.append("AND t.created_at <= ? ");
-
-        sql.append("ORDER BY t.created_at DESC LIMIT ? OFFSET ?");
+        StringBuilder sql = new StringBuilder("SELECT * FROM transactions WHERE 1=1 ");
+        if (searchQuery != null && !searchQuery.trim().isEmpty()) sql.append("AND (transaction_reference LIKE ? OR description LIKE ?) ");
+        if (typeFilter != null && !typeFilter.trim().isEmpty() && !"ALL".equalsIgnoreCase(typeFilter.trim())) sql.append("AND transaction_type = ? ");
+        if (startDate != null) sql.append("AND transaction_time >= ? ");
+        if (endDate != null) sql.append("AND transaction_time <= ? ");
+        sql.append("ORDER BY transaction_id DESC LIMIT ? OFFSET ?");
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-            int p = 1;
+            int idx = 1;
             if (searchQuery != null && !searchQuery.trim().isEmpty()) {
                 String q = "%" + searchQuery.trim() + "%";
-                ps.setString(p++, q);
-                ps.setString(p++, q);
-                ps.setString(p++, q);
+                ps.setString(idx++, q);
+                ps.setString(idx++, q);
             }
-            if (typeFilter != null && !typeFilter.trim().isEmpty()) {
-                ps.setString(p++, typeFilter.trim());
-            }
-            if (startDate != null) ps.setDate(p++, startDate);
-            if (endDate != null) ps.setTimestamp(p++, new Timestamp(endDate.getTime() + (24 * 3600 * 1000L - 1)));
-            ps.setInt(p++, limit);
-            ps.setInt(p, offset);
+            if (typeFilter != null && !typeFilter.trim().isEmpty() && !"ALL".equalsIgnoreCase(typeFilter.trim())) ps.setString(idx++, typeFilter.trim());
+            if (startDate != null) ps.setTimestamp(idx++, new Timestamp(startDate.getTime()));
+            if (endDate != null) ps.setTimestamp(idx++, new Timestamp(endDate.getTime() + 86399000L));
+            ps.setInt(idx++, limit);
+            ps.setInt(idx, offset);
 
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(mapTransaction(rs));
-                }
+                while (rs.next()) list.add(mapTransaction(rs));
             }
         }
         return list;
@@ -180,31 +179,23 @@ public class TransactionDAOImpl implements TransactionDAO {
 
     @Override
     public long countAllAdmin(String searchQuery, String typeFilter, Date startDate, Date endDate) throws SQLException {
-        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM transactions t JOIN accounts a ON t.account_id = a.account_id JOIN customers c ON a.customer_id = c.customer_id WHERE 1=1 ");
-
-        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-            sql.append("AND (t.transaction_reference LIKE ? OR a.account_number LIKE ? OR c.full_name LIKE ?) ");
-        }
-        if (typeFilter != null && !typeFilter.trim().isEmpty()) {
-            sql.append("AND t.transaction_type = ? ");
-        }
-        if (startDate != null) sql.append("AND t.created_at >= ? ");
-        if (endDate != null) sql.append("AND t.created_at <= ? ");
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM transactions WHERE 1=1 ");
+        if (searchQuery != null && !searchQuery.trim().isEmpty()) sql.append("AND (transaction_reference LIKE ? OR description LIKE ?) ");
+        if (typeFilter != null && !typeFilter.trim().isEmpty() && !"ALL".equalsIgnoreCase(typeFilter.trim())) sql.append("AND transaction_type = ? ");
+        if (startDate != null) sql.append("AND transaction_time >= ? ");
+        if (endDate != null) sql.append("AND transaction_time <= ? ");
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql.toString())) {
-            int p = 1;
+            int idx = 1;
             if (searchQuery != null && !searchQuery.trim().isEmpty()) {
                 String q = "%" + searchQuery.trim() + "%";
-                ps.setString(p++, q);
-                ps.setString(p++, q);
-                ps.setString(p++, q);
+                ps.setString(idx++, q);
+                ps.setString(idx++, q);
             }
-            if (typeFilter != null && !typeFilter.trim().isEmpty()) {
-                ps.setString(p++, typeFilter.trim());
-            }
-            if (startDate != null) ps.setDate(p++, startDate);
-            if (endDate != null) ps.setTimestamp(p++, new Timestamp(endDate.getTime() + (24 * 3600 * 1000L - 1)));
+            if (typeFilter != null && !typeFilter.trim().isEmpty() && !"ALL".equalsIgnoreCase(typeFilter.trim())) ps.setString(idx++, typeFilter.trim());
+            if (startDate != null) ps.setTimestamp(idx++, new Timestamp(startDate.getTime()));
+            if (endDate != null) ps.setTimestamp(idx++, new Timestamp(endDate.getTime() + 86399000L));
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return rs.getLong(1);
@@ -215,7 +206,7 @@ public class TransactionDAOImpl implements TransactionDAO {
 
     @Override
     public long getTodaysTransactionCount() throws SQLException {
-        String sql = "SELECT COUNT(*) FROM transactions WHERE DATE(created_at) = CURDATE()";
+        String sql = "SELECT COUNT(*) FROM transactions WHERE DATE(transaction_time) = CURDATE()";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -229,22 +220,16 @@ public class TransactionDAOImpl implements TransactionDAO {
         t.setTransactionId(rs.getLong("transaction_id"));
         t.setTransactionReference(rs.getString("transaction_reference"));
         t.setAccountId(rs.getLong("account_id"));
-        t.setTransactionType(TransactionType.valueOf(rs.getString("transaction_type")));
+        long relAcc = rs.getLong("related_account_id");
+        if (!rs.wasNull()) t.setRelatedAccountId(relAcc);
+        try { t.setTransactionType(TransactionType.valueOf(rs.getString("transaction_type"))); } catch (Exception ignored) {}
         t.setAmount(rs.getBigDecimal("amount"));
         t.setBalanceBefore(rs.getBigDecimal("balance_before"));
         t.setBalanceAfter(rs.getBigDecimal("balance_after"));
-        long relId = rs.getLong("related_account_id");
-        if (!rs.wasNull()) {
-            t.setRelatedAccountId(relId);
-        }
         t.setDescription(rs.getString("description"));
-        t.setStatus(TransactionStatus.valueOf(rs.getString("status")));
+        try { t.setStatus(TransactionStatus.valueOf(rs.getString("status"))); } catch (Exception ignored) {}
+        t.setTransactionTime(rs.getTimestamp("transaction_time"));
         t.setCreatedAt(rs.getTimestamp("created_at"));
-
-        try { t.setAccountNumber(rs.getString("account_number")); } catch (SQLException ignored) {}
-        try { t.setRelatedAccountNumber(rs.getString("related_account_number")); } catch (SQLException ignored) {}
-        try { t.setCustomerName(rs.getString("customer_name")); } catch (SQLException ignored) {}
-
         return t;
     }
 }
