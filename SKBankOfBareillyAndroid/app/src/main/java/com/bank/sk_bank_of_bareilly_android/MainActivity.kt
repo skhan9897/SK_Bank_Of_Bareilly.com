@@ -16,14 +16,20 @@ import android.view.View
 import android.webkit.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
 
+    private var drawerLayout: DrawerLayout? = null
+    private var navigationView: NavigationView? = null
     private lateinit var bottomNavigation: BottomNavigationView
     private lateinit var webViewContainer: FrameLayout
     private var webView: WebView? = null
@@ -36,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnRetry: MaterialButton
     private lateinit var btnSwitchServer: MaterialButton
     private lateinit var toolbar: MaterialToolbar
+    private var drawerToggle: ActionBarDrawerToggle? = null
 
     private var fileUploadCallback: ValueCallback<Array<Uri>>? = null
     private var currentServerUrl: String = "https://sk-bank-of-bareilly-com.onrender.com/"
@@ -91,7 +98,8 @@ class MainActivity : AppCompatActivity() {
             val prefs = getSharedPreferences("SK_BANK_PREFS", Context.MODE_PRIVATE)
             currentServerUrl = prefs.getString("SERVER_URL", "https://sk-bank-of-bareilly-com.onrender.com/") ?: "https://sk-bank-of-bareilly-com.onrender.com/"
 
-            webViewContainer = findViewById(R.id.webViewContainer)
+            drawerLayout = findViewById(R.id.drawerLayout)
+            navigationView = findViewById(R.id.navigationView)
             bottomNavigation = findViewById(R.id.bottomNavigation)
             toolbar = findViewById(R.id.toolbar)
 
@@ -99,6 +107,23 @@ class MainActivity : AppCompatActivity() {
                 setSupportActionBar(toolbar)
             } catch (ignored: Exception) {}
 
+            val dl = drawerLayout
+            if (dl != null) {
+                try {
+                    val dt = ActionBarDrawerToggle(
+                        this,
+                        dl,
+                        toolbar,
+                        R.string.app_name,
+                        R.string.app_name
+                    )
+                    drawerToggle = dt
+                    dl.addDrawerListener(dt)
+                    dt.syncState()
+                } catch (ignored: Exception) {}
+            }
+
+            webViewContainer = findViewById(R.id.webViewContainer)
             progressBar = findViewById(R.id.progressBar)
             loadingOverlay = findViewById(R.id.loadingOverlay)
             splashOverlay = findViewById(R.id.splashOverlay)
@@ -122,6 +147,7 @@ class MainActivity : AppCompatActivity() {
 
             setupDynamicWebView()
             setupBottomNavigation()
+            setupDrawerNavigation()
 
             webView?.loadUrl(currentServerUrl)
 
@@ -146,7 +172,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupDynamicWebView() {
         try {
-            val wv = WebView(applicationContext)
+            val wv = WebView(this)
             webView = wv
             webViewContainer.removeAllViews()
             webViewContainer.addView(wv)
@@ -391,6 +417,42 @@ class MainActivity : AppCompatActivity() {
         } catch (ignored: Exception) {}
     }
 
+    private fun setupDrawerNavigation() {
+        try {
+            val nv = navigationView ?: return
+            val dl = drawerLayout
+            nv.setNavigationItemSelectedListener { item ->
+                try {
+                    dl?.closeDrawer(GravityCompat.START)
+                } catch (ignored: Exception) {}
+                when (item.itemId) {
+                    R.id.menu_mode_netbanking -> navigateToPath("customer/dashboard")
+                    R.id.menu_mode_paymentbank -> navigateToPath("customer/upi")
+
+                    R.id.menu_dashboard -> navigateToPath("customer/dashboard")
+                    R.id.menu_accounts -> navigateToPath("customer/accounts")
+                    R.id.menu_send_money -> navigateToPath("customer/send-money")
+                    R.id.menu_withdraw -> navigateToPath("customer/withdraw")
+                    R.id.menu_statements -> navigateToPath("customer/statements")
+                    R.id.menu_loans -> navigateToPath("customer/loans")
+                    R.id.menu_fds -> navigateToPath("customer/fixed-deposits")
+                    R.id.menu_cards -> navigateToPath("customer/cards")
+
+                    R.id.menu_upi -> navigateToPath("customer/upi")
+                    R.id.menu_bills -> navigateToPath("customer/bill-payments")
+                    R.id.menu_beneficiaries -> navigateToPath("customer/beneficiaries")
+
+                    R.id.menu_kyc -> navigateToPath("customer/kyc")
+                    R.id.menu_profile -> navigateToPath("customer/profile")
+                    R.id.menu_complaints -> navigateToPath("customer/complaints")
+                    R.id.menu_server -> showServerSwitcherDialog()
+                    R.id.menu_logout -> navigateToPath("auth/logout")
+                }
+                true
+            }
+        } catch (ignored: Exception) {}
+    }
+
     private fun navigateToPath(path: String) {
         try {
             val targetUrl = if (currentServerUrl.endsWith("/")) {
@@ -412,6 +474,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        try {
+            val dt = drawerToggle
+            if (dt != null && dt.onOptionsItemSelected(item)) {
+                return true
+            }
+        } catch (ignored: Exception) {}
+
         return when (item.itemId) {
             R.id.action_refresh -> {
                 try { webView?.reload() } catch (ignored: Exception) {}
@@ -488,6 +557,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         try {
+            val dl = drawerLayout
+            if (dl != null && dl.isDrawerOpen(GravityCompat.START)) {
+                dl.closeDrawer(GravityCompat.START)
+                return
+            }
             val wv = webView
             if (wv != null && wv.canGoBack()) {
                 val currentUrl = wv.url
