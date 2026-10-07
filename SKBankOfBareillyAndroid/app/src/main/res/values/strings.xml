@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">SK-Bank-Of-Bareilly-Android</string>
+    <string name="app_name">SK Bank Bareilly</string>
+    <string name="slogan">TRUST | GROWTH | TOGETHER</string>
+    <string name="default_server_url">https://sk-bank-of-bareilly-com.onrender.com/</string>
 </resources>

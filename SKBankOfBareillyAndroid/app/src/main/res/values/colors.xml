@@ -2,4 +2,16 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- SK BANK BRAND COLORS -->
+    <color name="deep_navy">#071F49</color>
+    <color name="royal_blue">#0B4EA2</color>
+    <color name="gold_accent">#D4A72C</color>
+    <color name="light_gold">#F4D477</color>
+    <color name="bg_main">#F5F8FC</color>
+    <color name="card_border">#E2E8F0</color>
+    <color name="text_dark">#071F49</color>
+    <color name="text_muted">#64748B</color>
+    <color name="success_green">#10B981</color>
+    <color name="danger_red">#EF4444</color>
 </resources>

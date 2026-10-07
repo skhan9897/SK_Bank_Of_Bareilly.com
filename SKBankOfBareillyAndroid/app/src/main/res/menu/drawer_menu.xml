@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/group_modes">
+        <item
+            android:id="@+id/menu_mode_netbanking"
+            android:icon="@drawable/ic_nav_home"
+            android:title="Net Banking Mode" />
+        <item
+            android:id="@+id/menu_mode_paymentbank"
+            android:icon="@drawable/ic_nav_upi"
+            android:title="Payment Bank &amp; UPI Mode" />
+    </group>
+
+    <item android:title="NET BANKING SERVICES">
+        <menu>
+            <item
+                android:id="@+id/menu_dashboard"
+                android:icon="@drawable/ic_nav_home"
+                android:title="Dashboard" />
+            <item
+                android:id="@+id/menu_accounts"
+                android:icon="@drawable/ic_nav_accounts"
+                android:title="My Accounts" />
+            <item
+                android:id="@+id/menu_send_money"
+                android:icon="@drawable/ic_nav_payments"
+                android:title="Send Money" />
+            <item
+                android:id="@+id/menu_withdraw"
+                android:icon="@drawable/ic_nav_payments"
+                android:title="Withdraw Cash" />
+            <item
+                android:id="@+id/menu_statements"
+                android:icon="@drawable/ic_nav_history"
+                android:title="Statements" />
+            <item
+                android:id="@+id/menu_loans"
+                android:icon="@drawable/ic_nav_cards"
+                android:title="Loans &amp; EMIs" />
+            <item
+                android:id="@+id/menu_fds"
+                android:icon="@drawable/ic_nav_accounts"
+                android:title="Fixed Deposits" />
+            <item
+                android:id="@+id/menu_cards"
+                android:icon="@drawable/ic_nav_cards"
+                android:title="Manage Cards" />
+        </menu>
+    </item>
+
+    <item android:title="PAYMENT BANK &amp; UPI">
+        <menu>
+            <item
+                android:id="@+id/menu_upi"
+                android:icon="@drawable/ic_nav_upi"
+                android:title="My UPI &amp; QR Pay" />
+            <item
+                android:id="@+id/menu_bills"
+                android:icon="@drawable/ic_nav_bills"
+                android:title="Bill Payments &amp; Recharges" />
+            <item
+                android:id="@+id/menu_beneficiaries"
+                android:icon="@drawable/ic_nav_profile"
+                android:title="Beneficiaries" />
+        </menu>
+    </item>
+
+    <item android:title="ACCOUNT &amp; SUPPORT">
+        <menu>
+            <item
+                android:id="@+id/menu_kyc"
+                android:icon="@drawable/ic_nav_profile"
+                android:title="KYC Details" />
+            <item
+                android:id="@+id/menu_profile"
+                android:icon="@drawable/ic_nav_profile"
+                android:title="My Profile" />
+            <item
+                android:id="@+id/menu_complaints"
+                android:icon="@drawable/ic_nav_support"
+                android:title="Support Complaints" />
+            <item
+                android:id="@+id/menu_server"
+                android:icon="@drawable/ic_nav_bills"
+                android:title="Switch Server Config" />
+            <item
+                android:id="@+id/menu_logout"
+                android:icon="@drawable/ic_nav_logout"
+                android:title="Logout" />
+        </menu>
+    </item>
+
+</menu>
