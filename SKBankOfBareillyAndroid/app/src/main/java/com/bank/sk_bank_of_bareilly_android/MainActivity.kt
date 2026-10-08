@@ -28,11 +28,10 @@ import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
 
-    private var drawerLayout: DrawerLayout? = null
-    private var navigationView: NavigationView? = null
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
     private lateinit var bottomNavigation: BottomNavigationView
-    private lateinit var webViewContainer: FrameLayout
-    private var webView: WebView? = null
+    private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
     private lateinit var loadingOverlay: RelativeLayout
     private lateinit var splashOverlay: RelativeLayout
@@ -107,23 +106,20 @@ class MainActivity : AppCompatActivity() {
                 setSupportActionBar(toolbar)
             } catch (ignored: Exception) {}
 
-            val dl = drawerLayout
-            if (dl != null) {
-                try {
-                    val dt = ActionBarDrawerToggle(
-                        this,
-                        dl,
-                        toolbar,
-                        R.string.app_name,
-                        R.string.app_name
-                    )
-                    drawerToggle = dt
-                    dl.addDrawerListener(dt)
-                    dt.syncState()
-                } catch (ignored: Exception) {}
-            }
+            try {
+                val dt = ActionBarDrawerToggle(
+                    this,
+                    drawerLayout,
+                    toolbar,
+                    R.string.app_name,
+                    R.string.app_name
+                )
+                drawerToggle = dt
+                drawerLayout.addDrawerListener(dt)
+                dt.syncState()
+            } catch (ignored: Exception) {}
 
-            webViewContainer = findViewById(R.id.webViewContainer)
+            webView = findViewById(R.id.webView)
             progressBar = findViewById(R.id.progressBar)
             loadingOverlay = findViewById(R.id.loadingOverlay)
             splashOverlay = findViewById(R.id.splashOverlay)
@@ -136,8 +132,10 @@ class MainActivity : AppCompatActivity() {
             btnRetry.setOnClickListener {
                 try {
                     offlineLayout.visibility = View.GONE
-                    webViewContainer.visibility = View.VISIBLE
-                    webView?.loadUrl(currentServerUrl)
+                    webView.visibility = View.VISIBLE
+                    tvLoadingMessage.text = "Connecting to SK Bank Server..."
+                    loadingOverlay.visibility = View.VISIBLE
+                    webView.loadUrl(currentServerUrl)
                 } catch (ignored: Exception) {}
             }
 
@@ -145,11 +143,13 @@ class MainActivity : AppCompatActivity() {
                 showServerSwitcherDialog()
             }
 
-            setupDynamicWebView()
+            setupWebView()
             setupBottomNavigation()
             setupDrawerNavigation()
 
-            webView?.loadUrl(currentServerUrl)
+            tvLoadingMessage.text = "Connecting to SK Bank Server..."
+            loadingOverlay.visibility = View.VISIBLE
+            webView.loadUrl(currentServerUrl)
 
             // Smooth 1.8-second splash screen transition
             Handler(Looper.getMainLooper()).postDelayed({
@@ -170,14 +170,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupDynamicWebView() {
+    private fun setupWebView() {
         try {
-            val wv = WebView(this)
-            webView = wv
-            webViewContainer.removeAllViews()
-            webViewContainer.addView(wv)
-
-            val settings = wv.settings
+            val settings = webView.settings
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             try { settings.databaseEnabled = true } catch (ignored: Exception) {}
@@ -194,13 +189,13 @@ class MainActivity : AppCompatActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 try {
                     settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-                    CookieManager.getInstance().setAcceptThirdPartyCookies(wv, true)
+                    CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
                 } catch (ignored: Exception) {}
             }
 
-            wv.addJavascriptInterface(WebAppInterface(), "AndroidBridge")
+            webView.addJavascriptInterface(WebAppInterface(), "AndroidBridge")
 
-            wv.webViewClient = object : WebViewClient() {
+            webView.webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                     try {
                         val reqUrl = request?.url?.toString()
@@ -226,7 +221,7 @@ class MainActivity : AppCompatActivity() {
                             loadingOverlay.visibility = View.VISIBLE
                         }
                         offlineLayout.visibility = View.GONE
-                        webViewContainer.visibility = View.VISIBLE
+                        webView.visibility = View.VISIBLE
 
                         if (url != null) {
                             when {
@@ -325,7 +320,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            wv.webChromeClient = object : WebChromeClient() {
+            webView.webChromeClient = object : WebChromeClient() {
                 override fun onProgressChanged(view: WebView?, newProgress: Int) {
                     try {
                         progressBar.progress = newProgress
@@ -365,7 +360,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            wv.setDownloadListener { url, userAgent, contentDisposition, mimeType, contentLength ->
+            webView.setDownloadListener { url, userAgent, contentDisposition, mimeType, contentLength ->
                 try {
                     val request = DownloadManager.Request(Uri.parse(url)).apply {
                         setMimeType(mimeType)
@@ -396,9 +391,9 @@ class MainActivity : AppCompatActivity() {
         try {
             progressBar.visibility = View.GONE
             loadingOverlay.visibility = View.GONE
-            webViewContainer.visibility = View.GONE
+            webView.visibility = View.GONE
             offlineLayout.visibility = View.VISIBLE
-            tvErrorDetails.text = "Unable to connect to server (${description ?: "Please check internet connection"}).\nPlease check your internet connection and try again."
+            tvErrorDetails.text = "Unable to connect to server. Please check your internet connection and try again."
         } catch (ignored: Exception) {}
     }
 
@@ -419,11 +414,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupDrawerNavigation() {
         try {
-            val nv = navigationView ?: return
-            val dl = drawerLayout
-            nv.setNavigationItemSelectedListener { item ->
+            navigationView.setNavigationItemSelectedListener { item ->
                 try {
-                    dl?.closeDrawer(GravityCompat.START)
+                    drawerLayout.closeDrawer(GravityCompat.START)
                 } catch (ignored: Exception) {}
                 when (item.itemId) {
                     R.id.menu_mode_netbanking -> navigateToPath("customer/dashboard")
@@ -460,7 +453,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 "$currentServerUrl/$path"
             }
-            webView?.loadUrl(targetUrl)
+            webView.loadUrl(targetUrl)
         } catch (ignored: Exception) {}
     }
 
@@ -483,11 +476,11 @@ class MainActivity : AppCompatActivity() {
 
         return when (item.itemId) {
             R.id.action_refresh -> {
-                try { webView?.reload() } catch (ignored: Exception) {}
+                try { webView.reload() } catch (ignored: Exception) {}
                 true
             }
             R.id.action_home -> {
-                try { webView?.loadUrl(currentServerUrl) } catch (ignored: Exception) {}
+                try { webView.loadUrl(currentServerUrl) } catch (ignored: Exception) {}
                 true
             }
             R.id.action_server -> {
@@ -549,26 +542,24 @@ class MainActivity : AppCompatActivity() {
                 .apply()
 
             offlineLayout.visibility = View.GONE
-            webViewContainer.visibility = View.VISIBLE
-            webView?.loadUrl(currentServerUrl)
+            webView.visibility = View.VISIBLE
+            webView.loadUrl(currentServerUrl)
             Toast.makeText(this, "Connecting to $newUrl", Toast.LENGTH_SHORT).show()
         } catch (ignored: Exception) {}
     }
 
     override fun onBackPressed() {
         try {
-            val dl = drawerLayout
-            if (dl != null && dl.isDrawerOpen(GravityCompat.START)) {
-                dl.closeDrawer(GravityCompat.START)
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START)
                 return
             }
-            val wv = webView
-            if (wv != null && wv.canGoBack()) {
-                val currentUrl = wv.url
+            if (webView.canGoBack()) {
+                val currentUrl = webView.url
                 if (currentUrl != null && (currentUrl.endsWith("/customer/dashboard") || currentUrl.endsWith("/login") || currentUrl == currentServerUrl || currentUrl == "$currentServerUrl/")) {
                     confirmAppExit()
                 } else {
-                    wv.goBack()
+                    webView.goBack()
                 }
             } else {
                 confirmAppExit()
