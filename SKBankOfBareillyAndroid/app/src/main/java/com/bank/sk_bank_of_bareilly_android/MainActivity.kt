@@ -24,6 +24,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -142,10 +144,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         @JavascriptInterface
-        fun hideProcessing() {
+        fun promptBiometrics() {
             runOnUiThread {
                 try {
-                    loadingOverlay.visibility = View.GONE
+                    triggerBiometricUnlock()
                 } catch (ignored: Exception) {}
             }
         }
@@ -244,22 +246,82 @@ class MainActivity : AppCompatActivity() {
             loadingOverlay.visibility = View.VISIBLE
             webView?.loadUrl(currentServerUrl)
 
-            // Smooth 1.8-second splash screen transition
-            Handler(Looper.getMainLooper()).postDelayed({
-                try {
-                    splashOverlay.animate()
-                        .alpha(0f)
-                        .setDuration(400)
-                        .withEndAction {
-                            splashOverlay.visibility = View.GONE
-                            splashOverlay.alpha = 1f
-                        }
-                } catch (e: Exception) {
-                    splashOverlay.visibility = View.GONE
-                }
-            }, 1800)
+            val isFirstLoginDone = prefs.getBoolean("FIRST_LOGIN_DONE", false)
+            if (isFirstLoginDone) {
+                splashOverlay.visibility = View.VISIBLE
+                Handler(Looper.getMainLooper()).postDelayed({
+                    triggerBiometricUnlock()
+                }, 600)
+            } else {
+                // Smooth 1.8-second splash screen transition for initial login
+                Handler(Looper.getMainLooper()).postDelayed({
+                    unlockAppContent()
+                }, 1800)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    fun triggerBiometricUnlock() {
+        try {
+            val biometricManager = BiometricManager.from(this)
+            val authenticators = BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+
+            if (biometricManager.canAuthenticate(authenticators) == BiometricManager.BIOMETRIC_SUCCESS) {
+                val executor = ContextCompat.getMainExecutor(this)
+                val biometricPrompt = BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
+                    override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                        super.onAuthenticationSucceeded(result)
+                        runOnUiThread {
+                            Toast.makeText(this@MainActivity, "Biometric Verification Successful!", Toast.LENGTH_SHORT).show()
+                            unlockAppContent()
+                        }
+                    }
+
+                    override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                        super.onAuthenticationError(errorCode, errString)
+                        runOnUiThread {
+                            Toast.makeText(this@MainActivity, "Biometric: $errString", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onAuthenticationFailed() {
+                        super.onAuthenticationFailed()
+                        runOnUiThread {
+                            Toast.makeText(this@MainActivity, "Biometric not recognized. Try again.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                })
+
+                val promptInfo = BiometricPrompt.PromptInfo.Builder()
+                    .setTitle("SK BANK OF BAREILLY")
+                    .setSubtitle("Verify fingerprint or face to unlock your bank account")
+                    .setAllowedAuthenticators(authenticators)
+                    .build()
+
+                biometricPrompt.authenticate(promptInfo)
+            } else {
+                unlockAppContent()
+            }
+        } catch (e: Exception) {
+            unlockAppContent()
+        }
+    }
+
+    private fun unlockAppContent() {
+        runOnUiThread {
+            try {
+                splashOverlay.animate()
+                    .alpha(0f)
+                    .setDuration(350)
+                    .withEndAction {
+                        splashOverlay.visibility = View.GONE
+                        splashOverlay.alpha = 1f
+                    }
+            } catch (e: Exception) {
+                splashOverlay.visibility = View.GONE
+            }
         }
     }
 
@@ -376,11 +438,22 @@ class MainActivity : AppCompatActivity() {
                         if (url != null) {
                             isProgrammaticNavigation = true
                             when {
-                                url.contains("/customer/dashboard") -> if (bottomNavigation.selectedItemId != R.id.nav_home) bottomNavigation.selectedItemId = R.id.nav_home
+                                url.contains("/customer/dashboard") -> {
+                                    if (bottomNavigation.selectedItemId != R.id.nav_home) bottomNavigation.selectedItemId = R.id.nav_home
+                                    val prefs = getSharedPreferences("SK_BANK_PREFS", MODE_PRIVATE)
+                                    if (!prefs.getBoolean("FIRST_LOGIN_DONE", false)) {
+                                        prefs.edit().putBoolean("FIRST_LOGIN_DONE", true).apply()
+                                        Toast.makeText(this@MainActivity, "Biometric Security Enabled for Future Logins!", Toast.LENGTH_LONG).show()
+                                    }
+                                }
                                 url.contains("/customer/accounts") -> if (bottomNavigation.selectedItemId != R.id.nav_accounts) bottomNavigation.selectedItemId = R.id.nav_accounts
                                 url.contains("/customer/send-money") || url.contains("/customer/upi") -> if (bottomNavigation.selectedItemId != R.id.nav_payments) bottomNavigation.selectedItemId = R.id.nav_payments
                                 url.contains("/customer/transactions") -> if (bottomNavigation.selectedItemId != R.id.nav_transactions) bottomNavigation.selectedItemId = R.id.nav_transactions
                                 url.contains("/customer/profile") -> if (bottomNavigation.selectedItemId != R.id.nav_profile) bottomNavigation.selectedItemId = R.id.nav_profile
+                                url.contains("/logout") -> {
+                                    val prefs = getSharedPreferences("SK_BANK_PREFS", MODE_PRIVATE)
+                                    prefs.edit().putBoolean("FIRST_LOGIN_DONE", false).apply()
+                                }
                             }
                             isProgrammaticNavigation = false
                         }
