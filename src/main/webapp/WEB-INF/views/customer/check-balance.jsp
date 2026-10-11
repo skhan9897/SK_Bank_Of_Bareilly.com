@@ -29,7 +29,7 @@
                                     <i class="fa-solid fa-vault"></i>
                                 </div>
                                 <div>
-                                    <h6 class="fw-bold text-navy mb-0">${acc.accountType}</h6>
+                                    <h6 class="fw-bold text-navy mb-0">${empty acc.accountTypeName ? 'Savings Account' : acc.accountTypeName}</h6>
                                     <span class="font-monospace text-muted small">${acc.maskedAccountNumber}</span>
                                 </div>
                             </div>

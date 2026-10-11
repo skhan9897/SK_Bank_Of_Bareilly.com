@@ -68,6 +68,10 @@ public class Account implements Serializable {
     public String getAccountTypeName() { return accountTypeName; }
     public void setAccountTypeName(String accountTypeName) { this.accountTypeName = accountTypeName; }
 
+    public String getAccountType() {
+        return accountTypeName != null && !accountTypeName.trim().isEmpty() ? accountTypeName : "Savings Account";
+    }
+
     public String getAccountTypeCode() { return accountTypeCode; }
     public void setAccountTypeCode(String accountTypeCode) { this.accountTypeCode = accountTypeCode; }
 

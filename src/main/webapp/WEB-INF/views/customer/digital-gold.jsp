@@ -70,7 +70,7 @@
                             <select name="accountId" class="form-select rounded-3" required>
                                 <c:forEach var="acc" items="${accounts}">
                                     <option value="${acc.accountId}">
-                                        ${acc.maskedAccountNumber} (${acc.accountType}) - Available: ₹<fmt:formatNumber value="${acc.balance}" pattern="#,##0.00"/>
+                                        ${acc.maskedAccountNumber} (${empty acc.accountTypeName ? 'Savings Account' : acc.accountTypeName}) - Available: ₹<fmt:formatNumber value="${acc.balance}" pattern="#,##0.00"/>
                                     </option>
                                 </c:forEach>
                             </select>
