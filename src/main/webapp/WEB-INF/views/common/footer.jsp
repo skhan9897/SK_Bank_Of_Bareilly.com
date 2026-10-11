@@ -104,23 +104,35 @@
 <c:if test="${not empty sessionScope.CUSTOMER_ID}">
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    try {
-        fetch('${pageContext.request.contextPath}/api/customer/notifications')
-            .then(function(res) { return res.json(); })
-            .then(function(data) {
-                if (data && data.success && data.data && data.data.length > 0) {
-                    var unread = data.data.filter(function(n) { return !n.read; });
-                    if (unread.length > 0) {
-                        unread.forEach(function(notif) {
-                            if (window.AndroidBridge && typeof window.AndroidBridge.showNotification === "function") {
-                                window.AndroidBridge.showNotification(notif.title, notif.message);
-                            }
-                        });
+    function pollUnreadNotifications() {
+        try {
+            fetch('${pageContext.request.contextPath}/api/customer/notifications')
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    if (data && data.success && data.data && data.data.length > 0) {
+                        var unread = data.data.filter(function(n) { return !n.read; });
+                        if (unread.length > 0) {
+                            unread.forEach(function(notif) {
+                                // 1. Trigger Native Android System Notification
+                                if (window.AndroidBridge && typeof window.AndroidBridge.showNotification === "function") {
+                                    window.AndroidBridge.showNotification(notif.title, notif.message);
+                                }
+
+                                // 2. Mark as read so it won't repeat endlessly
+                                fetch('${pageContext.request.contextPath}/api/customer/notifications?id=' + notif.notificationId, {
+                                    method: 'POST'
+                                }).catch(function(e){});
+                            });
+                        }
                     }
-                }
-            })
-            .catch(function(e) { console.log("Notification sync notice:", e); });
-    } catch (e) {}
+                })
+                .catch(function(e) { console.log("Notification sync notice:", e); });
+        } catch (e) {}
+    }
+
+    // Run immediately on page load and poll every 4 seconds
+    pollUnreadNotifications();
+    setInterval(pollUnreadNotifications, 4000);
 });
 </script>
 </c:if>

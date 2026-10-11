@@ -10,11 +10,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a71f9876-05f1-4f73-8380-b66a0d6aa89d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/customer/DigitalGoldServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/controller/customer/DigitalGoldServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/customer/QrPayServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/controller/customer/QrPayServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/customer/RewardsServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/controller/customer/RewardsServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/TransactionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/service/impl/TransactionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/service/impl/TransactionServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/controller/api/NotificationApiServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/controller/api/NotificationApiServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/footer.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/footer.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
