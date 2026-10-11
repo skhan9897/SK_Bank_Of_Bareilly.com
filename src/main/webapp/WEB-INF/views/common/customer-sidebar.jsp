@@ -71,6 +71,11 @@
             </a>
         </li>
         <li class="sidebar-item">
+            <a href="${pageContext.request.contextPath}/customer/cibil-score" class="sidebar-link ${pageContext.request.requestURI.contains('/cibil-score') ? 'active' : ''}">
+                <i class="fa-solid fa-chart-line text-success"></i> Free CIBIL Score
+            </a>
+        </li>
+        <li class="sidebar-item">
             <a href="${pageContext.request.contextPath}/customer/fixed-deposits" class="sidebar-link ${pageContext.request.requestURI.contains('/fixed-deposits') ? 'active' : ''}">
                 <i class="fa-solid fa-piggy-bank"></i> Fixed Deposits
             </a>

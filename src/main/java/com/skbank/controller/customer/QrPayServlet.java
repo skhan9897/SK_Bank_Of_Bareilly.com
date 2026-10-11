@@ -55,6 +55,9 @@ public class QrPayServlet extends HttpServlet {
         Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
 
         try {
+            String upiPin = request.getParameter("upiPin");
+            upiService.verifyUpiPin(customerId, upiPin);
+
             Long senderAccountId = Long.parseLong(request.getParameter("senderAccountId"));
             String recipientDetail = request.getParameter("recipientDetail");
             BigDecimal amount = new BigDecimal(request.getParameter("amount"));

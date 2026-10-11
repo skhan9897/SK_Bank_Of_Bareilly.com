@@ -4,8 +4,10 @@ import com.skbank.model.Account;
 import com.skbank.model.BillPayment;
 import com.skbank.service.AccountService;
 import com.skbank.service.BillPaymentService;
+import com.skbank.service.UpiService;
 import com.skbank.service.impl.AccountServiceImpl;
 import com.skbank.service.impl.BillPaymentServiceImpl;
+import com.skbank.service.impl.UpiServiceImpl;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -23,6 +25,7 @@ public class BillPaymentServlet extends HttpServlet {
 
     private final BillPaymentService billPaymentService = new BillPaymentServiceImpl();
     private final AccountService accountService = new AccountServiceImpl();
+    private final UpiService upiService = new UpiServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -52,6 +55,11 @@ public class BillPaymentServlet extends HttpServlet {
         Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
 
         try {
+            String upiPin = request.getParameter("upiPin");
+            if (upiPin != null && !upiPin.trim().isEmpty()) {
+                upiService.verifyUpiPin(customerId, upiPin);
+            }
+
             Long accountId = Long.parseLong(request.getParameter("accountId"));
             String billerType = request.getParameter("billerType");
             String billerName = request.getParameter("billerName");

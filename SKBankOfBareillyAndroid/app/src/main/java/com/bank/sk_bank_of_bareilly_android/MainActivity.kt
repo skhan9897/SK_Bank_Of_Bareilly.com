@@ -395,34 +395,9 @@ class MainActivity : AppCompatActivity() {
                     try {
                         super.onPageStarted(view, url, favicon)
                         progressBar.visibility = View.VISIBLE
-                        if (splashOverlay.visibility != View.VISIBLE) {
-                            loadingOverlay.visibility = View.VISIBLE
-                        }
+                        loadingOverlay.visibility = View.GONE
                         offlineLayout.visibility = View.GONE
                         webViewContainer.visibility = View.VISIBLE
-
-                        if (url != null) {
-                            when {
-                                url.contains("/send-money") || url.contains("/transfer") || url.contains("/payment") -> {
-                                    tvLoadingMessage.text = "Processing Secure Payment..."
-                                }
-                                url.contains("/upi") -> {
-                                    tvLoadingMessage.text = "Processing UPI Request..."
-                                }
-                                url.contains("/withdraw") || url.contains("/deposits") -> {
-                                    tvLoadingMessage.text = "Processing Cash Transaction..."
-                                }
-                                url.contains("/login") || url.contains("/register") -> {
-                                    tvLoadingMessage.text = "Authenticating Credentials..."
-                                }
-                                url.contains("/bills") || url.contains("/bill-payments") -> {
-                                    tvLoadingMessage.text = "Fetching Bill Details..."
-                                }
-                                else -> {
-                                    tvLoadingMessage.text = "Processing Secure Banking Request..."
-                                }
-                            }
-                        }
                     } catch (ignored: Exception) {}
                 }
 

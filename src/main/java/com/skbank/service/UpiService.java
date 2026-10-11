@@ -7,9 +7,12 @@ import java.util.List;
 
 public interface UpiService {
     UpiAccount getUpiByCustomerId(Long customerId) throws BankException;
+    UpiAccount getOrCreateDefaultUpiAccount(Long customerId) throws BankException;
     List<UpiAccount> getCustomerUpiAccounts(Long customerId) throws BankException;
     UpiAccount registerUpi(Long customerId, Long accountId, String desiredHandle, String plainPin) throws BankException;
     UpiAccount createUpiAccount(Long customerId, Long accountId, String desiredUpiAddress, String plainPin) throws BankException;
+    boolean verifyUpiPin(Long customerId, String pin) throws BankException;
+    boolean setUpiPin(Long customerId, String newPin) throws BankException;
     boolean changeUpiPin(Long customerId, String oldPin, String newPin) throws BankException;
     boolean changeUpiAddress(Long customerId, String newUpiAddress) throws BankException;
     boolean disableUpi(Long customerId) throws BankException;

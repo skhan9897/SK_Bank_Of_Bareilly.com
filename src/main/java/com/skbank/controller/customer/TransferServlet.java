@@ -3,7 +3,9 @@ package com.skbank.controller.customer;
 import com.skbank.dto.TransferDTO;
 import com.skbank.model.TransferRequest;
 import com.skbank.service.TransferService;
+import com.skbank.service.UpiService;
 import com.skbank.service.impl.TransferServiceImpl;
+import com.skbank.service.impl.UpiServiceImpl;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -23,6 +25,7 @@ public class TransferServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private final TransferService transferService = new TransferServiceImpl();
+    private final UpiService upiService = new UpiServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -58,12 +61,14 @@ public class TransferServlet extends HttpServlet {
                 request.setAttribute("transferData", dto);
                 request.getRequestDispatcher("/WEB-INF/views/customer/transfer-confirmation.jsp").forward(request, response);
             } catch (Exception e) {
-                request.setAttribute("errorMessage", "Invalid transfer parameters: " + e.getMessage());
                 response.sendRedirect(request.getContextPath() + "/customer/send-money?error=" + e.getMessage());
             }
         } else {
-            // Execution Step
+            // Execution Step - Mandatory 4-Digit UPI PIN Verification
             try {
+                String upiPin = request.getParameter("upiPin");
+                upiService.verifyUpiPin(customerId, upiPin);
+
                 TransferDTO dto = new TransferDTO();
                 dto.setSenderAccountId(Long.parseLong(request.getParameter("senderAccountId")));
                 dto.setReceiverAccountId(Long.parseLong(request.getParameter("receiverAccountId")));
@@ -79,7 +84,6 @@ public class TransferServlet extends HttpServlet {
 
                 response.sendRedirect(request.getContextPath() + "/customer/transfer-success");
             } catch (Exception e) {
-                request.setAttribute("errorMessage", "Transfer failed: " + e.getMessage());
                 response.sendRedirect(request.getContextPath() + "/customer/send-money?error=" + e.getMessage());
             }
         }
