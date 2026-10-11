@@ -257,8 +257,7 @@ class MainActivity : AppCompatActivity() {
             val isFirstLoginDone = prefs.getBoolean("FIRST_LOGIN_DONE", false)
             val initialTargetUrl = if (isFirstLoginDone) getDashboardUrl() else currentServerUrl
 
-            tvLoadingMessage.text = if (isFirstLoginDone) "Loading Customer Dashboard..." else "Connecting to SK Bank Server..."
-            loadingOverlay.visibility = View.VISIBLE
+            loadingOverlay.visibility = View.GONE
             webView?.loadUrl(initialTargetUrl)
 
             if (isFirstLoginDone) {
