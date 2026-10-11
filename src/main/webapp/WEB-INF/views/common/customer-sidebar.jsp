@@ -76,6 +76,11 @@
             </a>
         </li>
         <li class="sidebar-item">
+            <a href="${pageContext.request.contextPath}/customer/sk-mini-bank" class="sidebar-link ${pageContext.request.requestURI.contains('/sk-mini-bank') ? 'active' : ''}">
+                <i class="fa-solid fa-building-columns text-warning"></i> SK Mini Bank Transfer
+            </a>
+        </li>
+        <li class="sidebar-item">
             <a href="${pageContext.request.contextPath}/customer/fixed-deposits" class="sidebar-link ${pageContext.request.requestURI.contains('/fixed-deposits') ? 'active' : ''}">
                 <i class="fa-solid fa-piggy-bank"></i> Fixed Deposits
             </a>
