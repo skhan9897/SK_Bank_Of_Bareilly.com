@@ -1,6 +1,9 @@
 plugins {
-    alias(libs.plugins.android.application)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
 }
+
+layout.buildDirectory.set(file("${System.getProperty("user.home")}/.gradle_builds/SKBankOfBareilly/app"))
 
 android {
     namespace = "com.bank.sk_bank_of_bareilly_android"
@@ -36,29 +39,27 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
     }
 }
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.22"))
-    implementation(libs.androidx.activity.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.material)
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.drawerlayout:drawerlayout:1.2.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.webkit:webkit:1.8.0")
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
 }
 
-configurations.all {
-    resolutionStrategy {
-        exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk7")
-        exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk8")
-    }
-}
+

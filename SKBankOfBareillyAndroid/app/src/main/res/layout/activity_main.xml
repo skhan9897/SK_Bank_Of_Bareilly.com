@@ -37,9 +37,9 @@
             android:progressDrawable="@drawable/progress_bar_custom"
             android:visibility="gone" />
 
-        <!-- WEBVIEW -->
-        <WebView
-            android:id="@+id/webView"
+        <!-- WEBVIEW CONTAINER (DYNAMIC INFLATION FOR 100% CRASH-PROOF SAFETY) -->
+        <FrameLayout
+            android:id="@+id/webViewContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/bottomNavigation"
@@ -97,7 +97,7 @@
 
         </RelativeLayout>
 
-        <!-- OFFLINE CONNECTION ERROR LAYOUT -->
+        <!-- OFFLINE ERROR LAYOUT -->
         <LinearLayout
             android:id="@+id/offlineLayout"
             android:layout_width="match_parent"

@@ -3,16 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_refresh"
-        android:icon="@android:drawable/stat_notify_sync"
+        android:icon="@drawable/ic_nav_history"
         android:title="Refresh"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_home"
-        android:icon="@android:drawable/ic_menu_compass"
-        android:title="Banking Home"
+        android:icon="@drawable/ic_nav_home"
+        android:title="Home"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_server"
-        android:title="Switch Server URL"
+        android:icon="@drawable/ic_nav_bills"
+        android:title="Server Config"
         app:showAsAction="never" />
 </menu>

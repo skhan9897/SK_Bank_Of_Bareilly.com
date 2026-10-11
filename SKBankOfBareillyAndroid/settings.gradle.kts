@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SK-Bank-Of-Bareilly-Android"
+rootProject.name = "SKBankOfBareillyAndroid"
 include(":app")

@@ -1,29 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a71f9876-05f1-4f73-8380-b66a0d6aa89d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/local.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/nb-cache/SKBankOfBareilly-316622621/project-info.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/nb-cache/subprojects.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/nb-cache/trust/33F930F5845B16F3FCD575E3E1A55BCAD81115A2B900AB7BEF1F4F08AA546460" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/.idea/deviceManager.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/.idea/migrations.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/.idea/runConfigurations/app.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/java/com/bank/sk_bank_of_bareilly_android/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/java/com/bank/sk_bank_of_bareilly_android/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/java/com/bank/sk_bank_of_bareilly_android/SKBankApplication.kt" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/java/com/bank/sk_bank_of_bareilly_android/SKBankApplication.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/java/com/bank/sk_bank_of_bareilly_android/SplashActivity.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/drawable/ic_launcher_background.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/drawable/ic_launcher_background.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/drawable/progress_bar_custom.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/layout/activity_splash.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/layout/nav_header.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/layout/nav_header.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/menu/main_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/menu/main_menu.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/values/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-hdpi/ic_launcher.webp" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-hdpi/ic_launcher.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-mdpi/ic_launcher.webp" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-mdpi/ic_launcher.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-xhdpi/ic_launcher.webp" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-xhdpi/ic_launcher.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-xxhdpi/ic_launcher.webp" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-xxhdpi/ic_launcher.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/values-night/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/values-night/themes.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/values/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/values/themes.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/xml/backup_rules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/xml/backup_rules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/xml/data_extraction_rules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/xml/data_extraction_rules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/gradle.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/gradle/libs.versions.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/gradle/gradle-daemon-jvm.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/gradle/libs.versions.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/gradlew" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/gradlew.bat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/settings.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/sk-bank-of-bareilly.war" beforeDir="false" afterPath="$PROJECT_DIR$/target/sk-bank-of-bareilly.war" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/problems/problems-report.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/reports/problems/problems-report.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/customer/transfer-success.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/customer/transfer-success.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,6 +74,12 @@
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PhysicalDevice::serial=10BD5T1B1Y000BB]" />
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
   </component>
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
@@ -53,27 +101,33 @@
   &quot;fromUser&quot;: false
 }</component>
   <component name="ProjectId" id="3K2o03bSlEe3HSLSWijxvyoBdu3" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;android.gradle.sync.needed&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Sajid Khan/OneDrive/Documents/NetBeansProjects/SKBankOfBareilly&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Android App.app.executor": "Run",
+    "Gradle.Configure Daemon JVM Criteria.executor": "Run",
+    "GradleDaemonJvmCriteriaMigrationNotification.isNotificationDisabled": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Sajid Khan/OneDrive/Documents/NetBeansProjects/SKBankOfBareilly"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\webapp\images" />
@@ -81,6 +135,74 @@
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Sajid Khan\OneDrive\Documents\NetBeansProjects\SKBankOfBareilly\src\main\webapp\assets\images" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
+      <module name="SKBankOfBareilly.app" />
+      <option name="ANDROID_RUN_CONFIGURATION_SCHEMA_VERSION" value="1" />
+      <option name="DEPLOY" value="true" />
+      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
+      <option name="DEPLOY_AS_INSTANT" value="false" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="ALL_USERS" value="false" />
+      <option name="ALWAYS_INSTALL_WITH_PM" value="false" />
+      <option name="ALLOW_ASSUME_VERIFIED" value="false" />
+      <option name="CLEAR_APP_STORAGE" value="false" />
+      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
+      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="RESTORE_ENABLED" value="false" />
+      <option name="RESTORE_FILE" value="" />
+      <option name="RESTORE_FRESH_INSTALL_ONLY" value="false" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
+      <option name="DEBUGGER_TYPE" value="Auto" />
+      <Auto>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+      </Auto>
+      <Hybrid>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+      </Hybrid>
+      <Java>
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+      </Java>
+      <Native>
+        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
+        <option name="SHOW_STATIC_VARS" value="true" />
+        <option name="WORKING_DIR" value="" />
+        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
+        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
+        <option name="ATTACH_ON_WAIT_FOR_DEBUGGER" value="false" />
+      </Native>
+      <Profilers>
+        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Java/Kotlin Method Trace" />
+        <option name="STARTUP_NATIVE_MEMORY_PROFILING_ENABLED" value="false" />
+        <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
+      </Profilers>
+      <option name="DEEP_LINK" value="" />
+      <option name="ACTIVITY" value="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
+      <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
+      <method v="2">
+        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -91,5 +213,21 @@
       <updated>1790764798683</updated>
     </task>
     <servers />
+  </component>
+  <component name="play_dynamic_filters_status">
+    <option name="appIdToCheckInfo">
+      <map>
+        <entry key="com.bank.sk_bank_of_bareilly_android">
+          <value>
+            <CheckInfo lastCheckTimestamp="1791710917488" />
+          </value>
+        </entry>
+        <entry key="com.bank.sk_bank_of_bareilly_android.test">
+          <value>
+            <CheckInfo lastCheckTimestamp="1791710917487" />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

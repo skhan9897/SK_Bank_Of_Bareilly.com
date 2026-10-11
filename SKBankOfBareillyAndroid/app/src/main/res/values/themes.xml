@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme using MaterialComponents NoActionBar -->
     <style name="Base.Theme.SKBankOfBareillyAndroid" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/deep_navy</item>
         <item name="colorPrimaryVariant">@color/deep_navy</item>

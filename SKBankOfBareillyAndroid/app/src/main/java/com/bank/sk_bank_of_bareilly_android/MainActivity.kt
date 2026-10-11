@@ -1,8 +1,13 @@
 package com.bank.sk_bank_of_bareilly_android
 
+import android.Manifest
 import android.app.DownloadManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.net.http.SslError
 import android.os.Build
@@ -19,6 +24,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.appbar.MaterialToolbar
@@ -31,7 +38,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
     private lateinit var bottomNavigation: BottomNavigationView
-    private lateinit var webView: WebView
+    private lateinit var webViewContainer: FrameLayout
+    private var webView: WebView? = null
     private lateinit var progressBar: ProgressBar
     private lateinit var loadingOverlay: RelativeLayout
     private lateinit var splashOverlay: RelativeLayout
@@ -46,6 +54,7 @@ class MainActivity : AppCompatActivity() {
     private var fileUploadCallback: ValueCallback<Array<Uri>>? = null
     private var currentServerUrl: String = "https://sk-bank-of-bareilly-com.onrender.com/"
     private var backPressedTime: Long = 0
+    private var isProgrammaticNavigation = false
 
     private val fileUploadLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (fileUploadCallback == null) return@registerForActivityResult
@@ -61,6 +70,60 @@ class MainActivity : AppCompatActivity() {
         }
         fileUploadCallback?.onReceiveValue(uris)
         fileUploadCallback = null
+    }
+
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { _ -> }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "SK_BANK_ALERTS",
+                "Account Credit & Transaction Alerts",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Notifications for money transfers and account balance updates"
+                enableVibration(true)
+            }
+            val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            manager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
+    fun sendSystemNotification(title: String, message: String) {
+        try {
+            val intent = Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
+            val pendingIntent = PendingIntent.getActivity(
+                this, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val builder = NotificationCompat.Builder(this, "SK_BANK_ALERTS")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(message))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+
+            val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            manager.notify(System.currentTimeMillis().toInt(), builder.build())
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     inner class WebAppInterface {
@@ -86,12 +149,42 @@ class MainActivity : AppCompatActivity() {
                 } catch (ignored: Exception) {}
             }
         }
+
+        @JavascriptInterface
+        fun showNotification(title: String?, message: String?) {
+            runOnUiThread {
+                try {
+                    sendSystemNotification(
+                        title ?: "SK Bank Notification",
+                        message ?: "Your account details have been updated."
+                    )
+                } catch (ignored: Exception) {}
+            }
+        }
+
+        @JavascriptInterface
+        fun sendCreditAlert(amount: String?, senderOrRecipient: String?, newBalance: String?) {
+            runOnUiThread {
+                try {
+                    val title = "₹$amount Transaction Alert!"
+                    val msg = if (!senderOrRecipient.isNullOrEmpty()) {
+                        "₹$amount transaction processed for $senderOrRecipient. Updated Balance: ₹$newBalance"
+                    } else {
+                        "₹$amount credited to your account. Updated Balance: ₹$newBalance"
+                    }
+                    sendSystemNotification(title, msg)
+                } catch (ignored: Exception) {}
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         try {
             setContentView(R.layout.activity_main)
+
+            createNotificationChannel()
+            checkNotificationPermission()
 
             // Load saved server URL preference
             val prefs = getSharedPreferences("SK_BANK_PREFS", Context.MODE_PRIVATE)
@@ -119,7 +212,7 @@ class MainActivity : AppCompatActivity() {
                 dt.syncState()
             } catch (ignored: Exception) {}
 
-            webView = findViewById(R.id.webView)
+            webViewContainer = findViewById(R.id.webViewContainer)
             progressBar = findViewById(R.id.progressBar)
             loadingOverlay = findViewById(R.id.loadingOverlay)
             splashOverlay = findViewById(R.id.splashOverlay)
@@ -132,10 +225,10 @@ class MainActivity : AppCompatActivity() {
             btnRetry.setOnClickListener {
                 try {
                     offlineLayout.visibility = View.GONE
-                    webView.visibility = View.VISIBLE
+                    webViewContainer.visibility = View.VISIBLE
                     tvLoadingMessage.text = "Connecting to SK Bank Server..."
                     loadingOverlay.visibility = View.VISIBLE
-                    webView.loadUrl(currentServerUrl)
+                    webView?.loadUrl(currentServerUrl)
                 } catch (ignored: Exception) {}
             }
 
@@ -143,13 +236,13 @@ class MainActivity : AppCompatActivity() {
                 showServerSwitcherDialog()
             }
 
-            setupWebView()
+            setupDynamicWebView()
             setupBottomNavigation()
             setupDrawerNavigation()
 
             tvLoadingMessage.text = "Connecting to SK Bank Server..."
             loadingOverlay.visibility = View.VISIBLE
-            webView.loadUrl(currentServerUrl)
+            webView?.loadUrl(currentServerUrl)
 
             // Smooth 1.8-second splash screen transition
             Handler(Looper.getMainLooper()).postDelayed({
@@ -170,9 +263,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupWebView() {
+    private fun setupDynamicWebView() {
         try {
-            val settings = webView.settings
+            val wv = WebView(this)
+            webView = wv
+            webViewContainer.removeAllViews()
+            webViewContainer.addView(wv)
+
+            val settings = wv.settings
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             try { settings.databaseEnabled = true } catch (ignored: Exception) {}
@@ -189,13 +287,13 @@ class MainActivity : AppCompatActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 try {
                     settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-                    CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
+                    CookieManager.getInstance().setAcceptThirdPartyCookies(wv, true)
                 } catch (ignored: Exception) {}
             }
 
-            webView.addJavascriptInterface(WebAppInterface(), "AndroidBridge")
+            wv.addJavascriptInterface(WebAppInterface(), "AndroidBridge")
 
-            webView.webViewClient = object : WebViewClient() {
+            wv.webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                     try {
                         val reqUrl = request?.url?.toString()
@@ -221,7 +319,7 @@ class MainActivity : AppCompatActivity() {
                             loadingOverlay.visibility = View.VISIBLE
                         }
                         offlineLayout.visibility = View.GONE
-                        webView.visibility = View.VISIBLE
+                        webViewContainer.visibility = View.VISIBLE
 
                         if (url != null) {
                             when {
@@ -276,13 +374,15 @@ class MainActivity : AppCompatActivity() {
                         view?.evaluateJavascript(jsHideAdminAndForms, null)
 
                         if (url != null) {
+                            isProgrammaticNavigation = true
                             when {
-                                url.contains("/customer/dashboard") -> bottomNavigation.selectedItemId = R.id.nav_home
-                                url.contains("/customer/accounts") -> bottomNavigation.selectedItemId = R.id.nav_accounts
-                                url.contains("/customer/send-money") || url.contains("/customer/upi") -> bottomNavigation.selectedItemId = R.id.nav_payments
-                                url.contains("/customer/transactions") -> bottomNavigation.selectedItemId = R.id.nav_transactions
-                                url.contains("/customer/profile") -> bottomNavigation.selectedItemId = R.id.nav_profile
+                                url.contains("/customer/dashboard") -> if (bottomNavigation.selectedItemId != R.id.nav_home) bottomNavigation.selectedItemId = R.id.nav_home
+                                url.contains("/customer/accounts") -> if (bottomNavigation.selectedItemId != R.id.nav_accounts) bottomNavigation.selectedItemId = R.id.nav_accounts
+                                url.contains("/customer/send-money") || url.contains("/customer/upi") -> if (bottomNavigation.selectedItemId != R.id.nav_payments) bottomNavigation.selectedItemId = R.id.nav_payments
+                                url.contains("/customer/transactions") -> if (bottomNavigation.selectedItemId != R.id.nav_transactions) bottomNavigation.selectedItemId = R.id.nav_transactions
+                                url.contains("/customer/profile") -> if (bottomNavigation.selectedItemId != R.id.nav_profile) bottomNavigation.selectedItemId = R.id.nav_profile
                             }
+                            isProgrammaticNavigation = false
                         }
                     } catch (ignored: Exception) {}
                 }
@@ -318,9 +418,13 @@ class MainActivity : AppCompatActivity() {
                         }
                     } catch (ignored: Exception) {}
                 }
+
+                override fun onRenderProcessGone(view: WebView?, detail: RenderProcessGoneDetail?): Boolean {
+                    return true
+                }
             }
 
-            webView.webChromeClient = object : WebChromeClient() {
+            wv.webChromeClient = object : WebChromeClient() {
                 override fun onProgressChanged(view: WebView?, newProgress: Int) {
                     try {
                         progressBar.progress = newProgress
@@ -333,11 +437,7 @@ class MainActivity : AppCompatActivity() {
                             progressBar.visibility = View.VISIBLE
                         }
                     } catch (ignored: Exception) {}
-                }
-
-                override fun onRenderProcessGone(view: WebView?, detail: RenderProcessGoneDetail?): Boolean {
-                    return true
-                }
+                  }
 
                 override fun onShowFileChooser(
                     webView: WebView?,
@@ -360,7 +460,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            webView.setDownloadListener { url, userAgent, contentDisposition, mimeType, contentLength ->
+            wv.setDownloadListener { url, userAgent, contentDisposition, mimeType, contentLength ->
                 try {
                     val request = DownloadManager.Request(Uri.parse(url)).apply {
                         setMimeType(mimeType)
@@ -391,7 +491,7 @@ class MainActivity : AppCompatActivity() {
         try {
             progressBar.visibility = View.GONE
             loadingOverlay.visibility = View.GONE
-            webView.visibility = View.GONE
+            webViewContainer.visibility = View.GONE
             offlineLayout.visibility = View.VISIBLE
             tvErrorDetails.text = "Unable to connect to server. Please check your internet connection and try again."
         } catch (ignored: Exception) {}
@@ -400,6 +500,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupBottomNavigation() {
         try {
             bottomNavigation.setOnItemSelectedListener { item ->
+                if (isProgrammaticNavigation) return@setOnItemSelectedListener true
                 when (item.itemId) {
                     R.id.nav_home -> navigateToPath("customer/dashboard")
                     R.id.nav_accounts -> navigateToPath("customer/accounts")
@@ -453,7 +554,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 "$currentServerUrl/$path"
             }
-            webView.loadUrl(targetUrl)
+            webView?.loadUrl(targetUrl)
         } catch (ignored: Exception) {}
     }
 
@@ -476,11 +577,11 @@ class MainActivity : AppCompatActivity() {
 
         return when (item.itemId) {
             R.id.action_refresh -> {
-                try { webView.reload() } catch (ignored: Exception) {}
+                try { webView?.reload() } catch (ignored: Exception) {}
                 true
             }
             R.id.action_home -> {
-                try { webView.loadUrl(currentServerUrl) } catch (ignored: Exception) {}
+                try { webView?.loadUrl(currentServerUrl) } catch (ignored: Exception) {}
                 true
             }
             R.id.action_server -> {
@@ -542,24 +643,25 @@ class MainActivity : AppCompatActivity() {
                 .apply()
 
             offlineLayout.visibility = View.GONE
-            webView.visibility = View.VISIBLE
-            webView.loadUrl(currentServerUrl)
+            webViewContainer.visibility = View.VISIBLE
+            webView?.loadUrl(currentServerUrl)
             Toast.makeText(this, "Connecting to $newUrl", Toast.LENGTH_SHORT).show()
         } catch (ignored: Exception) {}
     }
 
     override fun onBackPressed() {
         try {
-            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            if (::drawerLayout.isInitialized && drawerLayout.isDrawerOpen(GravityCompat.START)) {
                 drawerLayout.closeDrawer(GravityCompat.START)
                 return
             }
-            if (webView.canGoBack()) {
-                val currentUrl = webView.url
+            val wv = webView
+            if (wv != null && wv.canGoBack()) {
+                val currentUrl = wv.url
                 if (currentUrl != null && (currentUrl.endsWith("/customer/dashboard") || currentUrl.endsWith("/login") || currentUrl == currentServerUrl || currentUrl == "$currentServerUrl/")) {
                     confirmAppExit()
                 } else {
-                    webView.goBack()
+                    wv.goBack()
                 }
             } else {
                 confirmAppExit()

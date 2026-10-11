@@ -49,4 +49,27 @@
     </div>
 </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    try {
+        if (window.AndroidBridge) {
+            if (typeof window.AndroidBridge.sendCreditAlert === "function") {
+                window.AndroidBridge.sendCreditAlert(
+                    "${sessionScope.LAST_TRANSFER.amount}",
+                    "${sessionScope.LAST_TRANSFER_DTO.recipientName}",
+                    "${sessionScope.CUSTOMER_ACCOUNT.balance}"
+                );
+            } else if (typeof window.AndroidBridge.showNotification === "function") {
+                window.AndroidBridge.showNotification(
+                    "Payment Successful",
+                    "₹${sessionScope.LAST_TRANSFER.amount} sent to ${sessionScope.LAST_TRANSFER_DTO.recipientName} successfully!"
+                );
+            }
+        }
+    } catch (e) {
+        console.log("Notification bridge error:", e);
+    }
+});
+</script>
+
 <%@ include file="/WEB-INF/views/common/footer.jsp" %>
