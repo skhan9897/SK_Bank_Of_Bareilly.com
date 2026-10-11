@@ -228,15 +228,25 @@
     // 3. FETCH API INTERCEPTOR
     if (window.fetch) {
         const originalFetch = window.fetch;
-        window.fetch = function () {
-            SKBankLoader.show('Processing request...');
+        window.fetch = function (url, options) {
+            const urlStr = typeof url === 'string' ? url : (url && url.url ? url.url : '');
+            const isBackground = urlStr.includes('/api/') || (options && (options.noLoader || options.background));
+
+            if (!isBackground) {
+                SKBankLoader.show('Processing request...');
+            }
+
             return originalFetch.apply(this, arguments)
                 .then(function (response) {
-                    SKBankLoader.hide();
+                    if (!isBackground) {
+                        SKBankLoader.hide();
+                    }
                     return response;
                 })
                 .catch(function (error) {
-                    SKBankLoader.hide();
+                    if (!isBackground) {
+                        SKBankLoader.hide();
+                    }
                     throw error;
                 });
         };
@@ -247,8 +257,9 @@
         const originalOpen = XMLHttpRequest.prototype.open;
         const originalSend = XMLHttpRequest.prototype.send;
 
-        XMLHttpRequest.prototype.open = function () {
-            this._bankLoaderTrack = true;
+        XMLHttpRequest.prototype.open = function (method, url) {
+            const urlStr = typeof url === 'string' ? url : '';
+            this._bankLoaderTrack = !urlStr.includes('/api/');
             return originalOpen.apply(this, arguments);
         };
 
