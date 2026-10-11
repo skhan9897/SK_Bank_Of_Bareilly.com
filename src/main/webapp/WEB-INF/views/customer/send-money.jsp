@@ -49,9 +49,14 @@
                             <input type="number" step="0.01" min="1" max="500000" name="amount" class="form-control form-control-lg" required placeholder="0.00">
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-3">
                             <label class="form-label fw-bold small">Remarks / Purpose (Optional)</label>
                             <input type="text" name="remarks" class="form-control" placeholder="e.g. Rent, Gift, Personal">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-navy small">Enter 4-Digit Secret UPI PIN *</label>
+                            <input type="password" name="upiPin" maxlength="4" pattern="[0-9]{4}" class="form-control form-control-lg text-center font-monospace fs-4 text-primary" required placeholder="••••">
                         </div>
 
                         <button type="submit" class="btn btn-gold w-100 py-3 fw-bold fs-5"><i class="fa-solid fa-arrow-right me-2"></i> Review & Proceed</button>

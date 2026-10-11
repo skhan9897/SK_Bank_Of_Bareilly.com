@@ -45,6 +45,11 @@
                         <input type="hidden" name="remarks" value="${transferData.remarks}">
                         <input type="hidden" name="recipientName" value="${transferData.recipientName}">
 
+                        <div class="mb-4 text-start">
+                            <label class="form-label fw-bold text-navy small">Confirm 4-Digit Secret UPI PIN *</label>
+                            <input type="password" name="upiPin" value="${param.upiPin}" maxlength="4" pattern="[0-9]{4}" class="form-control form-control-lg text-center font-monospace fs-4 text-primary" required placeholder="••••">
+                        </div>
+
                         <button type="submit" class="btn btn-gold w-100 py-3 fw-bold fs-5 mb-2"><i class="fa-solid fa-lock me-2"></i> Confirm & Authorize Transfer</button>
                         <a href="${pageContext.request.contextPath}/customer/send-money" class="btn btn-outline-secondary w-100">Cancel</a>
                     </form>

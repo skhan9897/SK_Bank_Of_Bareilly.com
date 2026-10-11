@@ -47,58 +47,11 @@
     </div>
 </footer>
 
-<!-- PREMIUM GLOBAL SK BANK PROCESSING LOADER -->
-<div id="skBankGlobalLoader"
-     class="sk-bank-loader"
-     aria-hidden="true"
-     role="status"
-     aria-live="polite">
-
-    <div class="sk-loader-panel">
-
-        <div class="sk-loader-logo-wrapper">
-
-            <div class="sk-loader-ring ring-one"></div>
-            <div class="sk-loader-ring ring-two"></div>
-
-            <img
-                src="${pageContext.request.contextPath}/assets/images/sk-bank-logo-final-transparent.png?v=20261004"
-                class="sk-loader-logo"
-                alt="SK Bank of Bareilly"
-                onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/assets/images/sk-bank-logo-transparent.png';"
-            />
-
-            <div class="sk-loader-gold-sweep"></div>
-
-        </div>
-
-        <div class="sk-loader-title">
-            SK Bank of Bareilly
-        </div>
-
-        <div id="skLoaderMessage"
-             class="sk-loader-message">
-            Processing your request...
-        </div>
-
-        <div class="sk-loader-progress">
-            <span></span>
-        </div>
-
-        <div class="sk-loader-secure">
-            <span>🔒</span>
-            Secure Banking Processing
-        </div>
-
-    </div>
-
-</div>
-
 <!-- Bootstrap 5 JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Custom Application JS -->
 <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
-<!-- Global Banking Loader JS -->
+<!-- Global Banking Loader JS (Disabled No-Op) -->
 <script src="${pageContext.request.contextPath}/assets/js/sk-bank-loader.js" defer></script>
 
 <c:if test="${not empty sessionScope.CUSTOMER_ID}">
@@ -130,9 +83,8 @@ document.addEventListener("DOMContentLoaded", function() {
         } catch (e) {}
     }
 
-    // Run immediately on page load and poll silently every 10 seconds
+    // Run once on page load without background timer
     pollUnreadNotifications();
-    setInterval(pollUnreadNotifications, 10000);
 });
 </script>
 </c:if>
