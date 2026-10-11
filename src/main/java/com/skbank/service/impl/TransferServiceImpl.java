@@ -245,27 +245,30 @@ public class TransferServiceImpl implements TransferService {
             Long trId = transferDAO.create(conn, tr);
             tr.setTransferId(trId);
 
-            // 4. Send Notifications
+            // 4. Send Detailed Notifications with Timestamp, Sender/Receiver Info & Updated Balance
+            String formattedTime = new java.text.SimpleDateFormat("dd MMM yyyy, hh:mm a").format(new java.util.Date());
             Customer senderCust = customerDAO.findById(senderAcc.getCustomerId());
+            Customer receiverCust = customerDAO.findById(receiverAcc.getCustomerId());
+
+            String senderName = senderCust != null ? senderCust.getFullName() : "SK Bank Customer";
+            String receiverName = receiverCust != null ? receiverCust.getFullName() : "Recipient Account";
+
             if (senderCust != null) {
                 Notification notifSender = new Notification();
                 notifSender.setUserId(senderCust.getUserId());
-                notifSender.setTitle("Money Transferred");
-                notifSender.setMessage("₹" + amount + " transferred to " + receiverAcc.getMaskedAccountNumber() + ". Ref: " + ref);
-                notifSender.setNotificationType("TRANSFER");
+                notifSender.setTitle("₹" + amount + " Transferred to " + receiverName);
+                notifSender.setMessage("₹" + amount + " DEBITED from A/C " + senderAcc.getMaskedAccountNumber() + " to " + receiverName + " on " + formattedTime + ". Ref: " + ref + ". Available Balance: ₹" + senderAfter);
+                notifSender.setNotificationType("DEBIT_ALERT");
                 notificationDAO.create(conn, notifSender);
             }
 
-            if (!senderAcc.getCustomerId().equals(receiverAcc.getCustomerId())) {
-                Customer receiverCust = customerDAO.findById(receiverAcc.getCustomerId());
-                if (receiverCust != null) {
-                    Notification notifReceiver = new Notification();
-                    notifReceiver.setUserId(receiverCust.getUserId());
-                    notifReceiver.setTitle("Money Received");
-                    notifReceiver.setMessage("₹" + amount + " credited to your account " + receiverAcc.getMaskedAccountNumber() + ". Ref: " + ref);
-                    notifReceiver.setNotificationType("TRANSFER");
-                    notificationDAO.create(conn, notifReceiver);
-                }
+            if (receiverCust != null && !senderAcc.getCustomerId().equals(receiverAcc.getCustomerId())) {
+                Notification notifReceiver = new Notification();
+                notifReceiver.setUserId(receiverCust.getUserId());
+                notifReceiver.setTitle("₹" + amount + " Credited from " + senderName);
+                notifReceiver.setMessage("₹" + amount + " CREDITED to A/C " + receiverAcc.getMaskedAccountNumber() + " from " + senderName + " on " + formattedTime + ". Ref: " + ref + ". Available Balance: ₹" + receiverAfter);
+                notifReceiver.setNotificationType("CREDIT_ALERT");
+                notificationDAO.create(conn, notifReceiver);
             }
 
             conn.commit();

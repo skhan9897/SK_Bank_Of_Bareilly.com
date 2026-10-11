@@ -228,9 +228,11 @@ class MainActivity : AppCompatActivity() {
                 try {
                     offlineLayout.visibility = View.GONE
                     webViewContainer.visibility = View.VISIBLE
-                    tvLoadingMessage.text = "Connecting to SK Bank Server..."
+                    val isFirstLoginDone = prefs.getBoolean("FIRST_LOGIN_DONE", false)
+                    val targetUrl = if (isFirstLoginDone) getDashboardUrl() else currentServerUrl
+                    tvLoadingMessage.text = if (isFirstLoginDone) "Loading Customer Dashboard..." else "Connecting to SK Bank Server..."
                     loadingOverlay.visibility = View.VISIBLE
-                    webView?.loadUrl(currentServerUrl)
+                    webView?.loadUrl(targetUrl)
                 } catch (ignored: Exception) {}
             }
 
@@ -242,11 +244,13 @@ class MainActivity : AppCompatActivity() {
             setupBottomNavigation()
             setupDrawerNavigation()
 
-            tvLoadingMessage.text = "Connecting to SK Bank Server..."
-            loadingOverlay.visibility = View.VISIBLE
-            webView?.loadUrl(currentServerUrl)
-
             val isFirstLoginDone = prefs.getBoolean("FIRST_LOGIN_DONE", false)
+            val initialTargetUrl = if (isFirstLoginDone) getDashboardUrl() else currentServerUrl
+
+            tvLoadingMessage.text = if (isFirstLoginDone) "Loading Customer Dashboard..." else "Connecting to SK Bank Server..."
+            loadingOverlay.visibility = View.VISIBLE
+            webView?.loadUrl(initialTargetUrl)
+
             if (isFirstLoginDone) {
                 splashOverlay.visibility = View.VISIBLE
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -309,9 +313,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun getDashboardUrl(): String {
+        val baseUrl = currentServerUrl.trimEnd('/')
+        return "$baseUrl/customer/dashboard"
+    }
+
     private fun unlockAppContent() {
         runOnUiThread {
             try {
+                val prefs = getSharedPreferences("SK_BANK_PREFS", MODE_PRIVATE)
+                val isFirstLoginDone = prefs.getBoolean("FIRST_LOGIN_DONE", false)
+                if (isFirstLoginDone) {
+                    val currentWvUrl = webView?.url
+                    if (currentWvUrl == null || currentWvUrl.endsWith("/") || currentWvUrl.contains("index") || !currentWvUrl.contains("/customer/")) {
+                        webView?.loadUrl(getDashboardUrl())
+                    }
+                }
+
                 splashOverlay.animate()
                     .alpha(0f)
                     .setDuration(350)

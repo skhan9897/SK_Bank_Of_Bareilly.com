@@ -53,6 +53,45 @@
             </div>
         </div>
 
+        <!-- PHONEPE STYLE QUICK SERVICES BAR -->
+        <div class="sk-card p-3 mb-4 rounded-4 shadow-sm border-0 bg-white">
+            <h6 class="fw-bold text-navy mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i>PhonePe Payment Bank Quick Features</h6>
+            <div class="row g-2 text-center">
+                <div class="col-3 col-md-3">
+                    <a href="${pageContext.request.contextPath}/customer/qr-pay" class="text-decoration-none d-block p-2 rounded-3 hover-bg-light">
+                        <div class="bg-warning bg-opacity-10 text-warning p-3 rounded-circle d-inline-block mb-1 fs-4">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <div class="small fw-bold text-navy">Scan & Pay</div>
+                    </a>
+                </div>
+                <div class="col-3 col-md-3">
+                    <a href="${pageContext.request.contextPath}/customer/check-balance" class="text-decoration-none d-block p-2 rounded-3 hover-bg-light">
+                        <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-circle d-inline-block mb-1 fs-4">
+                            <i class="fa-solid fa-building-columns"></i>
+                        </div>
+                        <div class="small fw-bold text-navy">Check Balance</div>
+                    </a>
+                </div>
+                <div class="col-3 col-md-3">
+                    <a href="${pageContext.request.contextPath}/customer/rewards" class="text-decoration-none d-block p-2 rounded-3 hover-bg-light">
+                        <div class="bg-success bg-opacity-10 text-success p-3 rounded-circle d-inline-block mb-1 fs-4">
+                            <i class="fa-solid fa-gift"></i>
+                        </div>
+                        <div class="small fw-bold text-navy">Rewards</div>
+                    </a>
+                </div>
+                <div class="col-3 col-md-3">
+                    <a href="${pageContext.request.contextPath}/customer/digital-gold" class="text-decoration-none d-block p-2 rounded-3 hover-bg-light">
+                        <div class="bg-warning text-dark p-3 rounded-circle d-inline-block mb-1 fs-4">
+                            <i class="fa-solid fa-coins"></i>
+                        </div>
+                        <div class="small fw-bold text-navy">24K Gold</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <!-- ACCOUNTS LIST & RECENT TRANSACTIONS -->
         <div class="row g-4">
             <div class="col-lg-6">

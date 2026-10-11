@@ -49,6 +49,27 @@
                 <i class="fa-solid fa-qrcode"></i> My UPI
             </a>
         </li>
+        <!-- PHONEPE PAYMENT BANK SPECIAL FEATURES -->
+        <li class="sidebar-item">
+            <a href="${pageContext.request.contextPath}/customer/qr-pay" class="sidebar-link ${pageContext.request.requestURI.contains('/qr-pay') ? 'active' : ''}">
+                <i class="fa-solid fa-camera text-warning"></i> Scan & Pay (QR)
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="${pageContext.request.contextPath}/customer/check-balance" class="sidebar-link ${pageContext.request.requestURI.contains('/check-balance') ? 'active' : ''}">
+                <i class="fa-solid fa-building-columns text-warning"></i> Check Balance
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="${pageContext.request.contextPath}/customer/rewards" class="sidebar-link ${pageContext.request.requestURI.contains('/rewards') ? 'active' : ''}">
+                <i class="fa-solid fa-gift text-warning"></i> Rewards & Cashback
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="${pageContext.request.contextPath}/customer/digital-gold" class="sidebar-link ${pageContext.request.requestURI.contains('/digital-gold') ? 'active' : ''}">
+                <i class="fa-solid fa-coins text-warning"></i> 24K Digital Gold
+            </a>
+        </li>
         <li class="sidebar-item">
             <a href="${pageContext.request.contextPath}/customer/fixed-deposits" class="sidebar-link ${pageContext.request.requestURI.contains('/fixed-deposits') ? 'active' : ''}">
                 <i class="fa-solid fa-piggy-bank"></i> Fixed Deposits

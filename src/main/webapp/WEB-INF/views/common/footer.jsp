@@ -100,5 +100,29 @@
 <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
 <!-- Global Banking Loader JS -->
 <script src="${pageContext.request.contextPath}/assets/js/sk-bank-loader.js" defer></script>
+
+<c:if test="${not empty sessionScope.CUSTOMER_ID}">
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    try {
+        fetch('${pageContext.request.contextPath}/api/customer/notifications')
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data && data.success && data.data && data.data.length > 0) {
+                    var unread = data.data.filter(function(n) { return !n.read; });
+                    if (unread.length > 0) {
+                        unread.forEach(function(notif) {
+                            if (window.AndroidBridge && typeof window.AndroidBridge.showNotification === "function") {
+                                window.AndroidBridge.showNotification(notif.title, notif.message);
+                            }
+                        });
+                    }
+                }
+            })
+            .catch(function(e) { console.log("Notification sync notice:", e); });
+    } catch (e) {}
+});
+</script>
+</c:if>
 </body>
 </html>
