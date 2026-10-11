@@ -64,6 +64,32 @@ public class AccountServiceImpl implements AccountService {
     public List<Account> getCustomerAccounts(Long customerId) throws BankException {
         try {
             List<Account> accounts = accountDAO.findByCustomerId(customerId);
+            
+            // Auto-ensure linked SK Mini Bank Digital Account if customer has only 1 primary account
+            if (accounts.size() == 1) {
+                Account primary = accounts.get(0);
+                String miniAccNum = "MINI" + primary.getAccountNumber().replace("SK", "");
+                Account existingMini = accountDAO.findByAccountNumber(miniAccNum);
+                if (existingMini == null) {
+                    Account miniAcc = new Account();
+                    miniAcc.setCustomerId(customerId);
+                    miniAcc.setAccountTypeId(primary.getAccountTypeId());
+                    miniAcc.setBranchId(primary.getBranchId());
+                    miniAcc.setAccountNumber(miniAccNum);
+                    miniAcc.setBalance(new BigDecimal("10000.00"));
+                    miniAcc.setAvailableBalance(new BigDecimal("10000.00"));
+                    miniAcc.setStatus(AccountStatus.ACTIVE);
+                    miniAcc.setAccountTypeName("SK Mini Bank Digital Account");
+                    try {
+                        Long id = accountDAO.create(miniAcc);
+                        miniAcc.setAccountId(id);
+                        accounts.add(miniAcc);
+                    } catch (Exception ignored) {}
+                } else {
+                    accounts.add(existingMini);
+                }
+            }
+
             for (Account acc : accounts) {
                 if (acc.getBranchName() == null || acc.getBranchName().trim().isEmpty() || acc.getIfscCode() == null || acc.getIfscCode().trim().isEmpty()) {
                     Branch b = branchDAO.findById(acc.getBranchId());
@@ -77,11 +103,15 @@ public class AccountServiceImpl implements AccountService {
                 }
 
                 if (acc.getAccountTypeName() == null || acc.getAccountTypeName().trim().isEmpty()) {
-                    AccountType at = accountTypeDAO.findById(acc.getAccountTypeId());
-                    if (at != null) {
-                        acc.setAccountTypeName(at.getTypeName());
+                    if (acc.getAccountNumber() != null && acc.getAccountNumber().startsWith("MINI")) {
+                        acc.setAccountTypeName("SK Mini Bank Digital Account");
                     } else {
-                        acc.setAccountTypeName("Savings Account");
+                        AccountType at = accountTypeDAO.findById(acc.getAccountTypeId());
+                        if (at != null) {
+                            acc.setAccountTypeName(at.getTypeName());
+                        } else {
+                            acc.setAccountTypeName("Savings Account");
+                        }
                     }
                 }
             }
