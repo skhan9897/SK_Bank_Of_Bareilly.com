@@ -78,6 +78,7 @@
 
                     <!-- PAYMENT FORM -->
                     <form action="${pageContext.request.contextPath}/customer/qr-pay" method="POST" id="qrPayForm">
+                        <input type="hidden" name="csrfToken" value="${sessionScope.CSRF_TOKEN}">
                         <div class="mb-3">
                             <label class="form-label fw-bold text-muted small">Select Payment Account *</label>
                             <select name="senderAccountId" class="form-select rounded-3" required>

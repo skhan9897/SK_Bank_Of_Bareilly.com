@@ -37,6 +37,7 @@
                     </div>
 
                     <form action="${pageContext.request.contextPath}/customer/upi" method="post" class="p-3 bg-light rounded-3 border">
+                        <input type="hidden" name="csrfToken" value="${sessionScope.CSRF_TOKEN}">
                         <input type="hidden" name="action" value="setPin">
                         <h6 class="fw-bold text-navy mb-2"><i class="fa-solid fa-key text-warning me-2"></i>Set / Update 4-Digit UPI PIN</h6>
                         <p class="text-muted small mb-3">Mandatory 4-digit PIN required for all payments and transfers.</p>

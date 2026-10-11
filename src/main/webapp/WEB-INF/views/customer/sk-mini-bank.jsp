@@ -39,6 +39,7 @@
                     </div>
 
                     <form action="${pageContext.request.contextPath}/customer/sk-mini-bank" method="POST">
+                        <input type="hidden" name="csrfToken" value="${sessionScope.CSRF_TOKEN}">
                         <div class="mb-3">
                             <label class="form-label fw-bold text-muted small">Debit From Account *</label>
                             <select name="senderAccountId" class="form-select rounded-3" required>

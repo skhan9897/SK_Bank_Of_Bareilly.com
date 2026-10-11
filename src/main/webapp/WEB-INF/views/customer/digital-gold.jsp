@@ -57,6 +57,7 @@
                     <h5 class="fw-bold text-navy mb-3"><i class="fa-solid fa-cart-shopping me-2 text-warning"></i>Buy or Sell Digital Gold</h5>
 
                     <form action="${pageContext.request.contextPath}/customer/digital-gold" method="POST">
+                        <input type="hidden" name="csrfToken" value="${sessionScope.CSRF_TOKEN}">
                         <div class="mb-3">
                             <label class="form-label fw-bold text-muted small">Select Transaction Action *</label>
                             <select name="action" class="form-select rounded-3" required>

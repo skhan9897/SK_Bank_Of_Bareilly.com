@@ -83,6 +83,7 @@
                 <div class="sk-card p-4 rounded-4 shadow-sm border-0 bg-white">
                     <h5 class="fw-bold text-navy mb-3"><i class="fa-solid fa-credit-card me-2 text-primary"></i>Pay Bill / Recharge</h5>
                     <form action="${pageContext.request.contextPath}/customer/bill-payments" method="post" id="billForm">
+                        <input type="hidden" name="csrfToken" value="${sessionScope.CSRF_TOKEN}">
 
                         <div class="mb-3">
                             <label class="form-label fw-bold text-muted small">Pay From Account *</label>
