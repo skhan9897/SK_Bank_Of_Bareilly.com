@@ -130,9 +130,9 @@ document.addEventListener("DOMContentLoaded", function() {
         } catch (e) {}
     }
 
-    // Run immediately on page load and poll every 4 seconds
+    // Run immediately on page load and poll silently every 10 seconds
     pollUnreadNotifications();
-    setInterval(pollUnreadNotifications, 4000);
+    setInterval(pollUnreadNotifications, 10000);
 });
 </script>
 </c:if>
