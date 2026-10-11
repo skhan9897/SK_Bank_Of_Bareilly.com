@@ -133,12 +133,22 @@ class MainActivity : AppCompatActivity() {
         fun showProcessing(message: String?) {
             runOnUiThread {
                 try {
-                    if (message != null && message.trim().isNotEmpty()) {
-                        tvLoadingMessage.text = message
-                    } else {
-                        tvLoadingMessage.text = "Processing Secure Banking Request..."
-                    }
-                    loadingOverlay.visibility = View.VISIBLE
+                    progressBar.visibility = View.VISIBLE
+                    // Auto dismiss after 3 seconds to prevent stuck loader
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        loadingOverlay.visibility = View.GONE
+                        progressBar.visibility = View.GONE
+                    }, 3000)
+                } catch (ignored: Exception) {}
+            }
+        }
+
+        @JavascriptInterface
+        fun hideProcessing() {
+            runOnUiThread {
+                try {
+                    loadingOverlay.visibility = View.GONE
+                    progressBar.visibility = View.GONE
                 } catch (ignored: Exception) {}
             }
         }
@@ -494,16 +504,14 @@ class MainActivity : AppCompatActivity() {
                 override fun onProgressChanged(view: WebView?, newProgress: Int) {
                     try {
                         progressBar.progress = newProgress
-                        if (newProgress > 50) {
-                            loadingOverlay.visibility = View.GONE
-                        }
                         if (newProgress == 100) {
                             progressBar.visibility = View.GONE
+                            loadingOverlay.visibility = View.GONE
                         } else {
                             progressBar.visibility = View.VISIBLE
                         }
                     } catch (ignored: Exception) {}
-                  }
+                }
 
                 override fun onShowFileChooser(
                     webView: WebView?,

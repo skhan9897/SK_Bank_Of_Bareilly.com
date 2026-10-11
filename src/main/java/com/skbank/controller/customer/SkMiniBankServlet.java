@@ -1,8 +1,16 @@
 package com.skbank.controller.customer;
 
+import com.skbank.dao.AccountDAO;
+import com.skbank.dao.CustomerDAO;
+import com.skbank.dao.UpiDAO;
+import com.skbank.dao.impl.AccountDAOImpl;
+import com.skbank.dao.impl.CustomerDAOImpl;
+import com.skbank.dao.impl.UpiDAOImpl;
 import com.skbank.dto.TransferDTO;
 import com.skbank.model.Account;
+import com.skbank.model.Customer;
 import com.skbank.model.TransferRequest;
+import com.skbank.model.UpiAccount;
 import com.skbank.service.AccountService;
 import com.skbank.service.TransferService;
 import com.skbank.service.UpiService;
@@ -24,6 +32,9 @@ import javax.servlet.http.HttpSession;
 public class SkMiniBankServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    private final AccountDAO accountDAO = new AccountDAOImpl();
+    private final CustomerDAO customerDAO = new CustomerDAOImpl();
+    private final UpiDAO upiDAO = new UpiDAOImpl();
     private final AccountService accountService = new AccountServiceImpl();
     private final TransferService transferService = new TransferServiceImpl();
     private final UpiService upiService = new UpiServiceImpl();
@@ -36,7 +47,9 @@ public class SkMiniBankServlet extends HttpServlet {
 
         try {
             List<Account> accounts = accountService.getCustomerAccounts(customerId);
+            UpiAccount upi = upiService.getOrCreateDefaultUpiAccount(customerId);
             request.setAttribute("accounts", accounts);
+            request.setAttribute("upi", upi);
             request.getRequestDispatcher("/WEB-INF/views/customer/sk-mini-bank.jsp").forward(request, response);
         } catch (Exception e) {
             request.setAttribute("errorMessage", "Error loading SK Mini Bank Terminal: " + e.getMessage());
@@ -55,26 +68,34 @@ public class SkMiniBankServlet extends HttpServlet {
             upiService.verifyUpiPin(customerId, upiPin);
 
             Long senderAccountId = Long.parseLong(request.getParameter("senderAccountId"));
-            String miniBankDetail = request.getParameter("miniBankDetail"); // Account No or UPI ID
+            String miniBankDetail = request.getParameter("miniBankDetail");
             BigDecimal amount = new BigDecimal(request.getParameter("amount"));
             String remarks = request.getParameter("remarks");
 
-            // Look up secondary account or process transfer
-            List<Account> senderAccounts = accountService.getCustomerAccounts(customerId);
-            Long receiverAccountId = senderAccounts.get(0).getAccountId();
-            for (Account acc : senderAccounts) {
-                if (!acc.getAccountId().equals(senderAccountId)) {
-                    receiverAccountId = acc.getAccountId();
-                    break;
+            // Resolve target account in shared database
+            Account receiverAccount = resolveAccount(miniBankDetail);
+
+            if (receiverAccount == null) {
+                // Pick secondary account if valid
+                List<Account> senderAccounts = accountService.getCustomerAccounts(customerId);
+                for (Account acc : senderAccounts) {
+                    if (!acc.getAccountId().equals(senderAccountId)) {
+                        receiverAccount = acc;
+                        break;
+                    }
                 }
+            }
+
+            if (receiverAccount == null || receiverAccount.getAccountId().equals(senderAccountId)) {
+                throw new Exception("Destination SK Mini Bank Account / UPI handle not found. Please enter a valid account or UPI ID.");
             }
 
             TransferDTO dto = new TransferDTO();
             dto.setSenderAccountId(senderAccountId);
-            dto.setReceiverAccountId(receiverAccountId);
+            dto.setReceiverAccountId(receiverAccount.getAccountId());
             dto.setTransferType("MINI_BANK_UPI");
             dto.setAmount(amount);
-            dto.setRemarks(remarks != null && !remarks.trim().isEmpty() ? remarks : "SK Mini Bank Transfer");
+            dto.setRemarks(remarks != null && !remarks.trim().isEmpty() ? remarks : "SK Mini Bank Payment");
             dto.setRecipientName("SK Mini Bank (" + miniBankDetail + ")");
 
             TransferRequest tr = transferService.processTransfer(dto, customerId);
@@ -86,9 +107,46 @@ public class SkMiniBankServlet extends HttpServlet {
         } catch (Exception e) {
             try {
                 request.setAttribute("accounts", accountService.getCustomerAccounts(customerId));
+                request.setAttribute("upi", upiService.getOrCreateDefaultUpiAccount(customerId));
             } catch (Exception ignored) {}
             request.setAttribute("errorMessage", "SK Mini Bank Payment Failed: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/views/customer/sk-mini-bank.jsp").forward(request, response);
         }
+    }
+
+    private Account resolveAccount(String detail) {
+        if (detail == null || detail.trim().isEmpty()) return null;
+        String clean = detail.trim();
+
+        try {
+            // Check by UPI Address
+            UpiAccount upi = upiDAO.findByUpiAddress(clean);
+            if (upi == null && !clean.contains("@")) {
+                upi = upiDAO.findByUpiAddress(clean + "@skminibank");
+                if (upi == null) {
+                    upi = upiDAO.findByUpiAddress(clean + "@skbank");
+                }
+            }
+            if (upi != null) {
+                return accountDAO.findById(upi.getAccountId());
+            }
+
+            // Check by Account Number
+            Account acc = accountDAO.findByAccountNumber(clean);
+            if (acc != null) return acc;
+
+            // Check by Customer Mobile
+            Customer cust = customerDAO.findByMobile(clean);
+            if (cust != null) {
+                List<Account> list = accountDAO.findByCustomerId(cust.getCustomerId());
+                if (!list.isEmpty()) return list.get(0);
+            }
+
+            // Check by numeric Account ID
+            if (clean.matches("\\d+")) {
+                return accountDAO.findById(Long.parseLong(clean));
+            }
+        } catch (Exception ignored) {}
+        return null;
     }
 }
