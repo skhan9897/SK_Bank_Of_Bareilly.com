@@ -1,9 +1,6 @@
 package com.skbank.controller.customer;
 
 import com.skbank.model.Account;
-import com.skbank.model.Transaction;
-import com.skbank.model.TransactionType;
-import com.skbank.model.TransactionStatus;
 import com.skbank.service.AccountService;
 import com.skbank.service.TransactionService;
 import com.skbank.service.impl.AccountServiceImpl;
@@ -54,7 +51,7 @@ public class RewardsServlet extends HttpServlet {
 
             if (!accounts.isEmpty()) {
                 Account mainAcc = accounts.get(0);
-                accountService.deposit(mainAcc.getAccountId(), rewardAmount, "Cashback Reward Earned (PhonePe Bank Rewards)");
+                transactionService.processDeposit(mainAcc.getAccountId(), rewardAmount, "Cashback Reward Earned (PhonePe Bank Rewards)", customerId);
             }
 
             response.sendRedirect(request.getContextPath() + "/customer/rewards?msg=Cashback+of+₹" + rewardAmount + "+credited+to+your+account!");

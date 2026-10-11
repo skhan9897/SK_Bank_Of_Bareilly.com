@@ -2,7 +2,9 @@ package com.skbank.controller.customer;
 
 import com.skbank.model.Account;
 import com.skbank.service.AccountService;
+import com.skbank.service.TransactionService;
 import com.skbank.service.impl.AccountServiceImpl;
+import com.skbank.service.impl.TransactionServiceImpl;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -19,6 +21,7 @@ public class DigitalGoldServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private final AccountService accountService = new AccountServiceImpl();
+    private final TransactionService transactionService = new TransactionServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -48,10 +51,10 @@ public class DigitalGoldServlet extends HttpServlet {
             String action = request.getParameter("action"); // "BUY" or "SELL"
 
             if ("BUY".equalsIgnoreCase(action)) {
-                accountService.withdraw(accountId, amount, "24K 99.9% Pure Digital Gold Purchase");
+                transactionService.processWithdrawal(accountId, amount, "24K 99.9% Pure Digital Gold Purchase", customerId);
                 response.sendRedirect(request.getContextPath() + "/customer/digital-gold?msg=Successfully+purchased+24K+Digital+Gold+worth+₹" + amount);
             } else {
-                accountService.deposit(accountId, amount, "24K Digital Gold Sale Proceeds Credited");
+                transactionService.processDeposit(accountId, amount, "24K Digital Gold Sale Proceeds Credited", customerId);
                 response.sendRedirect(request.getContextPath() + "/customer/digital-gold?msg=Successfully+sold+Digital+Gold!+₹" + amount + "+credited+to+your+account.");
             }
         } catch (Exception e) {

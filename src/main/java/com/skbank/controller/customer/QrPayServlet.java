@@ -59,14 +59,40 @@ public class QrPayServlet extends HttpServlet {
             String recipientDetail = request.getParameter("recipientDetail");
             BigDecimal amount = new BigDecimal(request.getParameter("amount"));
             String remarks = request.getParameter("remarks");
-            String upiPin = request.getParameter("upiPin");
+
+            Long receiverAccountId = null;
+            try {
+                receiverAccountId = Long.parseLong(recipientDetail);
+            } catch (Exception e) {
+                try {
+                    Account receiverAcc = accountService.getAccountByNumber(recipientDetail);
+                    if (receiverAcc != null) {
+                        receiverAccountId = receiverAcc.getAccountId();
+                    }
+                } catch (Exception ignored) {}
+            }
+
+            if (receiverAccountId == null) {
+                List<Account> senderAccounts = accountService.getCustomerAccounts(customerId);
+                for (Account acc : senderAccounts) {
+                    if (!acc.getAccountId().equals(senderAccountId)) {
+                        receiverAccountId = acc.getAccountId();
+                        break;
+                    }
+                }
+            }
+
+            if (receiverAccountId == null) {
+                throw new Exception("Recipient account / UPI ID not found. Please enter a valid account or UPI ID.");
+            }
 
             TransferDTO dto = new TransferDTO();
             dto.setSenderAccountId(senderAccountId);
-            dto.setTransferMode("UPI");
-            dto.setRecipientDetail(recipientDetail);
+            dto.setReceiverAccountId(receiverAccountId);
+            dto.setTransferType("UPI");
             dto.setAmount(amount);
             dto.setRemarks(remarks != null && !remarks.trim().isEmpty() ? remarks : "PhonePe QR Pay");
+            dto.setRecipientName(recipientDetail);
 
             TransferRequest tr = transferService.processTransfer(dto, customerId);
 

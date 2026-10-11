@@ -95,6 +95,69 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public Transaction processDeposit(Long accountId, BigDecimal amount, String description, Long customerId) throws BankException {
+        if (!ValidationUtil.isValidAmount(amount)) {
+            throw new BankException("Deposit amount must be greater than zero");
+        }
+
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            Account account = accountDAO.findForUpdate(conn, accountId);
+            if (account == null) throw new BankException("Account not found");
+            if (customerId != null && !account.getCustomerId().equals(customerId)) {
+                throw new BankException("Unauthorized account operation");
+            }
+            if (account.getStatus() != AccountStatus.ACTIVE) {
+                throw new BankException("Account is not active");
+            }
+
+            BigDecimal before = account.getBalance();
+            BigDecimal after = before.add(amount);
+
+            accountDAO.updateBalance(conn, accountId, after, after);
+
+            String ref = "SKDP" + System.currentTimeMillis() + UUID.randomUUID().toString().substring(0, 3).toUpperCase();
+            Transaction txn = new Transaction();
+            txn.setTransactionReference(ref);
+            txn.setAccountId(accountId);
+            txn.setTransactionType(TransactionType.DEPOSIT);
+            txn.setAmount(amount);
+            txn.setBalanceBefore(before);
+            txn.setBalanceAfter(after);
+            txn.setDescription(description != null && !description.trim().isEmpty() ? description : "Cash Deposit / Reward Credit");
+            txn.setStatus(TransactionStatus.SUCCESS);
+
+            Long txnId = transactionDAO.create(conn, txn);
+            txn.setTransactionId(txnId);
+
+            Customer cust = customerDAO.findById(account.getCustomerId());
+            if (cust != null) {
+                Notification n = new Notification();
+                n.setUserId(cust.getUserId());
+                n.setTitle("Amount Credited");
+                n.setMessage("₹" + amount + " credited to account " + account.getMaskedAccountNumber() + ". Ref: " + ref);
+                n.setNotificationType("CREDIT_ALERT");
+                notificationDAO.create(conn, n);
+            }
+
+            conn.commit();
+            return txn;
+        } catch (Exception e) {
+            if (conn != null) {
+                try { conn.rollback(); } catch (SQLException ignored) {}
+            }
+            throw new BankException("Deposit failed: " + e.getMessage(), e);
+        } finally {
+            if (conn != null) {
+                try { conn.setAutoCommit(true); conn.close(); } catch (SQLException ignored) {}
+            }
+        }
+    }
+
+    @Override
     public List<Transaction> getAccountTransactions(Long accountId, int page, int pageSize) throws BankException {
         try {
             int offset = (page - 1) * pageSize;
