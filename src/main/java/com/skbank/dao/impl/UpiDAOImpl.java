@@ -23,7 +23,7 @@ public class UpiDAOImpl implements UpiDAO {
 
     @Override
     public UpiAccount findByCustomerId(Long customerId) throws SQLException {
-        String sql = "SELECT * FROM upi_accounts WHERE customer_id = ? AND status = 'ACTIVE'";
+        String sql = "SELECT * FROM upi_accounts WHERE customer_id = ? AND (status = 'ACTIVE' OR status IS NULL)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, customerId);
@@ -36,7 +36,7 @@ public class UpiDAOImpl implements UpiDAO {
 
     @Override
     public UpiAccount findByUpiAddress(String upiAddress) throws SQLException {
-        String sql = "SELECT * FROM upi_accounts WHERE upi_address = ? AND status = 'ACTIVE'";
+        String sql = "SELECT * FROM upi_accounts WHERE upi_address = ? AND (status = 'ACTIVE' OR status IS NULL)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, upiAddress);
@@ -82,48 +82,75 @@ public class UpiDAOImpl implements UpiDAO {
 
     @Override
     public boolean updatePin(Long upiId, String newPinHash) throws SQLException {
-        String sqlPrimary = "UPDATE upi_accounts SET upi_pin_hash = ? WHERE upi_account_id = ? OR upi_id = ?";
-        String sqlFallback = "UPDATE upi_accounts SET pin_hash = ? WHERE upi_account_id = ? OR upi_id = ?";
-
         try (Connection conn = DatabaseConnection.getConnection()) {
             ensureColumnsExist(conn);
-            try (PreparedStatement ps = conn.prepareStatement(sqlPrimary)) {
+
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE upi_accounts SET upi_pin_hash = ? WHERE upi_id = ?")) {
                 ps.setString(1, newPinHash);
                 ps.setLong(2, upiId);
-                ps.setLong(3, upiId);
                 if (ps.executeUpdate() > 0) return true;
             } catch (Exception ignored) {}
 
-            try (PreparedStatement ps = conn.prepareStatement(sqlFallback)) {
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE upi_accounts SET pin_hash = ? WHERE upi_id = ?")) {
                 ps.setString(1, newPinHash);
                 ps.setLong(2, upiId);
-                ps.setLong(3, upiId);
-                return ps.executeUpdate() > 0;
-            }
+                if (ps.executeUpdate() > 0) return true;
+            } catch (Exception ignored) {}
+
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE upi_accounts SET upi_pin_hash = ? WHERE upi_account_id = ?")) {
+                ps.setString(1, newPinHash);
+                ps.setLong(2, upiId);
+                if (ps.executeUpdate() > 0) return true;
+            } catch (Exception ignored) {}
+
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE upi_accounts SET pin_hash = ? WHERE upi_account_id = ?")) {
+                ps.setString(1, newPinHash);
+                ps.setLong(2, upiId);
+                if (ps.executeUpdate() > 0) return true;
+            } catch (Exception ignored) {}
+
+            // Fallback update by customer_id if upiId refers to customer
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE upi_accounts SET upi_pin_hash = ? WHERE customer_id = ?")) {
+                ps.setString(1, newPinHash);
+                ps.setLong(2, upiId);
+                if (ps.executeUpdate() > 0) return true;
+            } catch (Exception ignored) {}
+
+            return false;
         }
     }
 
     @Override
     public boolean updateUpiAddress(Long upiId, String newUpiAddress) throws SQLException {
-        String sql = "UPDATE upi_accounts SET upi_address = ? WHERE upi_account_id = ? OR upi_id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, newUpiAddress);
-            ps.setLong(2, upiId);
-            ps.setLong(3, upiId);
-            return ps.executeUpdate() > 0;
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE upi_accounts SET upi_address = ? WHERE upi_id = ?")) {
+                ps.setString(1, newUpiAddress);
+                ps.setLong(2, upiId);
+                if (ps.executeUpdate() > 0) return true;
+            } catch (Exception ignored) {}
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE upi_accounts SET upi_address = ? WHERE upi_account_id = ?")) {
+                ps.setString(1, newUpiAddress);
+                ps.setLong(2, upiId);
+                if (ps.executeUpdate() > 0) return true;
+            } catch (Exception ignored) {}
+            return false;
         }
     }
 
     @Override
     public boolean updateStatus(Long upiId, String status) throws SQLException {
-        String sql = "UPDATE upi_accounts SET status = ? WHERE upi_account_id = ? OR upi_id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, status);
-            ps.setLong(2, upiId);
-            ps.setLong(3, upiId);
-            return ps.executeUpdate() > 0;
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE upi_accounts SET status = ? WHERE upi_id = ?")) {
+                ps.setString(1, status);
+                ps.setLong(2, upiId);
+                if (ps.executeUpdate() > 0) return true;
+            } catch (Exception ignored) {}
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE upi_accounts SET status = ? WHERE upi_account_id = ?")) {
+                ps.setString(1, status);
+                ps.setLong(2, upiId);
+                if (ps.executeUpdate() > 0) return true;
+            } catch (Exception ignored) {}
+            return false;
         }
     }
 

@@ -12,7 +12,7 @@ public class DatabaseConnection {
     private static final Logger LOGGER = Logger.getLogger(DatabaseConnection.class.getName());
 
     private static String driver = "com.mysql.cj.jdbc.Driver";
-    private static String url = "jdbc:mysql://localhost:3306/SK_Bank_Of_Bareilly_DB?useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true&serverTimezone=UTC&characterEncoding=UTF-8";
+    private static String url = "jdbc:mysql://localhost:3306/SK_Bank_Of_Bareilly_DB?useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true&connectTimeout=5000&socketTimeout=10000&serverTimezone=UTC&characterEncoding=UTF-8";
     private static String username = "root";
     private static String password = "root";
 
@@ -42,7 +42,7 @@ public class DatabaseConnection {
             }
 
             if (!envUrl.contains("useSSL=")) {
-                envUrl += (envUrl.contains("?") ? "&" : "?") + "useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true&connectTimeout=10000";
+                envUrl += (envUrl.contains("?") ? "&" : "?") + "useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true&connectTimeout=5000&socketTimeout=10000";
             }
             url = envUrl;
         }
@@ -58,7 +58,7 @@ public class DatabaseConnection {
 
         try {
             Class.forName(driver);
-            LOGGER.info("Database Connection Configured: " + sanitizeUrl(url) + " | DB User: " + username);
+            LOGGER.info("Database Connection Configured for High Performance: " + sanitizeUrl(url) + " | DB User: " + username);
         } catch (ClassNotFoundException e) {
             LOGGER.log(Level.SEVERE, "MySQL JDBC Driver not found!", e);
         }
