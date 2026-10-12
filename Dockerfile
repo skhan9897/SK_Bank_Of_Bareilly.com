@@ -14,10 +14,9 @@ COPY database ./database
 RUN mvn clean package -DskipTests
 
 # 2. Build SK Mini Bank
-WORKDIR /app/skminibank
-COPY skminibank/pom.xml .
-COPY skminibank/src ./src
-RUN mvn clean package -DskipTests
+COPY skminibank/pom.xml ./skminibank/
+COPY skminibank/src ./skminibank/src
+RUN cd skminibank && mvn clean package -DskipTests
 
 # Stage 2: Runtime Stage (Tomcat 9 + Java 17 + MariaDB Server)
 FROM tomcat:9.0.86-jdk17-corretto
