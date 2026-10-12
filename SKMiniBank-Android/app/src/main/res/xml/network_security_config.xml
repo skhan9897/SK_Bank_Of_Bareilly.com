@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!--
+         PERMANENT NETWORK FIX:
+         Allowing cleartext traffic (HTTP) for local testing and production
+         to prevent "Network Error" caused by SSL/HTTPS mismatches.
+    -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">192.168.0.153</domain>
+        <domain includeSubdomains="true">skminibank-1.onrender.com</domain>
+        <domain includeSubdomains="true">onrender.com</domain>
+    </domain-config>
+</network-security-config>

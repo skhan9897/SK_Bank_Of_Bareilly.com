@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/light_background">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary_blue"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:navigationIcon="?attr/homeAsUpIndicator" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/primary_blue"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingBottom="60dp"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cheque Book Request"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Request a new cheque book for your account"
+                    android:textColor="#B3FFFFFF"
+                    android:textSize="13sp"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardChequeStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="-40dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@color/card_background"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="REQUEST STATUS"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_dark_secondary"
+                        android:letterSpacing="0.1"/>
+
+                    <TextView
+                        android:id="@+id/tvChequeStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PENDING"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/warning_yellow"
+                        android:layout_marginTop="8dp"/>
+
+                    <TextView
+                        android:id="@+id/tvChequeTypeLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="25 Leaves Cheque Book"
+                        android:textSize="14sp"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/text_dark_primary"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#10000000"
+                        android:layout_marginVertical="16dp"/>
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:stretchColumns="1">
+
+                        <TableRow android:paddingVertical="4dp">
+                            <TextView android:text="Applied Date" android:textColor="@color/text_dark_secondary" android:textSize="13sp" />
+                            <TextView android:id="@+id/tvReqDate" android:text="---" android:textColor="@color/text_dark_primary" android:textSize="13sp" android:gravity="end" android:textStyle="bold"/>
+                        </TableRow>
+
+                        <TableRow android:id="@+id/rowAppDate" android:paddingVertical="4dp" android:visibility="gone">
+                            <TextView android:text="Approved Date" android:textColor="@color/text_dark_secondary" android:textSize="13sp" />
+                            <TextView android:id="@+id/tvAppDate" android:text="---" android:textColor="@color/text_dark_primary" android:textSize="13sp" android:gravity="end" android:textStyle="bold"/>
+                        </TableRow>
+
+                        <TableRow android:id="@+id/rowExpDate" android:paddingVertical="4dp" android:visibility="gone">
+                            <TextView android:text="Expected Arrival" android:textColor="@color/text_dark_secondary" android:textSize="13sp" />
+                            <TextView android:id="@+id/tvExpDate" android:text="---" android:textColor="@color/success_green" android:textSize="14sp" android:gravity="end" android:textStyle="bold"/>
+                        </TableRow>
+                    </TableLayout>
+
+                    <TextView
+                        android:id="@+id/tvChequeRemarks"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Under verification"
+                        android:layout_marginTop="16dp"
+                        android:padding="12dp"
+                        android:background="#10000000"
+                        android:textColor="@color/text_dark_primary"
+                        android:textSize="13sp"
+                        android:fontStyle="italic"/>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardChequeForm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="-40dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@color/card_background">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Select Number of Leaves"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_dark_secondary"
+                        android:letterSpacing="0.1"/>
+
+                    <RadioGroup
+                        android:id="@+id/rgChequeType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp">
+
+                        <RadioButton
+                            android:id="@+id/rb25"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="25 Leaves"
+                            android:padding="12dp"
+                            android:checked="true"
+                            android:textSize="16sp"
+                            android:textColor="@color/text_dark_primary"
+                            android:buttonTint="@color/primary_blue"/>
+
+                        <RadioButton
+                            android:id="@+id/rb50"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="50 Leaves"
+                            android:padding="12dp"
+                            android:textSize="16sp"
+                            android:textColor="@color/text_dark_primary"
+                            android:buttonTint="@color/primary_blue"/>
+
+                        <RadioButton
+                            android:id="@+id/rb100"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="100 Leaves"
+                            android:padding="12dp"
+                            android:textSize="16sp"
+                            android:textColor="@color/text_dark_primary"
+                            android:buttonTint="@color/primary_blue"/>
+                    </RadioGroup>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnApplyCheque"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="32dp"
+                        android:text="SUBMIT REQUEST"
+                        android:backgroundTint="@color/accent_green"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        app:cornerRadius="12dp"
+                        android:elevation="4dp"/>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your cheque book will be delivered to your registered address."
+                android:textSize="12sp"
+                android:textColor="@color/text_dark_secondary"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="40dp"
+                android:gravity="center"
+                android:paddingHorizontal="24dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

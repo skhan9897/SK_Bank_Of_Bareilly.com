@@ -1,0 +1,424 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainDashboardRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_premium_gradient">
+
+    <!-- Header Section -->
+    <RelativeLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#40000000"
+        android:padding="16dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btnMenu"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            app:cardCornerRadius="18dp"
+            app:cardBackgroundColor="#30FFFFFF"
+            app:cardElevation="0dp"
+            android:layout_centerVertical="true">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@android:drawable/ic_menu_sort_by_size"
+                android:padding="8dp"
+                app:tint="@color/white" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/searchContainer"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_toEndOf="@id/btnMenu"
+            android:layout_toStartOf="@id/ivNotifications"
+            android:layout_marginHorizontal="12dp"
+            android:background="@drawable/white_circle_bg"
+            android:backgroundTint="#25FFFFFF"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="12dp"
+            android:layout_centerVertical="true">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@android:drawable/ic_menu_search"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Search Services..."
+                android:textColor="#B3FFFFFF"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/btnSettings"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@android:drawable/ic_menu_manage"
+                app:tint="@color/white"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivNotifications"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@android:drawable/ic_popup_reminder"
+            app:tint="@color/white"
+            android:layout_toStartOf="@id/btnLogout"
+            android:layout_marginEnd="12dp"
+            android:layout_centerVertical="true"/>
+
+        <ImageView
+            android:id="@+id/btnLogout"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@android:drawable/ic_lock_power_off"
+            app:tint="@color/premium_gold"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Logout" />
+
+    </RelativeLayout>
+
+    <!-- User Welcome Section -->
+    <RelativeLayout
+        android:id="@+id/welcomeSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/headerLayout"
+        android:background="#40000000"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="24dp">
+
+        <TextView
+            android:id="@+id/tvSpayBranding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SPAY"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.2"/>
+
+        <TextView
+            android:id="@+id/tvWelcomeUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvSpayBranding"
+            android:text="Hello, Sajid Khan"
+            android:textColor="#B3FFFFFF"
+            android:textSize="14sp"
+            android:layout_marginTop="2dp"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btnProfileHeader"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="#30FFFFFF"
+            app:cardElevation="0dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true">
+            <ImageView
+                android:id="@+id/ivProfileHeader"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@android:drawable/ic_menu_myplaces"
+                android:scaleType="centerCrop"
+                app:tint="@color/white" />
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshDashboard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/welcomeSection"
+        android:layout_marginTop="-16dp"
+        android:layout_above="@id/bottomNav">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="24dp">
+
+                <!-- SPay Core Actions (Modern Payment App Style) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:paddingVertical="10dp"
+                    android:background="#20000000">
+
+                    <include android:id="@+id/spayScan" layout="@layout/item_spay_action" />
+                    <include android:id="@+id/spayToContact" layout="@layout/item_spay_action" />
+                    <include android:id="@+id/spayToUpi" layout="@layout/item_spay_action" />
+                    <include android:id="@+id/spayToBank" layout="@layout/item_spay_action" />
+
+                </LinearLayout>
+
+                <!-- Balance Inquiry Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="10dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/premium_card_bg"
+                        android:padding="20dp">
+
+
+                        <TextView
+                            android:id="@+id/tvBalLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="TOTAL AVAILABLE BALANCE"
+                            android:textColor="#B3FFFFFF"
+                            android:textSize="10sp"
+                            android:letterSpacing="0.1"
+                            android:textStyle="bold"/>
+
+                        <LinearLayout
+                            android:id="@+id/llBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tvBalLabel"
+                            android:layout_marginTop="4dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/tvBalanceAmount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="₹ 12,458.50"
+                                android:textColor="@color/white"
+                                android:textSize="32sp"
+                                android:textStyle="bold"
+                                android:shadowColor="#40000000"
+                                android:shadowDx="1"
+                                android:shadowDy="1"
+                                android:shadowRadius="1"/>
+
+                            <ImageView
+                                android:id="@+id/btnToggleBalance"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:src="@android:drawable/ic_menu_view"
+                                android:scaleType="centerInside"
+                                android:layout_marginStart="12dp"
+                                android:padding="8dp"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                app:tint="@color/white"
+                                android:alpha="0.7"/>
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/dashChip"
+                            android:layout_width="35dp"
+                            android:layout_height="28dp"
+                            android:layout_below="@id/llBalance"
+                            android:layout_marginTop="16dp"
+                            android:background="@drawable/card_chip"
+                            android:alpha="0.9"/>
+
+                        <TextView
+                            android:id="@+id/tvAccNo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/llBalance"
+                            android:layout_toEndOf="@id/dashChip"
+                            android:layout_marginStart="16dp"
+                            android:text="AC XXXX XXXX 1234"
+                            android:textColor="#CCFFFFFF"
+                            android:textSize="13sp"
+                            android:letterSpacing="0.05"
+                            android:layout_marginTop="22dp"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnBalanceInquiry"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignBottom="@id/tvAccNo"
+                            android:text="DETAILS >"
+                            android:textSize="10sp"
+                            android:textColor="@color/premium_gold"
+                            android:textStyle="bold"
+                            android:padding="0dp"
+                            android:minWidth="0dp"
+                            android:minHeight="0dp"/>
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Services Grid -->
+                <GridLayout
+                    android:id="@+id/gridServices"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="3"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="8dp">
+
+                    <include android:id="@+id/cardFundTransfer" layout="@layout/item_dashboard_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" />
+                    <include android:id="@+id/cardToMobile" layout="@layout/item_dashboard_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" />
+                    <include android:id="@+id/cardToWallet" layout="@layout/item_dashboard_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" />
+
+                    <include android:id="@+id/cardBalanceInq" layout="@layout/item_dashboard_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" />
+                    <include android:id="@+id/cardWithdrawal" layout="@layout/item_dashboard_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" />
+                    <include android:id="@+id/cardPassbook" layout="@layout/item_dashboard_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" />
+
+                    <include android:id="@+id/cardFixedDeposit" layout="@layout/item_dashboard_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" />
+                    <include android:id="@+id/cardUpiPayment" layout="@layout/item_dashboard_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" />
+                    <include android:id="@+id/cardScanPay" layout="@layout/item_dashboard_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" />
+
+                    <include android:id="@+id/cardBeneficiary" layout="@layout/item_dashboard_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" />
+                    <include android:id="@+id/cardAtm" layout="@layout/item_dashboard_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" />
+                    <include android:id="@+id/cardKyc" layout="@layout/item_dashboard_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" />
+
+                    <include android:id="@+id/cardRequests" layout="@layout/item_dashboard_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" />
+                    <include android:id="@+id/cardOffers" layout="@layout/item_dashboard_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" />
+                    <include android:id="@+id/cardMore" layout="@layout/item_dashboard_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" />
+
+                </GridLayout>
+
+                <!-- Promotional Banner -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/primary_blue">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="20dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@android:drawable/ic_dialog_info"
+                            app:tint="@color/white"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginStart="16dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="SPay Digital"
+                                android:textColor="#B3FFFFFF"
+                                android:textSize="12sp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Secure • Smart • SPay"
+                                android:textColor="@color/white"
+                                android:textStyle="bold"
+                                android:textSize="16sp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Your money is 100% safe with us."
+                                android:textColor="#B3FFFFFF"
+                                android:textSize="10sp"
+                                android:layout_marginTop="2dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Recent Transactions -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    android:paddingTop="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Recent Transactions"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:id="@+id/btnViewAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="View All >"
+                        android:textColor="@color/web_accent_blue"
+                        android:textSize="12sp"
+                        android:textStyle="bold"/>
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvRecentTransactions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:nestedScrollingEnabled="false"/>
+
+            </LinearLayout>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/web_bg_dark"
+        app:menu="@menu/bottom_nav_menu_v2"
+        app:itemIconTint="@color/web_accent_blue"
+        app:itemTextColor="#B3FFFFFF"
+        app:labelVisibilityMode="labeled"
+        app:elevation="8dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabScan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="12dp"
+        app:fabSize="normal"
+        android:src="@android:drawable/ic_menu_camera"
+        app:backgroundTint="@color/premium_gold"
+        app:tint="@color/primary_blue"
+        app:elevation="8dp"
+        app:borderWidth="4dp"
+        app:maxImageSize="32dp"
+        android:contentDescription="Scan and Pay" />
+</RelativeLayout>

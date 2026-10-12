@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">SPay Payment Bank</string>
+    <string name="brand_name">SPay</string>
+    <string name="developed_by">Developed By Sajid Khan</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
+    <string-array name="gender_array">
+        <item>Select Gender</item>
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="marital_status_array">
+        <item>Select Marital Status</item>
+        <item>Single</item>
+        <item>Married</item>
+        <item>Divorced</item>
+        <item>Widowed</item>
+    </string-array>
+
+    <string-array name="relationship_array">
+        <item>Select Relationship</item>
+        <item>Father</item>
+        <item>Mother</item>
+        <item>Brother</item>
+        <item>Sister</item>
+        <item>Wife</item>
+        <item>Husband</item>
+        <item>Son</item>
+        <item>Daughter</item>
+        <item>Friend</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="account_type_array">
+        <item>Select Account Type</item>
+        <item>Savings Account</item>
+        <item>Current Account</item>
+        <item>Salary Account</item>
+        <item>Student Account</item>
+        <item>Senior Citizen Account</item>
+    </string-array>
+
+    <!-- Added missing description for icon contentDescription -->
+    <string name="service_icon">Service icon</string>
+</resources>

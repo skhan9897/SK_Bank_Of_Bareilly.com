@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Blue Palette -->
+    <color name="primary_blue">#1A1A5E</color> <!-- Deep Navy Blue (for headers, main backgrounds) -->
+    <color name="primary_blue_dark">#0D0D3F</color> <!-- Darker Navy Blue (for status bar) -->
+    <color name="accent_green">#00C853</color> <!-- Green accent -->
+    <color name="accent_red">#FF5252</color>   <!-- Red accent -->
+    <color name="accent_orange">#FF9100</color> <!-- Orange accent -->
+    <color name="light_background">#F5F7FA</color> <!-- Soft White Background (for main content areas) -->
+    <color name="card_background">#FFFFFF</color> <!-- Pure White for cards -->
+    <color name="text_dark_primary">#1F2937</color> <!-- Dark gray text -->
+    <color name="text_dark_secondary">#6B7280</color> <!-- Medium gray text -->
+    <color name="divider_light">#E5E7EB</color> <!-- Light gray divider -->
+
+    <!-- Common Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="premium_gold">#FFC107</color>
+    <color name="premium_gold_light">#FFF8E1</color>
+    <color name="premium_gold_accent">#FFB300</color>
+
+    <!-- Mappings for existing names to new palette -->
+    <color name="fino_primary">@color/primary_blue</color>
+    <color name="fino_primary_dark">@color/primary_blue_dark</color>
+    <color name="fino_accent_green">@color/accent_green</color>
+    <color name="fino_accent_red">@color/accent_red</color>
+    <color name="fino_accent_orange">@color/accent_orange</color>
+    <color name="fino_background">@color/light_background</color>
+    <color name="fino_card_bg">@color/card_background</color>
+    <color name="fino_text_primary">@color/text_dark_primary</color>
+    <color name="fino_text_secondary">@color/text_dark_secondary</color>
+    <color name="fino_divider">@color/divider_light</color>
+
+    <!-- Web Style Palette -->
+    <color name="web_bg_dark">#0f0c29</color>
+    <color name="web_bg_mid">#302b63</color>
+    <color name="web_bg_end">#24243e</color>
+    <color name="web_accent_blue">#00d2ff</color>
+    <color name="glass_white">#15FFFFFF</color>
+
+    <!-- Specific background for splash/login as requested (deep navy blue) -->
+    <color name="blue_background">@color/web_bg_dark</color>
+
+    <!-- Missing colors for resource linking -->
+    <color name="warning_yellow">#FFC107</color>
+    <color name="success_green">#4CAF50</color>
+</resources>

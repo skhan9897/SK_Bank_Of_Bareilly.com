@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_premium_gradient">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#40000000"
+        app:titleTextColor="@color/white" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Header Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ATM CARD SERVICES"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:letterSpacing="0.1"
+                android:alpha="0.8"/>
+
+            <!-- Main Card Container -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/glass_white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <!-- Title Header Inside Card -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Request New ATM Card"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginBottom="24dp" />
+
+                    <!-- STATUS VIEW (Dynamic) -->
+                    <LinearLayout
+                        android:id="@+id/cardAtmStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="CURRENT APPLICATION STATUS"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="#B3FFFFFF"
+                            android:letterSpacing="0.1"/>
+
+                        <TextView
+                            android:id="@+id/tvExistingCardType"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="RuPay Debit Card"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvAtmStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="PENDING"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:background="@drawable/badge_pending"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="6dp"
+                            android:layout_marginTop="12dp"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#20FFFFFF"
+                            android:layout_marginVertical="20dp"/>
+
+                        <TableLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:stretchColumns="1">
+
+                            <TableRow android:paddingVertical="6dp">
+                                <TextView android:text="Applied Date" android:textColor="#B3FFFFFF" android:textSize="13sp" />
+                                <TextView android:id="@+id/tvRequestDate" android:text="---" android:textColor="@color/white" android:textSize="13sp" android:gravity="end" android:textStyle="bold"/>
+                            </TableRow>
+
+                            <TableRow android:id="@+id/rowApproval" android:paddingVertical="6dp" android:visibility="gone">
+                                <TextView android:text="Approved Date" android:textColor="#B3FFFFFF" android:textSize="13sp" />
+                                <TextView android:id="@+id/tvApprovalDate" android:text="---" android:textColor="@color/white" android:textSize="13sp" android:gravity="end" android:textStyle="bold"/>
+                            </TableRow>
+
+                            <TableRow android:id="@+id/rowExpected" android:paddingVertical="6dp" android:visibility="gone">
+                                <TextView android:text="Delivery by" android:textColor="#B3FFFFFF" android:textSize="13sp" />
+                                <TextView android:id="@+id/tvExpectedDate" android:text="---" android:textColor="@color/white" android:textSize="13sp" android:gravity="end" android:textStyle="bold"/>
+                            </TableRow>
+
+                            <TableRow android:id="@+id/rowDispatched" android:paddingVertical="6dp" android:visibility="gone">
+                                <TextView android:text="Dispatched on" android:textColor="#B3FFFFFF" android:textSize="13sp" />
+                                <TextView android:id="@+id/tvDispatchDate" android:text="---" android:textColor="@color/white" android:textSize="13sp" android:gravity="end" android:textStyle="bold"/>
+                            </TableRow>
+
+                            <TableRow android:id="@+id/rowDelivered" android:paddingVertical="6dp" android:visibility="gone">
+                                <TextView android:text="Delivered on" android:textColor="#B3FFFFFF" android:textSize="13sp" />
+                                <TextView android:id="@+id/tvDeliverDate" android:text="---" android:textColor="@color/white" android:textSize="13sp" android:gravity="end" android:textStyle="bold"/>
+                            </TableRow>
+                        </TableLayout>
+
+                        <TextView
+                            android:id="@+id/tvAtmRemarksLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="REMARKS"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="#B3FFFFFF"
+                            android:letterSpacing="0.1"
+                            android:layout_marginTop="20dp"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:id="@+id/tvAtmRemarks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Remarks: Your request is under review."
+                            android:layout_marginTop="20dp"
+                            android:padding="12dp"
+                            android:background="#15FFFFFF"
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:visibility="gone"/>
+
+                    </LinearLayout>
+
+                    <!-- APPLICATION FORM VIEW -->
+                    <LinearLayout
+                        android:id="@+id/cardApplyForm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Choose your preference"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="#B3FFFFFF"/>
+
+                        <RadioGroup
+                            android:id="@+id/rgCardType"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp">
+
+                            <RadioButton
+                                android:id="@+id/rbRupay"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="RuPay Platinum Card"
+                                android:textColor="@color/white"
+                                android:buttonTint="@color/premium_gold"
+                                android:checked="true"
+                                android:textSize="15sp" />
+
+                            <RadioButton
+                                android:id="@+id/rbVisa"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Visa Global Debit Card"
+                                android:textColor="@color/white"
+                                android:buttonTint="@color/premium_gold"
+                                android:textSize="15sp"
+                                android:layout_marginTop="12dp"/>
+
+                            <RadioButton
+                                android:id="@+id/rbMaster"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="MasterCard World"
+                                android:textColor="@color/white"
+                                android:buttonTint="@color/premium_gold"
+                                android:textSize="15sp"
+                                android:layout_marginTop="12dp"/>
+                        </RadioGroup>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnApplyATM"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="32dp"
+                            android:text="REQUEST ATM CARD"
+                            android:backgroundTint="@color/premium_gold"
+                            android:textColor="@color/primary_blue"
+                            android:textStyle="bold"
+                            app:cornerRadius="15dp"
+                            android:elevation="4dp"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Standard delivery time is 7-10 working days."
+                        android:textSize="12sp"
+                        android:textColor="#80FFFFFF"
+                        android:layout_marginTop="24dp"
+                        android:gravity="center"
+                        android:alpha="0.7"/>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

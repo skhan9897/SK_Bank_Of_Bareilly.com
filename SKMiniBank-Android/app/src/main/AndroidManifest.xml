@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/ic_bank_logo"
+        android:label="SK Mini Bank"
+        android:roundIcon="@drawable/ic_bank_logo"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SKMiniBank"
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+        tools:replace="android:allowBackup,android:supportsRtl,android:theme">
+
+        <!-- Main Banking App Activities -->
+        <activity android:name=".activities.MiniStatementActivity" android:exported="false" />
+        <activity android:name=".activities.InstantAccountActivity" android:exported="false" />
+        <activity android:name=".activities.VerticalCaptureActivity" android:exported="false" />
+        <activity android:name=".activities.OpenAccountActivity" android:exported="false" />
+        <activity android:name=".activities.SetPinActivity" android:exported="false" />
+        <activity android:name=".activities.ManageCardActivity" android:exported="false" />
+        <activity android:name=".activities.KYCUpdateActivity" android:exported="false" />
+        <activity android:name=".activities.AllServicesActivity" android:exported="false" />
+        <activity android:name=".activities.AiAssistantActivity" android:exported="false" />
+        <activity android:name=".activities.ReferEarnActivity" android:exported="false" />
+        <activity android:name=".activities.NotificationHistoryActivity" android:exported="false" />
+        <activity android:name=".activities.ResetPasswordActivity" android:exported="false" />
+        <activity android:name=".activities.AddBankActivity" android:exported="false" />
+        <activity android:name=".activities.CheckBalanceActivity" android:exported="false" />
+        <activity android:name=".activities.UpiPinActivity" android:exported="false" />
+        <activity android:name=".activities.RazorpayActivity" android:exported="false" />
+        <activity android:name=".activities.RequestDetailActivity" android:exported="false" />
+        <activity android:name=".activities.TransactionDetailActivity" android:exported="false" />
+        <activity android:name=".activities.TransactionsActivity" android:exported="false" />
+        <activity android:name=".activities.PaymentSuccessActivity" android:exported="false" />
+        <activity android:name=".activities.PaymentProcessingActivity" android:exported="false" />
+        <activity android:name=".activities.ChequeBookActivity" android:exported="false" />
+        <activity android:name=".activities.NetBankingActivity" android:exported="false" />
+        <activity android:name=".activities.MobileBankingActivity" android:exported="false" />
+        <activity android:name=".activities.CreditCardActivity" android:exported="false" />
+        <activity android:name=".activities.MyQrActivity" android:exported="false" />
+        <activity android:name=".activities.LoanActivity" android:exported="false" />
+        <activity android:name=".activities.GasBillActivity" android:exported="false" />
+        <activity android:name=".activities.ElectricityBillActivity" android:exported="false" />
+        <activity android:name=".activities.AtmApplyActivity" android:exported="false" />
+        <activity android:name=".activities.UpiPaymentActivity" android:exported="false" />
+        <activity android:name=".activities.UpiActivity" android:exported="false" />
+        <activity android:name=".activities.TransferActivity" android:exported="false" />
+        <activity android:name=".activities.CreateRequestActivity" android:exported="false" />
+        <activity android:name=".activities.MyRequestsActivity" android:exported="false" />
+        <activity android:name=".activities.SkStoreActivity" android:exported="false" />
+        <activity android:name=".activities.ProfileActivity" android:exported="false" />
+        <activity android:name=".activities.DashboardActivity" android:exported="false" />
+        <activity android:name=".activities.WebPortalActivity" android:exported="false" />
+        <activity android:name=".activities.CashWithdrawalActivity" android:exported="false" />
+        <activity android:name=".activities.FixedDepositActivity" android:exported="false" />
+        <activity android:name=".activities.LoginActivity" android:exported="false" />
+        <activity android:name=".activities.ChatTransferActivity" android:exported="false" />
+        <activity android:name=".activities.SendMoneyActivity" android:exported="false" />
+
+        <service
+            android:name=".service.PaymentNotificationService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <!-- Launcher for the Main Banking App -->
+        <activity
+            android:name=".activities.SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- New Loan App Activities -->
+        <activity android:name=".activities.LoanSplashActivity" android:exported="false" />
+        <activity android:name=".activities.LoanDashboardActivity" android:exported="false" />
+        <activity android:name=".activities.LoanLoginActivity" android:exported="false" />
+
+        <!-- Admin Panel -->
+        <activity android:name=".activities.AdminSplashActivity" android:exported="false" />
+        <activity android:name=".activities.AdminLoginActivity" android:exported="false" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+
+</manifest>

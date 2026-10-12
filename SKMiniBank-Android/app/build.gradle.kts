@@ -1,0 +1,100 @@
+plugins {
+    alias(libs.plugins.android.application)
+    // id("com.google.gms.google-services")
+}
+
+android {
+    namespace = "com.bank.skminibank"
+
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "com.bank.skminibank"
+        minSdk = 24
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    implementation(libs.activity.ktx)
+    implementation(libs.constraintlayout)
+
+    // Firebase
+    // implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
+    // implementation("com.google.firebase:firebase-analytics")
+    // implementation("com.google.firebase:firebase-auth")
+    // implementation("com.google.firebase:firebase-database")
+    // implementation("com.google.firebase:firebase-firestore")
+    // implementation("com.google.firebase:firebase-messaging")
+
+    // RecyclerView
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
+
+    // CardView
+    implementation("androidx.cardview:cardview:1.0.0")
+
+    // Swipe Refresh
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+
+    // Gson
+    implementation("com.google.code.gson:gson:2.13.1")
+
+    // OkHttp Logging
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+    // Glide
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
+    // Lottie
+    implementation("com.airbnb.android:lottie:6.6.7")
+
+    // Biometric Authentication
+    implementation("androidx.biometric:biometric:1.1.0")
+
+    // QR Code Scanner & Generator
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("com.google.zxing:core:3.5.3")
+
+    // Razorpay Payment Gateway
+    implementation("com.razorpay:checkout:1.6.41")
+
+    // Google Generative AI (Gemini)
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+
+    // Room Database
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+}

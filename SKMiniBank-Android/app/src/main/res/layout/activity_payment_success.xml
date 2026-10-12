@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F4F4">
+
+    <!-- Top Success Header -->
+    <LinearLayout
+        android:id="@+id/successHeader"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:background="#1B5E20"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@android:drawable/checkbox_on_background"
+            app:tint="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Payment Successful"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvSuccessTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="30 July 2026, 06:45 PM"
+            android:textColor="#B3FFFFFF"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/successHeader"
+        android:layout_above="@+id/btnDone"
+        android:layout_marginTop="-40dp"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/receiptLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="40dp">
+
+            <!-- Main Receipt Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PAID TO"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="#9E9E9E"
+                        android:letterSpacing="0.1"/>
+
+                    <TextView
+                        android:id="@+id/tvResName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Receiver Name"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvResAcc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="UPI ID: 9897004767@skpay"
+                        android:textColor="#757575"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvSuccessAmount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:text="₹ 0.00"
+                        android:textColor="@color/black"
+                        android:textSize="36sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:paddingVertical="12dp"
+                        android:background="#F9F9F9"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#EEEEEE"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="24dp"/>
+
+                    <!-- Details Table -->
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:stretchColumns="1">
+
+                        <TableRow android:paddingVertical="8dp">
+                            <TextView android:text="Transaction ID" android:textColor="#757575" android:textSize="13sp" />
+                            <TextView android:id="@+id/tvResTxnId" android:text="TXN123456789" android:textColor="@color/black" android:textSize="13sp" android:gravity="end" android:textStyle="bold"/>
+                        </TableRow>
+
+                        <TableRow android:paddingVertical="8dp">
+                            <TextView android:text="Debited From" android:textColor="#757575" android:textSize="13sp" />
+                            <TextView android:id="@+id/tvDebitedFrom" android:text="SK Bank - 4767" android:textColor="@color/black" android:textSize="13sp" android:gravity="end" android:textStyle="bold"/>
+                        </TableRow>
+
+                        <TableRow android:paddingVertical="8dp">
+                            <TextView android:text="Updated Balance" android:textColor="#757575" android:textSize="13sp" />
+                            <TextView android:id="@+id/tvResBalance" android:text="₹ 0.00" android:textColor="#1B5E20" android:textSize="14sp" android:gravity="end" android:textStyle="bold"/>
+                        </TableRow>
+
+                    </TableLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnShare"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SHARE RECEIPT"
+                            android:textColor="#1565C0"
+                            android:textStyle="bold"
+                            app:icon="@android:drawable/ic_menu_share"
+                            app:iconTint="#1565C0"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="Transfer powered by SK Mini Bank Secure Gateway"
+                android:textColor="#9E9E9E"
+                android:textSize="11sp"
+                android:gravity="center"
+                app:drawableStartCompat="@android:drawable/ic_lock_idle_lock"
+                app:drawableTint="#9E9E9E"
+                android:drawablePadding="8dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnDone"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
+        android:text="DONE"
+        android:backgroundTint="#1B5E20"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:cornerRadius="30dp"
+        android:elevation="8dp"/>
+
+</RelativeLayout>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_premium_gradient">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#40000000"
+        app:title="Set Transaction PIN"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationIconTint="@color/white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@android:drawable/ic_lock_lock"
+            app:tint="@color/premium_gold"
+            android:layout_marginTop="40dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CREATE 4-DIGIT PIN"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="This PIN will be used for all your transactions"
+            android:textColor="#B3FFFFFF"
+            android:textSize="14sp"
+            android:layout_marginTop="8dp"
+            android:gravity="center"/>
+
+        <EditText
+            android:id="@+id/etNewPin"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:background="@null"
+            android:gravity="center"
+            android:inputType="numberPassword"
+            android:maxLength="4"
+            android:letterSpacing="1.5"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:hint="****"
+            android:textColorHint="#40FFFFFF"/>
+
+        <View
+            android:layout_width="250dp"
+            android:layout_height="2dp"
+            android:background="@color/premium_gold"
+            android:layout_marginTop="8dp"/>
+
+        <EditText
+            android:id="@+id/etConfirmPin"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:background="@null"
+            android:gravity="center"
+            android:inputType="numberPassword"
+            android:maxLength="4"
+            android:letterSpacing="1.5"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:hint="****"
+            android:textColorHint="#40FFFFFF"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirm PIN"
+            android:textColor="#B3FFFFFF"
+            android:textSize="12sp"
+            android:layout_marginTop="4dp"/>
+
+        <View
+            android:layout_width="250dp"
+            android:layout_height="2dp"
+            android:background="@color/premium_gold"
+            android:layout_marginTop="8dp"/>
+
+        <!-- OTP Section -->
+        <LinearLayout
+            android:id="@+id/otpSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/etOtp"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:background="@null"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="6"
+                android:letterSpacing="1.0"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:hint="ENTER OTP"
+                android:textColorHint="#20FFFFFF"/>
+
+            <TextView
+                android:id="@+id/tvOtpSentTo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OTP sent to registered mobile"
+                android:textColor="#B3FFFFFF"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+
+            <View
+                android:layout_width="250dp"
+                android:layout_height="2dp"
+                android:background="@color/web_accent_blue"
+                android:layout_marginTop="8dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSetPin"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="32dp"
+        android:text="VERIFY &amp; SET PIN"
+        android:textStyle="bold"
+        android:textColor="@color/primary_blue"
+        app:backgroundTint="@color/premium_gold"
+        app:cornerRadius="30dp"
+        android:elevation="8dp"/>
+
+</RelativeLayout>

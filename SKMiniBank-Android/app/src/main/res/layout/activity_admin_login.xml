@@ -1,0 +1,142 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/loginRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/admin_bg_gradient">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="30dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="35dp"
+                app:cardElevation="30dp"
+                app:cardBackgroundColor="#08FFFFFF"
+                app:strokeWidth="1dp"
+                app:strokeColor="#1AFFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="35dp"
+                    android:paddingVertical="50dp"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@android:drawable/ic_lock_idle_lock"
+                        app:tint="#00d2ff"
+                        android:layout_marginBottom="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SK ADMIN PANEL"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:letterSpacing="0.1"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Secure Administrative Access"
+                        android:textSize="12sp"
+                        android:textColor="#80FFFFFF"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.2"
+                        android:layout_marginBottom="40dp"/>
+
+                    <!-- Admin ID Input -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilUsername"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Admin ID"
+                        app:startIconDrawable="@android:drawable/ic_menu_myplaces"
+                        app:startIconTint="#80FFFFFF"
+                        android:textColorHint="#80FFFFFF"
+                        app:boxStrokeColor="#33FFFFFF"
+                        app:boxBackgroundColor="#0DFFFFFF"
+                        app:hintTextColor="#00d2ff">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etAdminUsername"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:textColor="@color/white"
+                            android:paddingStart="45dp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Password Input -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilPassword"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Admin Password"
+                        android:layout_marginTop="20dp"
+                        app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
+                        app:startIconTint="#80FFFFFF"
+                        app:passwordToggleEnabled="true"
+                        app:passwordToggleTint="#80FFFFFF"
+                        android:textColorHint="#80FFFFFF"
+                        app:boxStrokeColor="#33FFFFFF"
+                        app:boxBackgroundColor="#0DFFFFFF"
+                        app:hintTextColor="#00d2ff">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etAdminPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            android:textColor="@color/white"
+                            android:paddingStart="45dp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnAdminLogin"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:text="SECURE ADMIN LOGIN"
+                        android:layout_marginTop="40dp"
+                        android:background="@drawable/admin_btn_gradient"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.1"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Footer -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:text="© 2026 SK MINI BANK | BY SAJID KHAN"
+        android:textColor="#33FFFFFF"
+        android:textSize="11sp"
+        android:letterSpacing="0.1"/>
+
+</RelativeLayout>

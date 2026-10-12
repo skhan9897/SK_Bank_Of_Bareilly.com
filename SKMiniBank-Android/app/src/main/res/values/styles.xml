@@ -1,0 +1,35 @@
+<resources>
+    <!-- Section Header for Forms -->
+    <style name="sectionHeader">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
+        <item name="android:textColor">@color/premium_gold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.1</item>
+    </style>
+
+    <!-- Outlined Input Style -->
+    <style name="formInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="boxStrokeColor">@color/white</item>
+        <item name="hintTextColor">@color/web_accent_blue</item>
+        <item name="android:textColorHint">#80FFFFFF</item>
+    </style>
+
+    <!-- Custom Spinner Style -->
+    <style name="formSpinner">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:background">@android:drawable/btn_dropdown</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+    </style>
+</resources>

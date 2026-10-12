@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/splashRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_premium_gradient">
+
+
+    <!-- Centered Glass Card Content -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/containerMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        app:cardCornerRadius="40dp"
+        app:cardElevation="15dp"
+        app:cardBackgroundColor="@color/glass_white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="40dp">
+
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_bank_logo"
+                android:layout_marginBottom="32dp"
+                android:contentDescription="SK Mini Payment Bank Logo"/>
+
+            <TextView
+                android:id="@+id/tvBankName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SPAY"
+                android:textColor="@color/white"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.3" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PAYMENT BANK"
+                android:textColor="@color/web_accent_blue"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.5"
+                android:layout_marginTop="4dp"/>
+
+            <View
+                android:layout_width="60dp"
+                android:layout_height="2dp"
+                android:background="@color/web_accent_blue"
+                android:layout_marginTop="24dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="THE FUTURE OF BANKING"
+                android:textColor="#80FFFFFF"
+                android:textSize="14sp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.4"
+                android:layout_marginTop="8dp"/>
+
+            <ProgressBar
+                android:id="@+id/splashProgress"
+                style="@android:style/Widget.Material.ProgressBar.Horizontal"
+                android:layout_width="200dp"
+                android:layout_height="3dp"
+                android:layout_marginTop="40dp"
+                android:progress="0"
+                android:max="100"
+                android:progressTint="@color/web_accent_blue"
+                android:progressBackgroundTint="#1AFFFFFF" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tvDeveloper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:text="Developed By Sajid Khan"
+        android:textColor="#4DFFFFFF"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:letterSpacing="0.2"/>
+
+</RelativeLayout>

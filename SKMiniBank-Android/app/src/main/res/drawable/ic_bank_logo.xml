@@ -1,0 +1,33 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Premium Solid Background (Modern Squircle Shape) -->
+    <path
+        android:pathData="M40,20 L160,20 Q180,20 180,40 L180,160 Q180,180 160,180 L40,180 Q20,180 20,160 L20,40 Q20,20 40,20 Z"
+        android:fillColor="#002D62" />
+
+    <!-- Modern Minimalist "S" -->
+    <path
+        android:pathData="M60,85 C60,70 95,70 95,85 C95,95 65,95 65,105 C65,120 100,120 100,105"
+        android:strokeWidth="18"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- Modern Minimalist "K" -->
+    <path
+        android:pathData="M115,70 L115,130 M115,100 L145,70 M115,100 L145,130"
+        android:strokeWidth="18"
+        android:strokeColor="#FFC107"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- Subtle Digital Accent Dot -->
+    <path
+        android:pathData="M160,50 L165,50 A2.5,2.5 0 1 1 160,50 Z"
+        android:fillColor="#00D2FF" />
+
+</vector>

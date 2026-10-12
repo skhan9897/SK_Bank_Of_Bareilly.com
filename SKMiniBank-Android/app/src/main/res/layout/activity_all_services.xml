@@ -1,0 +1,146 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/allServicesRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_premium_gradient">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#40000000"
+        app:title="All Services"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationIconTint="@color/white" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Category: Banking -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Banking Services"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.1"
+                android:layout_marginBottom="12dp"
+                android:alpha="0.8"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/glass_white"
+                android:layout_marginBottom="24dp">
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="4"
+                    android:paddingVertical="8dp">
+
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcLoan" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcAtm" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcCheque" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcNetBanking" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcMobileBanking" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcKyc" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcStatement" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcFd" android:layout_width="0dp" android:layout_columnWeight="1"/>
+
+                </GridLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Category: Recharge & Bills -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recharge &amp; Bill Payments"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.1"
+                android:layout_marginBottom="12dp"
+                android:alpha="0.8"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/glass_white"
+                android:layout_marginBottom="24dp">
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="4"
+                    android:paddingVertical="8dp">
+
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcRecharge" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcDth" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcElectricity" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcCreditCard" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcGas" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcWater" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcInsurance" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcFastag" android:layout_width="0dp" android:layout_columnWeight="1"/>
+
+                </GridLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Category: Travel & Others -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Travel &amp; Others"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.1"
+                android:layout_marginBottom="12dp"
+                android:alpha="0.8"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/glass_white"
+                android:layout_marginBottom="40dp">
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="4"
+                    android:paddingVertical="8dp">
+
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcFlights" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcBus" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcTrains" android:layout_width="0dp" android:layout_columnWeight="1"/>
+                    <include layout="@layout/item_pp_service" android:id="@+id/svcHotels" android:layout_width="0dp" android:layout_columnWeight="1"/>
+
+                </GridLayout>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

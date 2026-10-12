@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Base Gradient (Fino Red Theme) -->
+    <item>
+        <shape>
+            <gradient
+                android:angle="135"
+                android:centerX="50%"
+                android:centerY="50%"
+            android:startColor="@color/primary_blue"
+            android:endColor="@color/primary_blue_dark"
+                android:type="linear" />
+        </shape>
+    </item>
+
+    <!-- Subtle Texture/Pattern Overlay -->
+    <item>
+        <shape>
+            <gradient
+                android:angle="0"
+                android:endColor="#00000000"
+                android:startColor="#0DFFFFFF"
+                android:type="linear" />
+        </shape>
+    </item>
+</layer-list>

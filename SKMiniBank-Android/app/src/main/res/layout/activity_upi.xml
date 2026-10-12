@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/upiRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_premium_gradient">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        app:title="UPI Management"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationIconTint="@color/white" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Header Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#20000000"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingBottom="40dp"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="My UPI Details"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Securely manage your UPI ID and PIN"
+                    android:textColor="#B3FFFFFF"
+                    android:textSize="13sp"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardUpiInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="-20dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@color/glass_white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="YOUR ACTIVE UPI ID"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="#B3FFFFFF"
+                        android:letterSpacing="0.1"/>
+
+                    <TextView
+                        android:id="@+id/tvUpiId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Loading..."
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:layout_marginTop="12dp"/>
+
+                    <TextView
+                        android:id="@+id/tvUpiStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ACTIVE"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="4dp"
+                        android:textColor="@color/accent_green"
+                        android:background="#1000C853"
+                        android:layout_marginTop="12dp"
+                        android:visibility="gone"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnGenerateUpi"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="24dp"
+                        android:text="CREATE UPI ID"
+                        android:backgroundTint="@color/premium_gold"
+                        android:textColor="@color/primary_blue"
+                        android:textStyle="bold"
+                        app:cornerRadius="15dp"
+                        android:visibility="visible"/>
+
+                    <!-- Action Buttons Container -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="24dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnShowQr"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:text="GENERATE QR CODE"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"
+                            app:strokeColor="@color/white"
+                            app:cornerRadius="15dp"
+                            app:icon="@android:drawable/ic_menu_camera"
+                            app:iconTint="@color/white"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnTogglePinSection"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:layout_marginTop="8dp"
+                            android:text="SET / CHANGE UPI PIN"
+                            android:textColor="@color/premium_gold"
+                            android:textStyle="bold"
+                            app:icon="@android:drawable/ic_lock_lock"
+                            app:iconTint="@color/premium_gold"/>
+                    </LinearLayout>
+
+                    <!-- PIN & OTP Section - Initially Hidden or Shown based on Toggle -->
+                    <LinearLayout
+                        android:id="@+id/layoutSetPin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="16dp"
+                        android:visibility="gone">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#20FFFFFF"
+                            android:layout_marginBottom="20dp"/>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilOtp"
+                            style="@style/formInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Enter 4-Digit OTP"
+                            app:startIconDrawable="@android:drawable/ic_dialog_info"
+                            app:startIconTint="#80FFFFFF">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etOtp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number"
+                                android:maxLength="4"
+                                android:gravity="center"
+                                android:textSize="18sp"
+                                android:textColor="@color/white"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilNewPin"
+                            style="@style/formInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:hint="Create New 4-Digit PIN"
+                            app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
+                            app:startIconTint="#80FFFFFF"
+                            app:passwordToggleEnabled="true"
+                            app:passwordToggleTint="#80FFFFFF">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etUpiPin"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberPassword"
+                                android:maxLength="4"
+                                android:letterSpacing="1"
+                                android:gravity="center"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnSetPin"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:layout_marginTop="24dp"
+                            android:text="VERIFY AND SET PIN"
+                            android:textStyle="bold"
+                            android:textColor="@color/primary_blue"
+                            app:backgroundTint="@color/premium_gold"
+                            app:cornerRadius="15dp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Always keep your UPI PIN secret. Do not share it with anyone."
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="40dp"
+                android:gravity="center"
+                android:paddingHorizontal="32dp"
+                android:alpha="0.8"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
