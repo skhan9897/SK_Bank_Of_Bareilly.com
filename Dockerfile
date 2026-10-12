@@ -7,16 +7,16 @@
 FROM maven:3.9.6-eclipse-temurin-17-alpine AS builder
 WORKDIR /app
 
-# 1. Build SK Bank of Bareilly
+# Copy Maven POM and pre-fetch dependencies
 COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy project source and database scripts
 COPY src ./src
 COPY database ./database
-RUN mvn clean package -DskipTests
 
-# 2. Build SK Mini Bank
-COPY skminibank/pom.xml ./skminibank/
-COPY skminibank/src ./skminibank/src
-RUN cd skminibank && mvn clean package -DskipTests
+# Package application into WAR
+RUN mvn clean package -DskipTests
 
 # Stage 2: Runtime Stage (Tomcat 9 + Java 17 + MariaDB Server)
 FROM tomcat:9.0.86-jdk17-corretto
@@ -28,12 +28,11 @@ RUN yum update -y && \
     yum install -y mariadb-server mariadb procps-ng && \
     yum clean all
 
-# Remove default ROOT and other applications
-RUN rm -rf webapps/ROOT webapps/ROOT.war webapps/skminibank webapps/skminibank.war
+# Remove default ROOT application
+RUN rm -rf webapps/ROOT webapps/ROOT.war
 
-# Copy compiled WARs into Tomcat webapps
+# Copy compiled WAR as ROOT.war
 COPY --from=builder /app/target/sk-bank-of-bareilly.war webapps/ROOT.war
-COPY --from=builder /app/skminibank/target/skminibank.war webapps/skminibank.war
 COPY --from=builder /app/database/sk_bank_of_bareilly.sql /docker-entrypoint-initdb.d/schema.sql
 
 # Copy Entrypoint Script
