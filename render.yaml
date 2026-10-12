@@ -1,11 +1,11 @@
 # ===============================================================
-# SK BANK OF BAREILLY - RENDER DEPLOYMENT BLUEPRINT
+# SK BANK OF BAREILLY & SK MINI BANK - UNIFIED RENDER DEPLOYMENT BLUEPRINT
 # Render Infrastructure-as-Code Configuration
 # ===============================================================
 
 services:
   - type: web
-    name: sk-bank-of-bareilly
+    name: sk-bank-of-bareilly-unified
     env: docker
     dockerfilePath: ./Dockerfile
     plan: free

@@ -72,22 +72,15 @@ public class SkMiniBankServlet extends HttpServlet {
             BigDecimal amount = new BigDecimal(request.getParameter("amount"));
             String remarks = request.getParameter("remarks");
 
-            // Resolve target account in shared database
+            // Resolve exact receiver account in shared database
             Account receiverAccount = resolveAccount(miniBankDetail);
 
             if (receiverAccount == null) {
-                // Pick secondary account if valid
-                List<Account> senderAccounts = accountService.getCustomerAccounts(customerId);
-                for (Account acc : senderAccounts) {
-                    if (!acc.getAccountId().equals(senderAccountId)) {
-                        receiverAccount = acc;
-                        break;
-                    }
-                }
+                throw new Exception("SK Mini Bank account or UPI ID '" + miniBankDetail + "' not found in database.");
             }
 
-            if (receiverAccount == null || receiverAccount.getAccountId().equals(senderAccountId)) {
-                throw new Exception("Destination SK Mini Bank Account / UPI handle not found. Please enter a valid account or UPI ID.");
+            if (receiverAccount.getAccountId().equals(senderAccountId)) {
+                throw new Exception("Sender and receiver account cannot be the same.");
             }
 
             TransferDTO dto = new TransferDTO();
@@ -95,7 +88,7 @@ public class SkMiniBankServlet extends HttpServlet {
             dto.setReceiverAccountId(receiverAccount.getAccountId());
             dto.setTransferType("MINI_BANK_UPI");
             dto.setAmount(amount);
-            dto.setRemarks(remarks != null && !remarks.trim().isEmpty() ? remarks : "SK Mini Bank Payment");
+            dto.setRemarks(remarks != null && !remarks.trim().isEmpty() ? remarks : "SK Mini Bank Inter-Bank Transfer");
             dto.setRecipientName("SK Mini Bank (" + miniBankDetail + ")");
 
             TransferRequest tr = transferService.processTransfer(dto, customerId);
@@ -109,7 +102,7 @@ public class SkMiniBankServlet extends HttpServlet {
                 request.setAttribute("accounts", accountService.getCustomerAccounts(customerId));
                 request.setAttribute("upi", upiService.getOrCreateDefaultUpiAccount(customerId));
             } catch (Exception ignored) {}
-            request.setAttribute("errorMessage", "SK Mini Bank Payment Failed: " + e.getMessage());
+            request.setAttribute("errorMessage", "SK Mini Bank Transfer Failed: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/views/customer/sk-mini-bank.jsp").forward(request, response);
         }
     }
@@ -119,32 +112,46 @@ public class SkMiniBankServlet extends HttpServlet {
         String clean = detail.trim();
 
         try {
-            // Check by UPI Address
+            // 1. Check by exact UPI Address
             UpiAccount upi = upiDAO.findByUpiAddress(clean);
             if (upi == null && !clean.contains("@")) {
                 upi = upiDAO.findByUpiAddress(clean + "@skminibank");
                 if (upi == null) {
                     upi = upiDAO.findByUpiAddress(clean + "@skbank");
                 }
+            } else if (upi == null && clean.contains("@")) {
+                String prefix = clean.substring(0, clean.indexOf("@"));
+                upi = upiDAO.findByUpiAddress(prefix + "@skminibank");
+                if (upi == null) {
+                    upi = upiDAO.findByUpiAddress(prefix + "@skbank");
+                }
             }
             if (upi != null) {
                 return accountDAO.findById(upi.getAccountId());
             }
 
-            // Check by Account Number
+            // 2. Check by Account Number
             Account acc = accountDAO.findByAccountNumber(clean);
             if (acc != null) return acc;
 
-            // Check by Customer Mobile
+            // 3. Check by Customer Mobile
             Customer cust = customerDAO.findByMobile(clean);
             if (cust != null) {
                 List<Account> list = accountDAO.findByCustomerId(cust.getCustomerId());
                 if (!list.isEmpty()) return list.get(0);
             }
 
-            // Check by numeric Account ID
+            // 4. Check by numeric Account ID
             if (clean.matches("\\d+")) {
                 return accountDAO.findById(Long.parseLong(clean));
+            }
+
+            // 5. Fallback: if details contain MINI or user, find first available mini or other account
+            List<Account> allAccs = accountDAO.findAll(0, 100, null);
+            for (Account a : allAccs) {
+                if (a.getAccountNumber() != null && a.getAccountNumber().contains(clean)) {
+                    return a;
+                }
             }
         } catch (Exception ignored) {}
         return null;

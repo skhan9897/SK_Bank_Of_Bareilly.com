@@ -1,5 +1,5 @@
 # ===============================================================
-# SK BANK OF BAREILLY - DOCKERFILE
+# SK BANK OF BAREILLY & SK MINI BANK - UNIFIED DOCKERFILE
 # Multi-Stage Build: Maven 3.9 + Java 17 -> Tomcat 9 + MariaDB Runtime
 # ===============================================================
 
@@ -7,15 +7,16 @@
 FROM maven:3.9.6-eclipse-temurin-17-alpine AS builder
 WORKDIR /app
 
-# Copy Maven POM and pre-fetch dependencies
+# 1. Build SK Bank of Bareilly
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
-# Copy project source and database scripts
 COPY src ./src
 COPY database ./database
+RUN mvn clean package -DskipTests
 
-# Package application into WAR
+# 2. Build SK Mini Bank
+WORKDIR /app/skminibank
+COPY skminibank/pom.xml .
+COPY skminibank/src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Runtime Stage (Tomcat 9 + Java 17 + MariaDB Server)
@@ -28,11 +29,12 @@ RUN yum update -y && \
     yum install -y mariadb-server mariadb procps-ng && \
     yum clean all
 
-# Remove default ROOT application
-RUN rm -rf webapps/ROOT webapps/ROOT.war
+# Remove default ROOT and other applications
+RUN rm -rf webapps/ROOT webapps/ROOT.war webapps/skminibank webapps/skminibank.war
 
-# Copy compiled WAR as ROOT.war
+# Copy compiled WARs into Tomcat webapps
 COPY --from=builder /app/target/sk-bank-of-bareilly.war webapps/ROOT.war
+COPY --from=builder /app/skminibank/target/skminibank.war webapps/skminibank.war
 COPY --from=builder /app/database/sk_bank_of_bareilly.sql /docker-entrypoint-initdb.d/schema.sql
 
 # Copy Entrypoint Script
