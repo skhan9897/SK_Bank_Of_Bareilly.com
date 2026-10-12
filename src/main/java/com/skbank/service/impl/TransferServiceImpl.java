@@ -317,6 +317,12 @@ public class TransferServiceImpl implements TransferService {
             String senderName = senderCust != null ? senderCust.getFullName() : "SK Bank Customer";
             String receiverName = receiverCust != null ? receiverCust.getFullName() : "Recipient Account";
 
+            transferDTO.setSenderAccountMasked(senderAcc.getMaskedAccountNumber());
+            transferDTO.setRecipientAccountMasked(receiverAcc.getMaskedAccountNumber());
+            if (transferDTO.getRecipientName() == null || transferDTO.getRecipientName().trim().isEmpty()) {
+                transferDTO.setRecipientName(receiverName);
+            }
+
             if (senderCust != null) {
                 Notification notifSender = new Notification();
                 notifSender.setUserId(senderCust.getUserId());

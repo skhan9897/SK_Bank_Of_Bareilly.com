@@ -26,8 +26,24 @@
                             <strong class="text-success fs-4">₹<fmt:formatNumber value="${sessionScope.LAST_TRANSFER.amount}" pattern="#,##0.00"/></strong>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Recipient:</span>
-                            <strong>${sessionScope.LAST_TRANSFER_DTO.recipientName}</strong>
+                            <span class="text-muted">From Account:</span>
+                            <strong class="font-monospace">${sessionScope.LAST_TRANSFER_DTO.senderAccountMasked}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Recipient Name:</span>
+                            <strong class="text-navy">${sessionScope.LAST_TRANSFER_DTO.recipientName}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Recipient A/C No:</span>
+                            <strong class="font-monospace">${sessionScope.LAST_TRANSFER_DTO.recipientAccountMasked}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Destination Bank:</span>
+                            <strong>SK Bank / SK Mini Bank Network</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Transfer Mode:</span>
+                            <span class="badge bg-primary">${sessionScope.LAST_TRANSFER.transferType}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-muted">Date & Time:</span>
