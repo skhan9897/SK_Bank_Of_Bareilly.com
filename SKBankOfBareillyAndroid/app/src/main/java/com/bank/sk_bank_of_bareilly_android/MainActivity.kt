@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
+import android.os.Message
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -369,6 +370,8 @@ class MainActivity : AppCompatActivity() {
             settings.setSupportZoom(true)
             settings.builtInZoomControls = true
             settings.displayZoomControls = false
+            settings.setSupportMultipleWindows(true)
+            settings.javaScriptCanOpenWindowsAutomatically = true
 
             val defaultUa = try { settings.userAgentString } catch (e: Exception) { "" } ?: ""
             settings.userAgentString = "$defaultUa SKBankAndroidApp/1.0"
@@ -386,8 +389,11 @@ class MainActivity : AppCompatActivity() {
                 override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                     try {
                         val reqUrl = request?.url?.toString()
-                        if (reqUrl != null && reqUrl.contains("/admin/")) {
-                            // Prevent loading admin UI inside customer mobile app
+                        if (reqUrl != null) {
+                            if (reqUrl.contains("/admin/")) {
+                                return true
+                            }
+                            view?.loadUrl(reqUrl)
                             return true
                         }
                     } catch (ignored: Exception) {}
@@ -500,6 +506,27 @@ class MainActivity : AppCompatActivity() {
             }
 
             wv.webChromeClient = object : WebChromeClient() {
+                override fun onCreateWindow(view: WebView?, isDialog: Boolean, isUserGesture: Boolean, resultMsg: Message?): Boolean {
+                    try {
+                        val newWebView = WebView(view?.context ?: return false)
+                        val transport = resultMsg?.obj as? WebView.WebViewTransport
+                        transport?.webView = newWebView
+                        resultMsg?.sendToTarget()
+                        newWebView.webViewClient = object : WebViewClient() {
+                            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                                val targetUrl = request?.url?.toString()
+                                if (targetUrl != null) {
+                                    webView?.loadUrl(targetUrl)
+                                }
+                                return true
+                            }
+                        }
+                        return true
+                    } catch (e: Exception) {
+                        return false
+                    }
+                }
+
                 override fun onProgressChanged(view: WebView?, newProgress: Int) {
                     try {
                         progressBar.progress = newProgress

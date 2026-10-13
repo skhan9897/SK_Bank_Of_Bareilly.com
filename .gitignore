@@ -1,0 +1,35 @@
+# Gradle
+.gradle/
+build/
+bin/
+out/
+.gradletasknamecache
+
+# Maven / Java / Tomcat
+target/
+*.class
+*.war
+*.ear
+*.jar
+
+# IDEs & Editors
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.project
+.classpath
+
+# Android Studio / Local Properties
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# OS Specific
+.DS_Store
+Thumbs.db
+*.log
+*.lock
