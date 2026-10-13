@@ -32,7 +32,7 @@ RUN yum update -y && \
 RUN rm -rf webapps/ROOT webapps/ROOT.war
 
 # Copy compiled WAR as ROOT.war
-COPY --from=builder /app/target/sk-bank-of-bareilly.war webapps/ROOT.war
+COPY --from=builder /app/target/sk-bank-of-india.war webapps/ROOT.war
 COPY --from=builder /app/database/sk_bank_of_bareilly.sql /docker-entrypoint-initdb.d/schema.sql
 
 # Copy Entrypoint Script
