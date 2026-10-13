@@ -10,14 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a71f9876-05f1-4f73-8380-b66a0d6aa89d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gradle/8.7/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.7/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.7/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.7/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.7/fileHashes/resourceHashesCache.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/java/com/bank/sk_bank_of_bareilly_android/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/java/com/bank/sk_bank_of_bareilly_android/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/SKBankOfBareillyAndroid/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/skminibank" beforeDir="false" afterPath="$PROJECT_DIR$/skminibank" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/skminibank/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/skminibank/.idea/caches/deviceStreaming.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/skminibank/SKMiniBank-Android/.gitignore" beforeDir="false" />
@@ -26,7 +21,7 @@
       <change beforePath="$PROJECT_DIR$/skminibank/SKMiniBank-Android/.idea/appInsightsSettings.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/skminibank/SKMiniBank-Android/.idea/awsToolkit.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/skminibank/SKMiniBank-Android/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/skminibank/SKMiniBank-Android/.idea/deploymentTargetSelector.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/skminibank/SKMiniBank-Android/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/skminibank/SKMiniBank-Android/.idea/deploymentTargetSelector.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/skminibank/SKMiniBank-Android/.idea/easycode.ignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/skminibank/SKMiniBank-Android/.idea/easycode/codebase-v2.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/skminibank/SKMiniBank-Android/.idea/gradle.xml" beforeDir="false" />
@@ -260,6 +255,17 @@
       <change beforePath="$PROJECT_DIR$/skminibank/src/main/java/com/bank/api/SendOtpApiServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/skminibank/src/main/java/com/bank/api/SendOtpApiServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/skminibank/src/main/java/com/bank/dao/AccountDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/skminibank/src/main/java/com/bank/dao/AccountDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/skminibank/src/main/java/com/bank/util/DBConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/skminibank/src/main/java/com/bank/util/DBConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/skbank/util/PasswordUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/skbank/util/PasswordUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/customer-sidebar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/customer-sidebar.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/footer.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/footer.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/navbar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/common/navbar.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/images/default-avatar.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/images/sk-bank-background.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/images/sk-bank-banner.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/images/sk-bank-logo-final-transparent.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/images/sk-bank-logo-transparent.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/images/sk-bank-logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/assets/images/sk-bank-logo.svg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -413,12 +419,12 @@
       <map>
         <entry key="com.bank.sk_bank_of_bareilly_android">
           <value>
-            <CheckInfo lastCheckTimestamp="1791710917488" />
+            <CheckInfo lastCheckTimestamp="1791898758816" />
           </value>
         </entry>
         <entry key="com.bank.sk_bank_of_bareilly_android.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1791710917487" />
+            <CheckInfo lastCheckTimestamp="1791898758821" />
           </value>
         </entry>
       </map>

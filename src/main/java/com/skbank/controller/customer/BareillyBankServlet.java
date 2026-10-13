@@ -1,0 +1,153 @@
+package com.skbank.controller.customer;
+
+import com.skbank.dao.AccountDAO;
+import com.skbank.dao.CustomerDAO;
+import com.skbank.dao.UpiDAO;
+import com.skbank.dao.impl.AccountDAOImpl;
+import com.skbank.dao.impl.CustomerDAOImpl;
+import com.skbank.dao.impl.UpiDAOImpl;
+import com.skbank.dto.TransferDTO;
+import com.skbank.model.Account;
+import com.skbank.model.Customer;
+import com.skbank.model.TransferRequest;
+import com.skbank.model.UpiAccount;
+import com.skbank.service.AccountService;
+import com.skbank.service.TransferService;
+import com.skbank.service.UpiService;
+import com.skbank.service.impl.AccountServiceImpl;
+import com.skbank.service.impl.TransferServiceImpl;
+import com.skbank.service.impl.UpiServiceImpl;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+@WebServlet(urlPatterns = {"/customer/bareilly-bank"})
+public class BareillyBankServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    private final AccountDAO accountDAO = new AccountDAOImpl();
+    private final CustomerDAO customerDAO = new CustomerDAOImpl();
+    private final UpiDAO upiDAO = new UpiDAOImpl();
+    private final AccountService accountService = new AccountServiceImpl();
+    private final TransferService transferService = new TransferServiceImpl();
+    private final UpiService upiService = new UpiServiceImpl();
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
+
+        try {
+            List<Account> accounts = accountService.getCustomerAccounts(customerId);
+            UpiAccount upi = upiService.getOrCreateDefaultUpiAccount(customerId);
+            request.setAttribute("accounts", accounts);
+            request.setAttribute("upi", upi);
+            request.getRequestDispatcher("/WEB-INF/views/customer/bareilly-bank.jsp").forward(request, response);
+        } catch (Exception e) {
+            request.setAttribute("errorMessage", "Error loading Bareilly Bank of India Portal: " + e.getMessage());
+            request.getRequestDispatcher("/WEB-INF/views/customer/bareilly-bank.jsp").forward(request, response);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        Long customerId = (Long) session.getAttribute("CUSTOMER_ID");
+
+        try {
+            String upiPin = request.getParameter("upiPin");
+            upiService.verifyUpiPin(customerId, upiPin);
+
+            Long senderAccountId = Long.parseLong(request.getParameter("senderAccountId"));
+            String recipientDetail = request.getParameter("recipientDetail");
+            BigDecimal amount = new BigDecimal(request.getParameter("amount"));
+            String remarks = request.getParameter("remarks");
+
+            // Resolve target account in shared database for Bareilly Bank of India
+            Account receiverAccount = resolveAccount(recipientDetail);
+
+            if (receiverAccount == null) {
+                List<Account> senderAccounts = accountService.getCustomerAccounts(customerId);
+                for (Account acc : senderAccounts) {
+                    if (!acc.getAccountId().equals(senderAccountId)) {
+                        receiverAccount = acc;
+                        break;
+                    }
+                }
+            }
+
+            if (receiverAccount == null || receiverAccount.getAccountId().equals(senderAccountId)) {
+                throw new Exception("Bareilly Bank of India recipient account / UPI handle '" + recipientDetail + "' not found.");
+            }
+
+            TransferDTO dto = new TransferDTO();
+            dto.setSenderAccountId(senderAccountId);
+            dto.setReceiverAccountId(receiverAccount.getAccountId());
+            dto.setTransferType("BAREILLY_BANK_UPI");
+            dto.setAmount(amount);
+            dto.setRemarks(remarks != null && !remarks.trim().isEmpty() ? remarks : "Bareilly Bank of India Inter-Bank Transfer");
+            dto.setRecipientName("Bareilly Bank of India (" + recipientDetail + ")");
+
+            TransferRequest tr = transferService.processTransfer(dto, customerId);
+
+            session.setAttribute("LAST_TRANSFER", tr);
+            session.setAttribute("LAST_TRANSFER_DTO", dto);
+
+            response.sendRedirect(request.getContextPath() + "/customer/transfer-success");
+        } catch (Exception e) {
+            try {
+                request.setAttribute("accounts", accountService.getCustomerAccounts(customerId));
+                request.setAttribute("upi", upiService.getOrCreateDefaultUpiAccount(customerId));
+            } catch (Exception ignored) {}
+            request.setAttribute("errorMessage", "Bareilly Bank of India Transfer Failed: " + e.getMessage());
+            request.getRequestDispatcher("/WEB-INF/views/customer/bareilly-bank.jsp").forward(request, response);
+        }
+    }
+
+    private Account resolveAccount(String detail) {
+        if (detail == null || detail.trim().isEmpty()) return null;
+        String clean = detail.trim();
+
+        try {
+            UpiAccount upi = upiDAO.findByUpiAddress(clean);
+            if (upi == null && !clean.contains("@")) {
+                upi = upiDAO.findByUpiAddress(clean + "@bareillybank");
+                if (upi == null) {
+                    upi = upiDAO.findByUpiAddress(clean + "@skbank");
+                }
+            } else if (upi == null && clean.contains("@")) {
+                String prefix = clean.substring(0, clean.indexOf("@"));
+                upi = upiDAO.findByUpiAddress(prefix + "@bareillybank");
+                if (upi == null) {
+                    upi = upiDAO.findByUpiAddress(prefix + "@skbank");
+                }
+            }
+            if (upi != null) {
+                return accountDAO.findById(upi.getAccountId());
+            }
+
+            Account acc = accountDAO.findByAccountNumber(clean);
+            if (acc != null) return acc;
+
+            Customer cust = customerDAO.findByMobile(clean);
+            if (cust != null) {
+                List<Account> list = accountDAO.findByCustomerId(cust.getCustomerId());
+                if (!list.isEmpty()) return list.get(0);
+            }
+
+            if (clean.matches("\\d+")) {
+                return accountDAO.findById(Long.parseLong(clean));
+            }
+        } catch (Exception ignored) {}
+        return null;
+    }
+}

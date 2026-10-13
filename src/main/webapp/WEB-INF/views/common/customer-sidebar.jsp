@@ -81,6 +81,11 @@
             </a>
         </li>
         <li class="sidebar-item">
+            <a href="${pageContext.request.contextPath}/customer/bareilly-bank" class="sidebar-link ${pageContext.request.requestURI.contains('/bareilly-bank') ? 'active' : ''}">
+                <i class="fa-solid fa-building-columns text-success"></i> Bareilly Bank of India
+            </a>
+        </li>
+        <li class="sidebar-item">
             <a href="${pageContext.request.contextPath}/customer/fixed-deposits" class="sidebar-link ${pageContext.request.requestURI.contains('/fixed-deposits') ? 'active' : ''}">
                 <i class="fa-solid fa-piggy-bank"></i> Fixed Deposits
             </a>

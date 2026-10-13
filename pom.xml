@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.skbank</groupId>
-    <artifactId>sk-bank-of-bareilly</artifactId>
+    <artifactId>sk-bank-of-india</artifactId>
     <version>1.0.0</version>
     <packaging>war</packaging>
 
-    <name>SK BANK OF BAREILLY</name>
-    <description>Production-Style Java Servlet + JSP Banking Web Application</description>
+    <name>SK BANK OF INDIA</name>
+    <description>Master Banking Platform - SK Bank of India</description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -36,58 +36,37 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- JSTL -->
+        <!-- JSTL 1.2 -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
 
-        <!-- MySQL Connector / J -->
+        <!-- MySQL Connector J 8.3.0 -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>8.3.0</version>
         </dependency>
 
-        <!-- jBCrypt for Password Hashing -->
+        <!-- jBCrypt 0.4 for Secure Password Hashing -->
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
 
-        <!-- Gson for JSON handling in AJAX Servlets -->
+        <!-- Gson for JSON Serialization -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
         </dependency>
-
-        <!-- OpenPDF for Server-Side Digital Passbook PDF Generation -->
-        <dependency>
-            <groupId>com.github.librepdf</groupId>
-            <artifactId>openpdf</artifactId>
-            <version>1.3.37</version>
-        </dependency>
-
-        <!-- JUnit 5 for Unit Testing -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.10.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.10.2</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
-        <finalName>sk-bank-of-bareilly</finalName>
+        <finalName>sk-bank-of-india</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -97,19 +76,6 @@
                     <source>17</source>
                     <target>17</target>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.4.0</version>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
             </plugin>
         </plugins>
     </build>

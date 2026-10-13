@@ -5,7 +5,7 @@
             <div class="col-lg-4 col-md-6">
                 <div class="d-flex align-items-center mb-3">
                     <img src="${pageContext.request.contextPath}/assets/images/sk-bank-logo-final-transparent.png?v=20261004" alt="Logo" width="40" height="40" class="me-2" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/assets/images/sk-bank-logo-transparent.png';">
-                    <span class="h5 mb-0 font-weight-bold text-white">SK BANK OF BAREILLY</span>
+                    <span class="h5 mb-0 font-weight-bold text-white">SK BANK OF INDIA</span>
                 </div>
                 <p class="text-muted small">Providing secure, reliable, and modern corporate & retail banking services. Committed to growth and trust.</p>
                 <div class="text-warning font-weight-bold small">TRUST | GROWTH | TOGETHER</div>
